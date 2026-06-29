@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Proyeccion Empaque - Parras Valley</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:#0c0f07;color:#e8e0c8;font-family:system-ui,-apple-system,sans-serif;min-height:100vh;}
+
+    /* HEADER */
+    .hdr{background:linear-gradient(160deg,#0f1a08,#1c2e0a,#0f1a08);border-bottom:3px solid #7a9e2a;padding:16px 20px 0;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,0.7);}
+    .hdr-inner{max-width:1100px;margin:0 auto;}
+    .hdr-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+    .hdr-logo{width:48px;height:48px;background:linear-gradient(135deg,#3a5c0a,#7a9e2a);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#d4e89a;box-shadow:0 4px 16px rgba(122,158,42,0.4);}
+    .hdr-title{font-size:clamp(17px,4vw,26px);font-weight:900;color:#c8d870;letter-spacing:1px;line-height:1.1;}
+    .hdr-sub{font-size:10px;color:#5a7a1a;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+    .tabs{display:flex;}
+    .tab{flex:1;padding:10px 6px;border:none;background:transparent;font-family:system-ui;font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:#3a5c0a;border-bottom:3px solid transparent;transition:all 0.2s;}
+    .tab.active{color:#c8d870;border-bottom:3px solid #7a9e2a;background:rgba(122,158,42,0.08);}
+
+    /* MAIN */
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 14px 80px;}
+
+    /* SECCION */
+    .sec{font-size:9px;font-weight:900;letter-spacing:3px;text-transform:uppercase;color:#7a9e2a;margin:20px 0 10px;display:flex;align-items:center;gap:8px;}
+    .sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(122,158,42,0.5),transparent);}
+
+    /* DIAS */
+    .dias-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;}
+    .dia-btn{flex-shrink:0;padding:8px 14px;border:2px solid rgba(122,158,42,0.2);border-radius:18px;background:transparent;font-family:system-ui;font-size:11px;font-weight:800;cursor:pointer;color:#3a5c0a;transition:all 0.2s;}
+    .dia-btn.active{background:linear-gradient(135deg,#3a5c0a,#7a9e2a);border-color:#7a9e2a;color:#fff;box-shadow:0 4px 14px rgba(122,158,42,0.35);}
+    .dia-btn.tiene{border-color:rgba(122,158,42,0.45);color:#c8d870;}
+
+    /* CARDS */
+    .card{border-radius:14px;margin-bottom:12px;overflow:hidden;border:2px solid;}
+    .card-head{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.4);}
+    .card-icon{font-size:26px;margin-right:10px;}
+    .card-nombre{font-size:17px;font-weight:900;}
+    .card-sub{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:0.55;margin-top:2px;}
+    .card-body{padding:14px 16px;}
+
+    /* TIPO TAG */
+    .ttag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:8px;font-weight:900;letter-spacing:1px;margin-bottom:8px;}
+    .ttag.org{background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.25);}
+    .ttag.conv{background:rgba(200,168,75,0.12);color:#c8a84b;border:1px solid rgba(200,168,75,0.3);}
+
+    /* GRIDS */
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+
+    /* INPUTS */
+    .f label{display:block;font-size:8px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#5a7a1a;margin-bottom:4px;}
+    .inp{width:100%;border:2px solid rgba(122,158,42,0.2);border-radius:8px;padding:9px 10px;font-family:system-ui;font-size:16px;font-weight:800;background:rgba(0,0,0,0.4);color:#e8e0c8;outline:none;text-align:center;transition:all 0.2s;}
+    .inp:focus{border-color:#7a9e2a;background:rgba(122,158,42,0.06);}
+    .inp::placeholder{color:rgba(255,255,255,0.1);font-weight:400;font-size:13px;}
+    .inp.pct{color:#c8d870;}
+    .inp.kg{color:#86c87a;}
+    .inp.bts{color:#c8a84b;}
+    .inp.pzs{color:#7ab8d8;}
+
+    /* BOTON JALAR */
+    .btn-campo{display:inline-flex;align-items:center;gap:8px;padding:"10px 18px";background:rgba(122,158,42,0.12);border:2px solid rgba(122,158,42,0.4);border-radius:10px;color:#c8d870;font-family:system-ui;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:1px;transition:all 0.2s;margin-bottom:14px;}
+    .btn-campo:hover{background:rgba(122,158,42,0.2);}
+
+    /* RESULTADO */
+    .res-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+    .res-chip{border-radius:9px;padding:8px 12px;border:1px solid;text-align:center;min-width:90px;}
+    .res-chip-label{font-size:7px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;}
+    .res-chip-val{font-size:20px;font-weight:900;font-family:Georgia,serif;}
+
+    /* MORRON */
+    .mbox{border-radius:10px;overflow:hidden;margin-bottom:10px;}
+    .mbox-head{display:flex;align-items:center;gap:10px;padding:9px 14px;}
+    .dot{width:13px;height:13px;border-radius:50%;flex-shrink:0;}
+    .mbox-body{padding:12px 14px;}
+
+    /* BALANCE */
+    .bal-blk{border-radius:13px;padding:14px;margin-bottom:10px;border:2px solid rgba(122,158,42,0.2);background:rgba(122,158,42,0.04);}
+
+    /* TABLA SEMANAL */
+    .stbl{width:100%;border-collapse:collapse;font-size:12px;}
+    .stbl th{font-size:8px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#5a7a1a;padding:7px 8px;border-bottom:2px solid rgba(122,158,42,0.2);text-align:right;}
+    .stbl th:first-child{text-align:left;}
+    .stbl td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:right;cursor:pointer;}
+    .stbl td:first-child{text-align:left;font-weight:800;font-size:11px;color:#c8d870;}
+    .stbl tr:hover td{background:rgba(122,158,42,0.05);}
+    .stbl .tot td{background:rgba(122,158,42,0.1);font-weight:900;color:#c8d870;border-top:2px solid rgba(122,158,42,0.3);}
+
+    /* Separador de seccion dentro de card */
+    .sub-sec{font-size:8px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#5a7a1a;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid rgba(122,158,42,0.15);}
+
+    @media(max-width:600px){
+      .g4{grid-template-columns:1fr 1fr;}
+      .g3{grid-template-columns:1fr 1fr;}
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+var useState=React.useState;
+var useEffect=React.useEffect;
+
+var FB_CAMPO="https://parrasvalley-default-rtdb.firebaseio.com/campo-proyeccion-v1.json";
+var FB_SEM="https://parrasvalley-default-rtdb.firebaseio.com/campo-proy-semanas-v1.json";
+var FB_AJU="https://parrasvalley-default-rtdb.firebaseio.com/campo-proy-ajustes-v1.json";
+var FB_RECIBO="https://parrasvalley-default-rtdb.firebaseio.com/recibo-hist-v1.json";
+var RANCHO_MAP2={pvt:["PVT"],crp:["CRP","Cordillera"],f4h:["Forrajera","F4H"]};
+var LS_KEY="emp-v2";
+
+var RANCHOS=["pvt","crp","f4h"];
+var RANCHO_PRODS={pvt:["Persa","Slicer"],crp:["Europeo","Persa","Slicer","Morron","Minibel"],f4h:["Persa","Morron","Minibel"]};
+var DIAS_CAMPO=["Viernes","Sabado","Domingo","Lunes","Martes","Miercoles","Jueves"];
+var DIAS=["Viernes","Sabado","Domingo","Lunes","Martes","Miercoles","Jueves"];
+var TIPOS=["org","conv"];
+var COLORES_M=[{id:"rojo",l:"Rojo",c:"#ef4444"},{id:"amarillo",l:"Amarillo",c:"#eab308"},{id:"naranja",l:"Naranja",c:"#f97316"},{id:"verde",l:"Verde",c:"#22c55e"}];
+var PRES_P=[{id:"p20",l:"20 lb",kg:9.25},{id:"p8x2",l:"8x2 lb",kg:7.60},{id:"p12x1",l:"12x1 lb",kg:5.70}];
+var PROD_META={
+  Persa:{icon:"O",col:"#86c87a",brd:"rgba(134,200,122,0.3)",sub:"Pepino Persa"},
+  Europeo:{icon:"O",col:"#5ab88a",brd:"rgba(90,184,138,0.3)",sub:"Pepino Europeo"},
+  Slicer:{icon:"O",col:"#a8c840",brd:"rgba(168,200,64,0.3)",sub:"Pepino Slicer"},
+  Minibel:{icon:"*",col:"#e07070",brd:"rgba(224,112,112,0.3)",sub:"Chile Minibel"},
+  Morron:{icon:"!",col:"#e09040",brd:"rgba(224,144,64,0.3)",sub:"Chile Morron"}
+};
+
+function nv(v){var x=parseFloat(v);return isNaN(x)?0:x;}
+function pct(v){return nv(v)/100;}
+function fmt(v,d){d=d===undefined?1:d;if(!isFinite(v)||isNaN(v)||v===0)return "--";return v.toLocaleString("es-MX",{minimumFractionDigits:d,maximumFractionDigits:d});}
+function fk(v){return fmt(v,1)+" kg";}
+function lsLoad(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+function lsSave(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+function fechaSemana(){
+  var d=new Date();var dia=d.getDay();
+  // Semana Vie-Jue: retroceder al viernes anterior
+  var diff=dia>=5?dia-5:dia+2;
+  var ini=new Date(d);ini.setDate(d.getDate()-diff);
+  return ini.toISOString().split("T")[0];
+}
+function sumDias(fecha,n){
+  var d=new Date(fecha+"T12:00:00");d.setDate(d.getDate()+n);
+  return d.toISOString().split("T")[0];
+}
+function numSemana(fechaStr){
+  var d=new Date(fechaStr+"T12:00:00");
+  var dia=d.getDay();
+  var inicio=new Date(d);inicio.setDate(d.getDate()-((dia+3)%7));
+  inicio.setHours(0,0,0,0);
+  var ft=new Date(inicio.getFullYear(),0,4);
+  return Math.ceil(((inicio-ft)/(86400000*7)))+1;
+}
+function infoSemana(semIni){
+  var d=new Date(semIni+"T12:00:00");
+  var fin=new Date(d);fin.setDate(d.getDate()+6);
+  var meses=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+  var fD=function(dt){return dt.getDate()+" "+meses[dt.getMonth()];};
+  return{num:numSemana(semIni),label:"Semana "+numSemana(semIni)+" . "+fD(d)+" al "+fD(fin)+" "+fin.getFullYear()};
+}
+
+
+function initFacDia(){
+  var f={};
+  ["Persa","Minibel"].forEach(function(p){f[p]={fpri:"",fseg:"",fpri_conv:"",fseg_conv:""};});
+  f.Europeo={pzs_reja:"",kg_reja:"",pct_pri:"",pct_seg:"",pct_cho:"",pzs_reja_conv:"",kg_reja_conv:"",pct_pri_conv:"",pct_seg_conv:"",pct_cho_conv:""};
+  f.Slicer={pzs:"",kgr:"",pct_pri:"",pct_seg:"",pct_ter:"",pzs_conv:"",kgr_conv:"",pct_pri_conv:"",pct_seg_conv:"",pct_ter_conv:""};
+  f.Morron={};
+  COLORES_M.forEach(function(c){
+    TIPOS.forEach(function(t){
+      f.Morron[c.id+"_"+t]={kgr:"",ppri:"",pseg:"",pter:"",pl:"",pxl:"",pj:""};
+    });
+  });
+  return f;
+}
+
+function initPedDia(){
+  var p={};
+  ["Persa","Minibel","Europeo","Slicer"].forEach(function(prod){p[prod]={};});
+  p.Morron={};
+  return p;
+}
+
+function initSemana(){
+  var s={fac:[],ped:[],campo:{}};
+  for(var i=0;i<7;i++){s.fac.push(initFacDia());s.ped.push(initPedDia());}
+  return s;
+}
+
+function App(){
+  var s1=useState("campo"); var tab=s1[0]; var setTab=s1[1];
+  var s2=useState(0); var diaIdx=s2[0]; var setDiaIdx=s2[1];
+  var s3=useState(function(){return lsLoad(LS_KEY,initSemana());});
+  var sem=s3[0]; var setSem=s3[1];
+  var s4=useState(false); var jalando=s4[0]; var setJalando=s4[1];
+  var s5=useState(false); var jalado=s5[0]; var setJalado=s5[1];
+  var s6b=useState("todos"); var bfDia=s6b[0]; var setBfDia=s6b[1];
+  var s6c=useState("todos"); var bfProd=s6c[0]; var setBfProd=s6c[1];
+  var s6=useState({}); var semGuardada=s6[0]; var setSemGuardada=s6[1];
+  var s7=useState({}); var ajustes2=s7[0]; var setAjustes2=s7[1];
+  var s8=useState([]); var reciboData=s8[0]; var setReciboData=s8[1];
+  var s9=useState(false); var jalandoRec=s9[0]; var setJalandoRec=s9[1];
+  var s10=useState(false); var jaladoRec=s10[0]; var setJaladoRec=s10[1];
+  var s11=useState(fechaSemana()); var semSel=s11[0]; var setSemSel=s11[1];
+  var s12=useState(false); var showModalCampo=s12[0]; var setShowModalCampo=s12[1];
+  var s13=useState(false); var showModalRecibo=s13[0]; var setShowModalRecibo=s13[1];
+  var s14=useState(DIAS[0]); var diaJalarCampo=s14[0]; var setDiaJalarCampo=s14[1];
+  // Fecha para jalar recibo  -  default hoy
+  var hoy=new Date();
+  var hoyStr=hoy.toLocaleDateString("es-MX",{day:"2-digit",month:"2-digit",year:"numeric"});
+  var s15=useState(hoyStr); var fechaJalarRec=s15[0]; var setFechaJalarRec=s15[1];
+  var semIni=semSel;
+
+  function save(ns){setSem(ns);lsSave(LS_KEY,ns);}
+
+  function setFac(di,prod,campo,val){
+    var ns=JSON.parse(JSON.stringify(sem));
+    ns.fac[di][prod][campo]=val;
+    save(ns);
+  }
+  function setFM(di,colorId,tipo,campo,val){
+    var ns=JSON.parse(JSON.stringify(sem));
+    ns.fac[di].Morron[colorId+"_"+tipo][campo]=val;
+    save(ns);
+  }
+  function setPed(di,prod,path,val){
+    var ns=JSON.parse(JSON.stringify(sem));
+    if(!ns.ped[di])ns.ped[di]=initPedDia();
+    if(!ns.ped[di][prod])ns.ped[di][prod]={};
+    var ref=ns.ped[di][prod];
+    var parts=path.split(".");
+    for(var i=0;i<parts.length-1;i++){
+      if(!ref[parts[i]])ref[parts[i]]={};
+      ref=ref[parts[i]];
+    }
+    ref[parts[parts.length-1]]=val;
+    save(ns);
+  }
+
+  function jalarCampo(diaLabel){
+    setJalando(true);setShowModalCampo(false);
+    fetch(FB_CAMPO).then(function(r){return r.json();}).then(function(d){
+      var ns=JSON.parse(JSON.stringify(sem));
+      // Solo guardar las claves del dia seleccionado
+      var diaIdxCampo=DIAS_CAMPO.indexOf(diaLabel); // indice en campo (0=Vie)
+      var ns2=Object.assign({},ns.campo||{});
+      if(d&&typeof d==="object"){
+        Object.keys(d).forEach(function(k){
+          // k = semIniCampo+"|"+rid+"|"+di
+          var parts=k.split("|");
+          if(parts.length===3&&parseInt(parts[2])===diaIdxCampo){
+            ns2[k]=d[k];
+          }
+        });
+      }
+      ns.campo=ns2;
+      save(ns);
+      // Tambien jalar semanas guardadas y ajustes
+      fetch(FB_SEM).then(function(r2){return r2.json();}).then(function(ds){
+        if(ds&&typeof ds==="object")setSemGuardada(ds);
+        fetch(FB_AJU).then(function(r3){return r3.json();}).then(function(da){
+          if(da&&typeof da==="object")setAjustes2(da);
+          setJalando(false);setJalado(true);
+          setTimeout(function(){setJalado(false);},3000);
+        }).catch(function(){setJalando(false);});
+      }).catch(function(){setJalando(false);});
+    }).catch(function(){setJalando(false);});
+  }
+
+  function jalarRecibo(fecha){
+    setJalandoRec(true);setShowModalRecibo(false);
+    fetch(FB_RECIBO).then(function(r){return r.json();}).then(function(d){
+      var arr=d&&Array.isArray(d)?d:(d&&typeof d==="object"?Object.values(d):[]);
+      // Filtrar solo los registros de la fecha solicitada
+      var filtrados=arr.filter(function(h){return h&&h.fecha===fecha;});
+      setReciboData(filtrados);
+      setJalandoRec(false);setJaladoRec(true);
+      setTimeout(function(){setJaladoRec(false);},3000);
+    }).catch(function(){setJalandoRec(false);});
+  }
+
+  // Obtener rejas con ajuste (usa ajuste si existe, si no proyeccion)
+  function getRejConAjuste(rid,di,prod,tipo){
+    // Primero buscar ajuste del maestro
+    var clave=semIni+"_"+rid+"_"+di+"_"+prod+"_"+tipo;
+    if(ajustes2&&ajustes2[clave])return nv(ajustes2[clave].rejas);
+    // Si no, usar semana guardada oficial
+    var sg=semGuardada&&semGuardada[semIni+"_"+rid];
+    if(sg&&sg.dias&&sg.dias[di]){
+      var dx=sg.dias[di];
+      return nv(dx[prod]&&dx[prod][tipo]&&dx[prod][tipo].rejas||0);
+    }
+    // Si no, usar datos crudos de campo (captura temporal)
+    return null; // getRej lo maneja
+  }
+
+  function getRejConAjusteM(colorId,di,tipo){
+    // Buscar en ajustes del maestro
+    var clave=semIni+"_morron_"+di+"_"+colorId+"_"+tipo;
+    if(ajustes2&&ajustes2[clave])return nv(ajustes2[clave].rejas);
+    return null;
+  }
+
+  // semIni de campo empieza el viernes = empaque semIni + 1 dia
+  var semIniCampo=semIni; // Empaque y campo ahora usan la misma semana Vie-Jue
+
+  function getRej(prod,di,tipo){
+    // 1. Ajuste del maestro
+    var totalAju=0;var tieneAju=false;
+    ["pvt","crp","f4h"].forEach(function(rid){
+      if((RANCHO_PRODS[rid]||[]).indexOf(prod)<0)return;
+      var clave=semIni+"_"+rid+"_"+di+"_"+prod+"_"+tipo;
+      if(ajustes2&&ajustes2[clave]){tieneAju=true;totalAju+=nv(ajustes2[clave].rejas);}
+    });
+    if(tieneAju)return totalAju;
+    // 2. Semana guardada oficial
+    var totalSG=0;var tieneSG=false;
+    ["pvt","crp","f4h"].forEach(function(rid){
+      if((RANCHO_PRODS[rid]||[]).indexOf(prod)<0)return;
+      var sg=semGuardada&&semGuardada[semIni+"_"+rid];
+      if(sg&&sg.dias&&sg.dias[di]){
+        var dx=sg.dias[di];
+        var v=nv(dx[prod]&&dx[prod][tipo]&&dx[prod][tipo].rejas||0);
+        if(v>0){tieneSG=true;totalSG+=v;}
+      }
+    });
+    if(tieneSG)return totalSG;
+    // 3. Datos crudos  -  usar semIniCampo (viernes) para las claves de campo
+    var total=0;
+    var mapCampo=[0,1,2,3,4,5,6]; // Vie=0,Sab=1,Dom=2,Lun=3,Mar=4,Mie=5,Jue=6
+    var campoIdx=mapCampo[di];
+    RANCHOS.forEach(function(rid){
+      if((RANCHO_PRODS[rid]||[]).indexOf(prod)<0)return;
+      var k=semIniCampo+"|"+rid+"|"+campoIdx;
+      var dx=sem.campo[k];
+      if(!dx||!dx[prod])return;
+      var rv=nv(dx[prod][tipo]&&dx[prod][tipo].rejas||0);
+      total+=rv;
+    });
+    return total;
+  }
+
+  function getRejM(colorId,di,tipo){
+    var total=0;
+    var mapCampo=[0,1,2,3,4,5,6]; // Vie=0,Sab=1,Dom=2,Lun=3,Mar=4,Mie=5,Jue=6
+    var campoIdx=mapCampo[di];
+    RANCHOS.forEach(function(rid){
+      if((RANCHO_PRODS[rid]||[]).indexOf("Morron")<0)return;
+      var k=semIniCampo+"|"+rid+"|"+campoIdx;
+      var dx=sem.campo[k];
+      if(!dx||!dx.Morron)return;
+      var cols=(dx.Morron[tipo]&&dx.Morron[tipo].colores)||[];
+      var ca=cols.find(function(c){return c.id===colorId;});
+      if(ca)total+=nv(ca.rejas);
+    });
+    return total;
+  }
+
+  function calcDia(di){
+    var f=sem.fac[di];
+    var res={};
+
+    // Persa / Minibel
+    ["Persa","Minibel"].forEach(function(prod){
+      var fp=f[prod]||{};
+      res[prod]={};
+      TIPOS.forEach(function(t){
+        var suf=t==="org"?"":"_conv";
+        var rj=getRej(prod,di,t);
+        var fpri=nv(fp["fpri"+suf]);var fseg=nv(fp["fseg"+suf]);
+        res[prod][t]={rj:rj,bPri:rj*fpri,bSeg:rj*fseg,kgPri:rj*fpri*9.25,kgSeg:rj*fseg*9.25};
+      });
+    });
+
+    // Europeo - por piezas Y kilos
+    var fe=f.Europeo||{};
+    res.Europeo={};
+    TIPOS.forEach(function(t){
+      var suf=t==="org"?"":"_conv";
+      var rj=getRej("Europeo",di,t);
+      var pzsTot=rj*nv(fe["pzs_reja"+suf]);
+      var kgTot=rj*nv(fe["kg_reja"+suf]);
+      res.Europeo[t]={
+        rj:rj,pzsTot:pzsTot,kgTot:kgTot,
+        pzsPri:pzsTot*pct(fe["pct_pri"+suf]),pzsSeg:pzsTot*pct(fe["pct_seg"+suf]),pzsCho:pzsTot*pct(fe["pct_cho"+suf]),
+        kgPri:kgTot*pct(fe["pct_pri"+suf]),kgSeg:kgTot*pct(fe["pct_seg"+suf]),kgCho:kgTot*pct(fe["pct_cho"+suf])
+      };
+    });
+
+    // Slicer - piezas Y kilos por calidad
+    var fs=f.Slicer||{};
+    res.Slicer={};
+    TIPOS.forEach(function(t){
+      var suf=t==="org"?"":"_conv";
+      var rj=getRej("Slicer",di,t);
+      var pzsTot=rj*nv(fs["pzs"+suf]);
+      var kgTot=rj*nv(fs["kgr"+suf]);
+      res.Slicer[t]={
+        rj:rj,pzsTot:pzsTot,kgTot:kgTot,
+        pzsPri:pzsTot*pct(fs["pct_pri"+suf]),pzsSeg:pzsTot*pct(fs["pct_seg"+suf]),pzsTer:pzsTot*pct(fs["pct_ter"+suf]),
+        kgPri:kgTot*pct(fs["pct_pri"+suf]),kgSeg:kgTot*pct(fs["pct_seg"+suf]),kgTer:kgTot*pct(fs["pct_ter"+suf])
+      };
+    });
+
+
+    // Morron
+    res.Morron={};
+    COLORES_M.forEach(function(col){
+      res.Morron[col.id]={};
+      TIPOS.forEach(function(t){
+        var fm=(f.Morron&&f.Morron[col.id+"_"+t])||{};
+        var rj=getRejM(col.id,di,t);
+        var kgTot=rj*nv(fm.kgr);
+        var kgPri=kgTot*pct(fm.ppri);
+        res.Morron[col.id][t]={rj:rj,kgTot:kgTot,kgPri:kgPri,kgSeg:kgTot*pct(fm.pseg),kgTer:kgTot*pct(fm.pter),kgL:kgPri*pct(fm.pl),kgXL:kgPri*pct(fm.pxl),kgJ:kgPri*pct(fm.pj)};
+      });
+    });
+
+    return res;
+  }
+
+  var ch=calcDia(diaIdx);
+  var pd=sem.ped[diaIdx]||initPedDia();
+
+  var GRN="#86c87a";
+  var AMB="#c8a84b";
+  var OLV="#7a9e2a";
+
+  function copiarFacSiguiente(){
+    if(diaIdx>=6)return;
+    var ns=JSON.parse(JSON.stringify(sem));
+    ns.fac[diaIdx+1]=JSON.parse(JSON.stringify(ns.fac[diaIdx]));
+    save(ns);
+  }
+  function copiarFacSemana(){
+    var ns=JSON.parse(JSON.stringify(sem));
+    for(var i=0;i<7;i++){if(i!==diaIdx)ns.fac[i]=JSON.parse(JSON.stringify(ns.fac[diaIdx]));}
+    save(ns);
+  }
+
+  function FI(props){
+    var s=useState(props.val||""); var loc=s[0]; var setLoc=s[1];
+    // Sincronizar si el valor externo cambia (ej: al copiar factores)
+    var prev=useState(props.val||""); var prevVal=prev[0]; var setPrevVal=prev[1];
+    if(props.val!==prevVal){setPrevVal(props.val||"");setLoc(props.val||"");}
+    return(
+      <div className="f" style={{marginBottom:props.mb!==undefined?props.mb:8}}>
+        <label>{props.label}</label>
+        <input className={"inp "+(props.cls||"")} type="number" step={props.step||"0.01"} min="0"
+          placeholder={props.ph||"0"} value={loc}
+          onChange={function(e){setLoc(e.target.value);}}
+          onBlur={function(){props.set(loc);}}
+          onKeyDown={function(e){if(e.key==="Enter"){props.set(loc);}}}/>
+      </div>
+    );
+  }
+
+  function TipoBloque(props){
+    return(
+      <div style={{marginBottom:12}}>
+        <span className={"ttag "+props.tipo}>{props.tipo==="org"?"ORGANICO":"CONVENCIONAL"}</span>
+        {props.children}
+      </div>
+    );
+  }
+
+  function Chip(props){
+    var v=props.v;var ok=v&&v!=="--";
+    return(
+      <div className="res-chip" style={{borderColor:props.col+"44",background:props.col+"0d"}}>
+        <div className="res-chip-label" style={{color:props.col}}>{props.label}</div>
+        <div className="res-chip-val" style={{color:ok?props.col:"rgba(255,255,255,0.2)"}}>{ok?v:"--"}</div>
+        {props.sub&&<div style={{fontSize:9,color:"rgba(255,255,255,0.3)",marginTop:2}}>{props.sub}</div>}
+      </div>
+    );
+  }
+
+  return(
+    <div>
+      <div className="hdr">
+        <div className="hdr-inner">
+          <div className="hdr-top">
+            <div className="hdr-logo">PV</div>
+            <div>
+              <div className="hdr-title">PROYECCION EMPAQUE</div>
+              <div className="hdr-sub">Parras Valley Tomatoes - Todos los Productos</div>
+            </div>
+            <div style={{marginLeft:"auto",display:"flex",flexDirection:"column",alignItems:"flex-end",gap:6}}>
+              <div style={{fontSize:11,color:"#c8d870",fontWeight:800}}>{infoSemana(semIni).label}</div>
+              <div style={{display:"flex",gap:5}}>
+                <button onClick={function(){setSemSel(sumDias(semSel,-7));}} style={{padding:"4px 8px",background:"rgba(122,158,42,0.08)",border:"1px solid rgba(122,158,42,0.2)",borderRadius:6,color:"#7a9e2a",fontFamily:"system-ui",fontSize:11,fontWeight:700,cursor:"pointer"}}>Ant</button>
+                {semSel!==fechaSemana()&&<button onClick={function(){setSemSel(fechaSemana());}} style={{padding:"4px 8px",background:"rgba(200,168,75,0.1)",border:"1px solid rgba(200,168,75,0.25)",borderRadius:6,color:"#c8a84b",fontFamily:"system-ui",fontSize:10,fontWeight:700,cursor:"pointer"}}>Hoy</button>}
+                <button onClick={function(){setSemSel(sumDias(semSel,7));}} style={{padding:"4px 8px",background:"rgba(122,158,42,0.08)",border:"1px solid rgba(122,158,42,0.2)",borderRadius:6,color:"#7a9e2a",fontFamily:"system-ui",fontSize:11,fontWeight:700,cursor:"pointer"}}>Sig</button>
+              </div>
+            </div>
+          </div>
+          <div className="tabs">
+            {[["campo","Campo"],["factores","Factores"],["pedidos","Pedidos"],["balance","Balance"]].map(function(t){return(
+              <button key={t[0]} className={"tab "+(tab===t[0]?"active":"")} onClick={function(){setTab(t[0]);}}>{t[1]}</button>
+            );})}
+          </div>
+        </div>
+      </div>
+
+      <div className="wrap">
+
+        {/* SELECTOR DE DIA */}
+        <div className="dias-row" style={{marginTop:12}}>
+          {DIAS.map(function(d,i){return(
+            <button key={d} className={"dia-btn "+(diaIdx===i?"active":"")} onClick={function(){setDiaIdx(i);}}>{d}</button>
+          );})}
+        </div>
+
+        {/* ====== CAMPO ====== */}
+        {tab==="campo"&&(
+          <div>
+            <div className="sec">Proyeccion de campo - {DIAS[diaIdx]}</div>
+            <button className="btn-campo" onClick={function(){setShowModalCampo(true);}} style={{padding:"10px 18px",border:"2px solid rgba(122,158,42,0.4)",borderRadius:10,background:"rgba(122,158,42,0.08)",color:"#c8d870",fontFamily:"system-ui",fontSize:12,fontWeight:800,cursor:"pointer",letterSpacing:1,display:"inline-flex",alignItems:"center",gap:8,marginBottom:8,marginRight:10}}>
+              {jalando?"Jalando...":"Traer proyeccion de campo"}
+            </button>
+            <button onClick={function(){setShowModalRecibo(true);}} style={{padding:"10px 18px",border:"2px solid rgba(200,168,75,0.4)",borderRadius:10,background:"rgba(200,168,75,0.08)",color:"#c8a84b",fontFamily:"system-ui",fontSize:12,fontWeight:800,cursor:"pointer",letterSpacing:1,display:"inline-flex",alignItems:"center",gap:8,marginBottom:14}}>
+              {jalandoRec?"Jalando...":"Jalar recibo de fruta"}
+            </button>
+            {jalado&&<span style={{fontSize:11,color:"#86c87a",fontWeight:700,display:"block",marginBottom:8}}>Proyeccion actualizada - {diaJalarCampo}</span>}
+            {jaladoRec&&<span style={{fontSize:11,color:"#c8a84b",fontWeight:700,display:"block",marginBottom:8}}>{reciboData.length} registros cargados del {fechaJalarRec}</span>}
+
+            {/* Modal dia para campo */}
+            {showModalCampo&&(
+              <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.88)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+                <div style={{background:"#0c0f07",border:"2px solid rgba(122,158,42,0.4)",borderRadius:14,padding:24,maxWidth:360,width:"100%"}}>
+                  <div style={{fontSize:14,fontWeight:900,color:"#c8d870",marginBottom:4}}>Traer proyeccion de campo</div>
+                  <div style={{fontSize:11,color:"#5a7a1a",marginBottom:14}}>Selecciona el dia</div>
+                  <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:16}}>
+                    {DIAS_CAMPO.map(function(d){return(
+                      <button key={d} onClick={function(){setDiaJalarCampo(d);}} style={{padding:"7px 12px",border:"2px solid "+(diaJalarCampo===d?"#7a9e2a":"rgba(122,158,42,0.2)"),borderRadius:8,background:diaJalarCampo===d?"rgba(122,158,42,0.15)":"transparent",color:diaJalarCampo===d?"#c8d870":"#5a7a1a",fontFamily:"system-ui",fontSize:11,fontWeight:800,cursor:"pointer"}}>{d.slice(0,3)}</button>
+                    );})}
+                  </div>
+                  <div style={{display:"flex",gap:10}}>
+                    <button onClick={function(){setShowModalCampo(false);}} style={{flex:1,padding:"10px",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:8,color:"#5a7a1a",cursor:"pointer",fontFamily:"system-ui"}}>Cancelar</button>
+                    <button onClick={function(){jalarCampo(diaJalarCampo);}} disabled={jalando} style={{flex:2,padding:"10px",background:"rgba(122,158,42,0.15)",border:"2px solid rgba(122,158,42,0.4)",borderRadius:8,color:"#c8d870",fontWeight:900,cursor:"pointer",fontFamily:"system-ui"}}>Jalar {diaJalarCampo}</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Modal fecha para recibo */}
+            {showModalRecibo&&(
+              <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.88)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+                <div style={{background:"#0c0f07",border:"2px solid rgba(200,168,75,0.4)",borderRadius:14,padding:24,maxWidth:360,width:"100%"}}>
+                  <div style={{fontSize:14,fontWeight:900,color:"#c8a84b",marginBottom:4}}>Jalar recibo de fruta</div>
+                  <div style={{fontSize:11,color:"#5a7a1a",marginBottom:14}}>Fecha del dia a jalar (dd/mm/aaaa)</div>
+                  <input value={fechaJalarRec} onChange={function(e){setFechaJalarRec(e.target.value);}}
+                    placeholder="dd/mm/aaaa"
+                    style={{width:"100%",background:"rgba(0,0,0,0.4)",border:"2px solid rgba(200,168,75,0.4)",borderRadius:9,padding:"12px",color:"#c8a84b",fontFamily:"system-ui",fontSize:18,fontWeight:800,textAlign:"center",outline:"none",marginBottom:16,letterSpacing:1}}/>
+                  <div style={{display:"flex",gap:10}}>
+                    <button onClick={function(){setShowModalRecibo(false);}} style={{flex:1,padding:"10px",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:8,color:"#5a7a1a",cursor:"pointer",fontFamily:"system-ui"}}>Cancelar</button>
+                    <button onClick={function(){jalarRecibo(fechaJalarRec);}} disabled={jalandoRec} style={{flex:2,padding:"10px",background:"rgba(200,168,75,0.15)",border:"2px solid rgba(200,168,75,0.4)",borderRadius:8,color:"#c8a84b",fontWeight:900,cursor:"pointer",fontFamily:"system-ui"}}>Jalar {fechaJalarRec}</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {RANCHOS.map(function(rid){
+              var mapCampo=[0,1,2,3,4,5,6]; // Vie=0,Sab=1,Dom=2,Lun=3,Mar=4,Mie=5,Jue=6
+              var ci=mapCampo[diaIdx];
+              var k=semIniCampo+"|"+rid+"|"+ci;
+              var dx=sem.campo[k];
+              if(!dx||!Object.keys(dx).length)return null;
+              var prods=RANCHO_PRODS[rid]||[];
+              return(
+                <div key={rid} style={{background:"rgba(122,158,42,0.04)",border:"2px solid rgba(122,158,42,0.15)",borderRadius:13,marginBottom:10,overflow:"hidden"}}>
+                  <div style={{background:"rgba(122,158,42,0.1)",padding:"10px 16px",fontSize:13,fontWeight:900,color:OLV}}>{rid==="pvt"?"PVT":rid==="crp"?"Cordillera":"Forrajera"}</div>
+                  <div style={{padding:"12px 16px"}}>
+                    {prods.map(function(prod){
+                      var meta=PROD_META[prod]||{col:"#888"};
+                      if(prod==="Morron"){
+                        var hasMorron=false;
+                        var rows=TIPOS.map(function(t){
+                          var cols=(dx.Morron&&dx.Morron[t]&&dx.Morron[t].colores)||[];
+                          var activos=cols.filter(function(c){return nv(c.rejas)>0;});
+                          if(activos.length)hasMorron=true;
+                          if(!activos.length)return null;
+                          return(
+                            <div key={t} style={{marginBottom:6}}>
+                              <span className={"ttag "+t} style={{marginBottom:4}}>{t==="org"?"ORG":"CONV"}</span>
+                              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                                {activos.map(function(ca){
+                                  var cd=COLORES_M.find(function(c){return c.id===ca.id;})||{c:"#888",l:ca.id};
+                                  return(<span key={ca.id} style={{padding:"4px 10px",borderRadius:8,background:cd.c+"18",border:"1px solid "+cd.c+"44",color:cd.c,fontSize:12,fontWeight:800}}>{cd.l}: {fmt(nv(ca.rejas),0)} rjs</span>);
+                                })}
+                              </div>
+                            </div>
+                          );
+                        });
+                        if(!hasMorron)return null;
+                        return <div key={prod} style={{marginBottom:8}}><div style={{fontSize:12,fontWeight:800,color:meta.col,marginBottom:4}}>{meta.icon} Morron</div>{rows}</div>;
+                      }
+                      var tieneP=TIPOS.some(function(t){return nv(dx[prod]&&dx[prod][t]&&dx[prod][t].rejas||0)>0;});
+                      if(!tieneP)return null;
+                      return(
+                        <div key={prod} style={{display:"flex",gap:8,alignItems:"center",marginBottom:7,flexWrap:"wrap"}}>
+                          <span style={{fontSize:13,fontWeight:800,color:meta.col,minWidth:70}}>{meta.icon} {prod}</span>
+                          {TIPOS.map(function(t){
+                            var v=nv(dx[prod]&&dx[prod][t]&&dx[prod][t].rejas||0);
+                            if(!v)return null;
+                            return <span key={t} className={"ttag "+t} style={{marginBottom:0}}>{t==="org"?"ORG":"CONV"}: {fmt(v,0)} rjs</span>;
+                          })}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+            {!Object.keys(sem.campo).length&&(
+              <div style={{textAlign:"center",padding:40,color:"#3a5c0a",fontSize:14}}>Da "Traer proyeccion de campo" para cargar los datos</div>
+            )}
+          </div>
+        )}
+
+        {/* ====== FACTORES ====== */}
+        {tab==="factores"&&(
+          <div>
+            <div className="sec">Factores de empaque - {DIAS[diaIdx]}</div>
+            <div style={{fontSize:11,color:"#3a5c0a",marginBottom:10}}>Los factores se aplican solo para este dia. Cada dia puede tener los suyos.</div>
+            <div style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap"}}>
+              <button onClick={copiarFacSiguiente} disabled={diaIdx>=6} style={{padding:"8px 16px",background:"rgba(122,158,42,0.1)",border:"2px solid rgba(122,158,42,0.3)",borderRadius:9,color:"#c8d870",fontFamily:"system-ui",fontSize:11,fontWeight:800,cursor:diaIdx>=6?"default":"pointer",opacity:diaIdx>=6?0.4:1}}>
+                Copiar al dia siguiente
+              </button>
+              <button onClick={copiarFacSemana} style={{padding:"8px 16px",background:"rgba(200,168,75,0.1)",border:"2px solid rgba(200,168,75,0.3)",borderRadius:9,color:"#c8a84b",fontFamily:"system-ui",fontSize:11,fontWeight:800,cursor:"pointer"}}>
+                Copiar a toda la semana
+              </button>
+            </div>
+
+            {/* Persa */}
+            <div className="card" style={{background:"rgba(134,200,122,0.03)",borderColor:"rgba(134,200,122,0.2)"}}>
+              <div className="card-head"><span className="card-icon">O</span><div><div className="card-nombre" style={{color:GRN}}>Persa</div><div className="card-sub">Bultos por reja</div></div></div>
+              <div className="card-body">
+                {TIPOS.map(function(t){
+                  var suf=t==="org"?"":"_conv";
+                  var f=sem.fac[diaIdx].Persa||{};
+                  return(
+                    <TipoBloque key={t} tipo={t}>
+                      <div className="g2">
+                        <FI label="Factor 1a / reja" cls="bts" val={f["fpri"+suf]||""} set={function(v){setFac(diaIdx,"Persa","fpri"+suf,v);}} ph="0.00"/>
+                        <FI label="Factor 2a / reja" cls="bts" val={f["fseg"+suf]||""} set={function(v){setFac(diaIdx,"Persa","fseg"+suf,v);}} ph="0.00"/>
+                      </div>
+                    </TipoBloque>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Minibel */}
+            <div className="card" style={{background:"rgba(224,112,112,0.03)",borderColor:"rgba(224,112,112,0.2)"}}>
+              <div className="card-head"><span className="card-icon">*</span><div><div className="card-nombre" style={{color:"#e07070"}}>Minibel</div><div className="card-sub">Bultos por reja</div></div></div>
+              <div className="card-body">
+                {TIPOS.map(function(t){
+                  var suf=t==="org"?"":"_conv";
+                  var f=sem.fac[diaIdx].Minibel||{};
+                  return(
+                    <TipoBloque key={t} tipo={t}>
+                      <div className="g2">
+                        <FI label="Factor 1a / reja" val={f["fpri"+suf]||""} set={function(v){setFac(diaIdx,"Minibel","fpri"+suf,v);}} ph="0.00"/>
+                        <FI label="Factor 2a / reja" val={f["fseg"+suf]||""} set={function(v){setFac(diaIdx,"Minibel","fseg"+suf,v);}} ph="0.00"/>
+                      </div>
+                    </TipoBloque>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Europeo */}
+            <div className="card" style={{background:"rgba(90,184,138,0.03)",borderColor:"rgba(90,184,138,0.2)"}}>
+              <div className="card-head"><span className="card-icon">O</span><div><div className="card-nombre" style={{color:"#5ab88a"}}>Europeo</div><div className="card-sub">Kg/reja + porcentajes</div></div></div>
+              <div className="card-body">
+                {TIPOS.map(function(t){
+                  var suf=t==="org"?"":"_conv";
+                  var f=sem.fac[diaIdx].Europeo||{};
+                  return(
+                    <TipoBloque key={t} tipo={t}>
+                      <div className="g2" style={{marginBottom:8}}>
+                        <FI label="Piezas / reja" cls="pzs" val={f["pzs_reja"+suf]||""} set={function(v){setFac(diaIdx,"Europeo","pzs_reja"+suf,v);}} step="1" ph="0"/>
+                        <FI label="Kg promedio / reja" cls="kg" val={f["kg_reja"+suf]||""} set={function(v){setFac(diaIdx,"Europeo","kg_reja"+suf,v);}} ph="0.0"/>
+                      </div>
+                      <div className="g3">
+                        <FI label="% Primera" cls="pct" val={f["pct_pri"+suf]||""} set={function(v){setFac(diaIdx,"Europeo","pct_pri"+suf,v);}} mb={0}/>
+                        <FI label="% Segunda" cls="pct" val={f["pct_seg"+suf]||""} set={function(v){setFac(diaIdx,"Europeo","pct_seg"+suf,v);}} mb={0}/>
+                        <FI label="% Choice" cls="pct" val={f["pct_cho"+suf]||""} set={function(v){setFac(diaIdx,"Europeo","pct_cho"+suf,v);}} mb={0}/>
+                      </div>
+                    </TipoBloque>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Slicer */}
+            <div className="card" style={{background:"rgba(168,200,64,0.03)",borderColor:"rgba(168,200,64,0.2)"}}>
+              <div className="card-head"><span className="card-icon">O</span><div><div className="card-nombre" style={{color:"#a8c840"}}>Slicer</div><div className="card-sub">Piezas y kg / reja</div></div></div>
+              <div className="card-body">
+                {TIPOS.map(function(t){
+                  var suf=t==="org"?"":"_conv";
+                  var f=sem.fac[diaIdx].Slicer||{};
+                  return(
+                    <TipoBloque key={t} tipo={t}>
+                      <div className="g2" style={{marginBottom:8}}>
+                        <FI label="Piezas / reja" cls="pzs" val={f["pzs"+suf]||""} set={function(v){setFac(diaIdx,"Slicer","pzs"+suf,v);}} step="1" mb={0}/>
+                        <FI label="Kg / reja" cls="kg" val={f["kgr"+suf]||""} set={function(v){setFac(diaIdx,"Slicer","kgr"+suf,v);}} mb={0}/>
+                      </div>
+                      <div className="g3">
+                        <FI label="% Primera" cls="pct" val={f["pct_pri"+suf]||""} set={function(v){setFac(diaIdx,"Slicer","pct_pri"+suf,v);}} mb={0}/>
+                        <FI label="% Segunda" cls="pct" val={f["pct_seg"+suf]||""} set={function(v){setFac(diaIdx,"Slicer","pct_seg"+suf,v);}} mb={0}/>
+                        <FI label="% Tercera" cls="pct" val={f["pct_ter"+suf]||""} set={function(v){setFac(diaIdx,"Slicer","pct_ter"+suf,v);}} mb={0}/>
+                      </div>
+                    </TipoBloque>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Morron */}
+            <div className="sec">Morron - por color y tipo</div>
+            <div style={{fontSize:10,color:"#3a5c0a",marginBottom:10}}>1a = % sobre total kg. L/XL/Jumbo = % dentro de 1a.</div>
+            {COLORES_M.map(function(col){return(
+              <div key={col.id} style={{marginBottom:14}}>
+                {TIPOS.map(function(t){
+                  var k=col.id+"_"+t;
+                  var fm=(sem.fac[diaIdx].Morron&&sem.fac[diaIdx].Morron[k])||{};
+                  return(
+                    <div key={t}>
+                      <div className="mbox-head" style={{background:col.c+"12",border:"2px solid "+col.c+"44",borderBottom:"none",borderRadius:"10px 10px 0 0"}}>
+                        <div className="dot" style={{background:col.c}}/>
+                        <span style={{fontSize:14,fontWeight:900,color:col.c}}>{col.l}</span>
+                        <span className={"ttag "+t} style={{marginLeft:8,marginBottom:0}}>{t==="org"?"ORGANICO":"CONVENCIONAL"}</span>
+                      </div>
+                      <div className="mbox-body" style={{background:col.c+"06",border:"2px solid "+col.c+"44",borderTop:"none",borderRadius:"0 0 10px 10px",marginBottom:8}}>
+                        <FI label="Kg promedio / reja" cls="kg" val={fm.kgr||""} set={function(v){setFM(diaIdx,col.id,t,"kgr",v);}} ph="0.0"/>
+                        <div style={{fontSize:10,color:"#3a5c0a",marginBottom:10}}>% sobre total kg llegados . L/XL/Jumbo = % sobre Primera</div>
+                        <div className="sub-sec">% DEL TOTAL LLEGADO</div>
+                        <div className="g3">
+                          <FI label="% Primera" cls="pct" val={fm.ppri||""} set={function(v){setFM(diaIdx,col.id,t,"ppri",v);}} mb={0}/>
+                          <FI label="% Segunda" cls="pct" val={fm.pseg||""} set={function(v){setFM(diaIdx,col.id,t,"pseg",v);}} mb={0}/>
+                          <FI label="% Tercera" cls="pct" val={fm.pter||""} set={function(v){setFM(diaIdx,col.id,t,"pter",v);}} mb={0}/>
+                        </div>
+                        <div className="sub-sec" style={{marginTop:10}}>DENTRO DE PRIMERA (% sobre kg Primera)</div>
+                        <div className="g3">
+                          <FI label="% L" cls="pct" val={fm.pl||""} set={function(v){setFM(diaIdx,col.id,t,"pl",v);}} mb={0}/>
+                          <FI label="% XL" cls="pct" val={fm.pxl||""} set={function(v){setFM(diaIdx,col.id,t,"pxl",v);}} mb={0}/>
+                          <FI label="% Jumbo" cls="pct" val={fm.pj||""} set={function(v){setFM(diaIdx,col.id,t,"pj",v);}} mb={0}/>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );})}
+          </div>
+        )}
+
+        {/* ====== PEDIDOS ====== */}
+        {tab==="pedidos"&&(
+          <div>
+            <div className="sec">Pedidos del dia - {DIAS[diaIdx]}</div>
+
+            {/* Persa pedidos */}
+            <div className="card" style={{background:"rgba(134,200,122,0.03)",borderColor:"rgba(134,200,122,0.2)"}}>
+              <div className="card-head"><span className="card-icon">O</span><div><div className="card-nombre" style={{color:GRN}}>Persa</div><div className="card-sub">Bultos por presentacion - 1a y 2a</div></div></div>
+              <div className="card-body">
+                {TIPOS.map(function(t){
+                  var base=(pd.Persa&&pd.Persa[t])||{};
+                  return(
+                    <TipoBloque key={t} tipo={t}>
+                      <div className="sub-sec">PRIMERA</div>
+                      <div className="g3">
+                        {PRES_P.map(function(p){
+                          return <FI key={p.id} label={p.l} cls="bts" val={(base.pri&&base.pri[p.id])||base[p.id]||""} set={function(v){setPed(diaIdx,"Persa",t+".pri."+p.id,v);}} step="1" mb={0}/>;
+                        })}
+                      </div>
+                      <div className="sub-sec" style={{marginTop:10}}>SEGUNDA</div>
+                      <div className="g3">
+                        {PRES_P.map(function(p){
+                          return <FI key={"seg"+p.id} label={p.l} cls="bts" val={(base.seg&&base.seg[p.id])||""} set={function(v){setPed(diaIdx,"Persa",t+".seg."+p.id,v);}} step="1" mb={0}/>;
+                        })}
+                      </div>
+                    </TipoBloque>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Slicer pedidos */}
+            <div className="card" style={{background:"rgba(168,200,64,0.03)",borderColor:"rgba(168,200,64,0.2)"}}>
+              <div className="card-head"><span className="card-icon">O</span><div><div className="card-nombre" style={{color:"#a8c840"}}>Slicer</div><div className="card-sub">Primera y Selecto (2a) - por piezas y peso</div></div></div>
+              <div className="card-body">
+                {TIPOS.map(function(t){
+                  var base=(pd.Slicer&&pd.Slicer[t])||{};
+                  return(
+                    <TipoBloque key={t} tipo={t}>
+                      <div className="sub-sec">PRIMERA - POR PIEZAS</div>
+                      <div className="g4">
+                        {["18pz","24pz","36pz","62pz"].map(function(cl){
+                          return <FI key={cl} label={cl} cls="pzs" val={(base.pz&&base.pz[cl])||""} set={function(v){setPed(diaIdx,"Slicer",t+".pz."+cl,v);}} step="1" mb={0}/>;
+                        })}
+                      </div>
+                      <div className="sub-sec" style={{marginTop:8}}>PRIMERA - POR PESO</div>
+                      <div className="g2">
+                        {["25lb","50lb"].map(function(cl){
+                          return <FI key={cl} label={cl} cls="kg" val={(base.kg&&base.kg[cl])||""} set={function(v){setPed(diaIdx,"Slicer",t+".kg."+cl,v);}} step="1" mb={0}/>;
+                        })}
+                      </div>
+                      <div className="sub-sec" style={{marginTop:8,color:"#c8a84b"}}>SELECTO (2a) - POR PIEZAS</div>
+                      <div className="g4">
+                        {["18pz","24pz","36pz","62pz"].map(function(cl){
+                          return <FI key={"s2pz"+cl} label={cl} cls="bts" val={(base.seg_pz&&base.seg_pz[cl])||""} set={function(v){setPed(diaIdx,"Slicer",t+".seg_pz."+cl,v);}} step="1" mb={0}/>;
+                        })}
+                      </div>
+                      <div className="sub-sec" style={{marginTop:8,color:"#c8a84b"}}>SELECTO (2a) - POR PESO</div>
+                      <div className="g2">
+                        {["25lb","50lb"].map(function(cl){
+                          return <FI key={"s2kg"+cl} label={cl} cls="kg" val={(base.seg_kg&&base.seg_kg[cl])||""} set={function(v){setPed(diaIdx,"Slicer",t+".seg_kg."+cl,v);}} step="1" mb={0}/>;
+                        })}
+                      </div>
+                    </TipoBloque>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Europeo pedidos */}
+            <div className="card" style={{background:"rgba(90,184,138,0.03)",borderColor:"rgba(90,184,138,0.2)"}}>
+              <div className="card-head"><span className="card-icon">O</span><div><div className="card-nombre" style={{color:"#5ab88a"}}>Europeo</div><div className="card-sub">Piezas y kg por calidad</div></div></div>
+              <div className="card-body">
+                {TIPOS.map(function(t){
+                  var base=(pd.Europeo&&pd.Europeo[t])||{};
+                  return(
+                    <TipoBloque key={t} tipo={t}>
+                      <div className="g3">
+                        <FI label="1a piezas" cls="pzs" val={base.pri_pzs||""} set={function(v){setPed(diaIdx,"Europeo",t+".pri_pzs",v);}} step="1" mb={0}/>
+                        <FI label="1a kg" cls="kg" val={base.pri||""} set={function(v){setPed(diaIdx,"Europeo",t+".pri",v);}} mb={0}/>
+                        <FI label="Choice kg" cls="kg" val={base.cho||""} set={function(v){setPed(diaIdx,"Europeo",t+".cho",v);}} mb={0}/>
+                      </div>
+                      <div className="sub-sec" style={{marginTop:8,color:"#c8a84b"}}>SEGUNDA</div>
+                      <div className="g3">
+                        <FI label="2a piezas" cls="pzs" val={base.seg_pzs||""} set={function(v){setPed(diaIdx,"Europeo",t+".seg_pzs",v);}} step="1" mb={0}/>
+                        <FI label="2a kg" cls="kg" val={base.seg||""} set={function(v){setPed(diaIdx,"Europeo",t+".seg",v);}} mb={0}/>
+                        <div/>
+                      </div>
+                    </TipoBloque>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Morron pedidos */}
+            <div className="card" style={{background:"rgba(224,144,64,0.03)",borderColor:"rgba(224,144,64,0.2)"}}>
+              <div className="card-head"><span className="card-icon">!</span><div><div className="card-nombre" style={{color:"#e09040"}}>Morron</div><div className="card-sub">Kg por color y tamano</div></div></div>
+              <div className="card-body">
+                {COLORES_M.map(function(col){
+                  var base=(pd.Morron&&pd.Morron[col.id])||{};
+                  return(
+                    <div key={col.id} style={{marginBottom:12}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}><div className="dot" style={{background:col.c}}/><span style={{fontSize:13,fontWeight:900,color:col.c}}>{col.l}</span></div>
+                      <div className="g4">
+                        {["L","XL","Jumbo","2a"].map(function(sz){
+                          return <FI key={sz} label={sz==="2a"?"2a kg":sz+" kg"} cls="kg" val={base[sz]||""} set={function(v){setPed(diaIdx,"Morron",col.id+"."+sz,v);}} mb={0}/>;
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ====== BALANCE ====== */}
+        {tab==="balance"&&(
+          <div>
+            <div className="sec">Balance</div>
+
+            {/* FILTROS */}
+            <div style={{background:"rgba(122,158,42,0.06)",border:"2px solid rgba(122,158,42,0.15)",borderRadius:12,padding:"12px 14px",marginBottom:16}}>
+              <div style={{marginBottom:10}}>
+                <div style={{fontSize:9,color:"#5a7a1a",fontWeight:900,letterSpacing:1.5,marginBottom:6}}>DIA</div>
+                <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+                  <button onClick={function(){setBfDia("todos");}} style={{padding:"5px 10px",border:"2px solid "+(bfDia==="todos"?"#7a9e2a":"rgba(122,158,42,0.2)"),borderRadius:8,background:bfDia==="todos"?"rgba(122,158,42,0.15)":"transparent",color:bfDia==="todos"?"#c8d870":"#5a7a1a",fontFamily:"system-ui",fontSize:11,fontWeight:800,cursor:"pointer"}}>Semana</button>
+                  {DIAS.map(function(d,i){return(
+                    <button key={d} onClick={function(){setBfDia(i);setDiaIdx(i);}} style={{padding:"5px 10px",border:"2px solid "+(bfDia===i?"#7a9e2a":"rgba(122,158,42,0.2)"),borderRadius:8,background:bfDia===i?"rgba(122,158,42,0.15)":"transparent",color:bfDia===i?"#c8d870":"#5a7a1a",fontFamily:"system-ui",fontSize:11,fontWeight:800,cursor:"pointer"}}>{d.slice(0,3)}</button>
+                  );})}
+                </div>
+              </div>
+              <div>
+                <div style={{fontSize:9,color:"#5a7a1a",fontWeight:900,letterSpacing:1.5,marginBottom:6}}>CULTIVO</div>
+                <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+                  {["todos","Persa","Europeo","Slicer","Morron","Minibel"].map(function(p){return(
+                    <button key={p} onClick={function(){setBfProd(p);}} style={{padding:"5px 10px",border:"2px solid "+(bfProd===p?"#7a9e2a":"rgba(122,158,42,0.2)"),borderRadius:8,background:bfProd===p?"rgba(122,158,42,0.15)":"transparent",color:bfProd===p?"#c8d870":"#5a7a1a",fontFamily:"system-ui",fontSize:11,fontWeight:800,cursor:"pointer"}}>{p==="todos"?"Todos":p}</button>
+                  );})}
+                </div>
+              </div>
+            </div>
+
+            {(function(){
+              var diasFilt=bfDia==="todos"?DIAS.map(function(d,i){return i;}):[bfDia];
+              function acumProd(prod){
+                var r={};
+                TIPOS.forEach(function(t){r[t]={};var cd0=calcDia(0)[prod][t];Object.keys(cd0).forEach(function(k){r[t][k]=diasFilt.reduce(function(s,di){return s+(calcDia(di)[prod][t][k]||0);},0);});});
+                return r;
+              }
+              function acumM(colorId){
+                var r={};
+                TIPOS.forEach(function(t){r[t]={};var cd0=calcDia(0).Morron[colorId][t];Object.keys(cd0).forEach(function(k){r[t][k]=diasFilt.reduce(function(s,di){return s+(calcDia(di).Morron[colorId][t][k]||0);},0);});});
+                return r;
+              }
+              // Sumar pedidos del rango de dias
+              function acumPed(prod,tipo,path){
+                return diasFilt.reduce(function(s,di){
+                  var pd2=sem.ped[di]||{};
+                  var base=(pd2[prod]&&pd2[prod][tipo])||{};
+                  var parts=path.split(".");
+                  var ref=base;
+                  for(var i=0;i<parts.length;i++){ref=ref&&ref[parts[i]];}
+                  // Si no hay dato en formato nuevo, buscar en formato viejo (ej: base["p20"])
+                  var lastPart=parts[parts.length-1];
+                  return s+nv(ref||base[lastPart]||0);
+                },0);
+              }
+              // Total kg pedidos Persa: cada presentacion x su peso
+              function pedPersaKg(t,cal){
+                return PRES_P.reduce(function(s,p){
+                  var bts=acumPed("Persa",t,cal+"."+p.id);
+                  return s+bts*p.kg;
+                },0);
+              }
+              function pedPersaBts(t,cal){
+                return PRES_P.reduce(function(s,p){return s+acumPed("Persa",t,cal+"."+p.id);},0);
+              }
+
+              var acP=acumProd("Persa");var acMb=acumProd("Minibel");
+              var acE=acumProd("Europeo");var acS=acumProd("Slicer");
+              var acMs={};COLORES_M.forEach(function(col){acMs[col.id]=acumM(col.id);});
+              var titulo=bfDia==="todos"?"Semana completa":DIAS[bfDia];
+              function show(p){return bfProd==="todos"||bfProd===p;}
+
+              function CruceBar(props){
+                // Muestra: proyectado, pedido, diferencia
+                var proy=props.proy||0; var ped2=props.ped||0;
+                var diff=proy-ped2; var ok=diff>=0;
+                if(!proy&&!ped2)return null;
+                return(
+                  <div style={{background:"rgba(0,0,0,0.2)",borderRadius:9,padding:"10px 12px",marginTop:8,border:"1px solid "+(ok?"rgba(74,222,128,0.2)":"rgba(239,68,68,0.25)")}}>
+                    <div style={{fontSize:8,color:"#5a7a1a",fontWeight:900,letterSpacing:1.5,marginBottom:6}}>{props.label||"CRUCE"}</div>
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,textAlign:"center"}}>
+                      <div><div style={{fontSize:8,color:"#5a7a1a",marginBottom:2}}>PROYECTADO</div><div style={{fontSize:16,fontWeight:900,color:props.col||GRN}}>{fmt(proy,0)}</div><div style={{fontSize:8,color:"#5a7a1a"}}>{props.unit||""}</div></div>
+                      <div><div style={{fontSize:8,color:"#5a7a1a",marginBottom:2}}>PEDIDO</div><div style={{fontSize:16,fontWeight:900,color:"#c8a84b"}}>{ped2>0?fmt(ped2,0):"--"}</div><div style={{fontSize:8,color:"#5a7a1a"}}>{props.unit||""}</div></div>
+                      <div style={{background:ok?"rgba(74,222,128,0.08)":"rgba(239,68,68,0.08)",borderRadius:7,padding:"4px"}}><div style={{fontSize:8,fontWeight:900,color:ok?"#4ade80":"#ef4444",marginBottom:2}}>{ok?"SOBRA":"FALTA"}</div><div style={{fontSize:16,fontWeight:900,color:ok?"#4ade80":"#ef4444"}}>{ok?"+":"-"}{fmt(Math.abs(diff),0)}</div><div style={{fontSize:8,color:ok?"#4ade80":"#ef4444"}}>{props.unit||""}</div></div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return(
+                <div>
+                  <div style={{fontSize:11,color:"#7a9e2a",fontWeight:800,marginBottom:12}}>{titulo}{bfProd!=="todos"?" - "+bfProd:""}</div>
+
+                  {show("Persa")&&TIPOS.map(function(t){var c=acP[t];if(!c.rj)return null;var ec=t==="org"?GRN:AMB;
+                    var pedPriKg=pedPersaKg(t,"pri");
+                    var pedSegKg=pedPersaKg(t,"seg");
+                    // Desglose por presentacion para mostrar
+                    var desglosePri=PRES_P.map(function(p){return{l:p.l,bts:acumPed("Persa",t,"pri."+p.id),kg:acumPed("Persa",t,"pri."+p.id)*p.kg,peso:p.kg};}).filter(function(x){return x.bts>0;});
+                    var desgloseSeg=PRES_P.map(function(p){return{l:p.l,bts:acumPed("Persa",t,"seg."+p.id),kg:acumPed("Persa",t,"seg."+p.id)*p.kg,peso:p.kg};}).filter(function(x){return x.bts>0;});
+                    return(
+                    <div key={"per"+t} className="bal-blk">
+                      <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:10}}>
+                        <span style={{fontSize:16,fontWeight:900,color:GRN}}>O Persa</span>
+                        <span className={"ttag "+t}>{t==="org"?"ORG":"CONV"}</span>
+                        <span style={{fontSize:11,color:"#3a5c0a",marginLeft:"auto"}}>{fmt(c.rj,0)} rejas</span>
+                      </div>
+                      <div className="res-row">
+                        <Chip label="Kg 1a proyectado" v={fk(c.kgPri)} col={ec}/>
+                        <Chip label="Kg 2a proyectado" v={fk(c.kgSeg)} col={GRN}/>
+                      </div>
+
+                      {/* Cruce Primera */}
+                      {(pedPriKg>0||c.kgPri>0)&&(
+                        <div style={{marginTop:10,background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"10px 12px",border:"1px solid rgba(122,158,42,0.2)"}}>
+                          <div style={{fontSize:9,color:"#5a7a1a",fontWeight:900,letterSpacing:1.5,marginBottom:8}}>PRIMERA - CRUCE KG</div>
+                          {desglosePri.length>0&&(
+                            <div style={{marginBottom:8,display:"flex",gap:6,flexWrap:"wrap"}}>
+                              {desglosePri.map(function(d){return(
+                                <span key={d.l} style={{fontSize:10,color:"#c8a84b",background:"rgba(200,168,75,0.08)",border:"1px solid rgba(200,168,75,0.2)",borderRadius:6,padding:"3px 8px"}}>
+                                  {fmt(d.bts,0)} caj {d.l} = {fk(d.kg)}
+                                </span>
+                              );})}
+                            </div>
+                          )}
+                          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,textAlign:"center"}}>
+                            <div><div style={{fontSize:8,color:"#5a7a1a",marginBottom:2}}>PROYECTADO</div><div style={{fontSize:18,fontWeight:900,color:ec}}>{fk(c.kgPri)}</div></div>
+                            <div><div style={{fontSize:8,color:"#5a7a1a",marginBottom:2}}>PEDIDO</div><div style={{fontSize:18,fontWeight:900,color:"#c8a84b"}}>{pedPriKg>0?fk(pedPriKg):"--"}</div></div>
+                            <div style={{background:(c.kgPri-pedPriKg)>=0?"rgba(74,222,128,0.08)":"rgba(239,68,68,0.08)",borderRadius:7,padding:"4px"}}>
+                              <div style={{fontSize:8,fontWeight:900,color:(c.kgPri-pedPriKg)>=0?"#4ade80":"#ef4444",marginBottom:2}}>{(c.kgPri-pedPriKg)>=0?"SOBRA":"FALTA"}</div>
+                              <div style={{fontSize:18,fontWeight:900,color:(c.kgPri-pedPriKg)>=0?"#4ade80":"#ef4444"}}>{fk(Math.abs(c.kgPri-pedPriKg))}</div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Cruce Segunda */}
+                      {(pedSegKg>0||c.kgSeg>0)&&(
+                        <div style={{marginTop:8,background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"10px 12px",border:"1px solid rgba(122,158,42,0.15)"}}>
+                          <div style={{fontSize:9,color:"#5a7a1a",fontWeight:900,letterSpacing:1.5,marginBottom:8}}>SEGUNDA - CRUCE KG</div>
+                          {desgloseSeg.length>0&&(
+                            <div style={{marginBottom:8,display:"flex",gap:6,flexWrap:"wrap"}}>
+                              {desgloseSeg.map(function(d){return(
+                                <span key={d.l} style={{fontSize:10,color:"#c8a84b",background:"rgba(200,168,75,0.08)",border:"1px solid rgba(200,168,75,0.2)",borderRadius:6,padding:"3px 8px"}}>
+                                  {fmt(d.bts,0)} caj {d.l} = {fk(d.kg)}
+                                </span>
+                              );})}
+                            </div>
+                          )}
+                          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,textAlign:"center"}}>
+                            <div><div style={{fontSize:8,color:"#5a7a1a",marginBottom:2}}>PROYECTADO</div><div style={{fontSize:18,fontWeight:900,color:GRN}}>{fk(c.kgSeg)}</div></div>
+                            <div><div style={{fontSize:8,color:"#5a7a1a",marginBottom:2}}>PEDIDO</div><div style={{fontSize:18,fontWeight:900,color:"#c8a84b"}}>{pedSegKg>0?fk(pedSegKg):"--"}</div></div>
+                            <div style={{background:(c.kgSeg-pedSegKg)>=0?"rgba(74,222,128,0.08)":"rgba(239,68,68,0.08)",borderRadius:7,padding:"4px"}}>
+                              <div style={{fontSize:8,fontWeight:900,color:(c.kgSeg-pedSegKg)>=0?"#4ade80":"#ef4444",marginBottom:2}}>{(c.kgSeg-pedSegKg)>=0?"SOBRA":"FALTA"}</div>
+                              <div style={{fontSize:18,fontWeight:900,color:(c.kgSeg-pedSegKg)>=0?"#4ade80":"#ef4444"}}>{fk(Math.abs(c.kgSeg-pedSegKg))}</div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );})}
+
+
+                  {show("Minibel")&&TIPOS.map(function(t){var c=acMb[t];if(!c.rj)return null;var ec=t==="org"?GRN:AMB;return(
+                    <div key={"min"+t} className="bal-blk">
+                      <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:10}}>
+                        <span style={{fontSize:16,fontWeight:900,color:"#e07070"}}>* Minibel</span>
+                        <span className={"ttag "+t}>{t==="org"?"ORG":"CONV"}</span>
+                        <span style={{fontSize:11,color:"#3a5c0a",marginLeft:"auto"}}>{fmt(c.rj,0)} rejas</span>
+                      </div>
+                      <div className="res-row">
+                        <Chip label="Bultos 1a" v={fmt(c.bPri,0)} col={ec}/>
+                        <Chip label="Kg 1a" v={fk(c.kgPri)} col={ec}/>
+                        <Chip label="Bultos 2a" v={fmt(c.bSeg,0)} col="#e07070"/>
+                      </div>
+                    </div>
+                  );})}
+
+                  {show("Europeo")&&TIPOS.map(function(t){var c=acE[t];if(!c.rj)return null;return(
+                    <div key={"eur"+t} className="bal-blk">
+                      <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:10}}>
+                        <span style={{fontSize:16,fontWeight:900,color:"#5ab88a"}}>O Europeo</span>
+                        <span className={"ttag "+t}>{t==="org"?"ORG":"CONV"}</span>
+                        <span style={{fontSize:11,color:"#3a5c0a",marginLeft:"auto"}}>{fmt(c.rj,0)} rejas . {fk(c.kgTot)} total</span>
+                      </div>
+                      <div className="res-row">
+                        <Chip label="Pzs total" v={fmt(c.pzsTot,0)} col="#5ab88a"/>
+                        <Chip label="Pzs 1a" v={fmt(c.pzsPri,0)} col="#5ab88a"/>
+                        <Chip label="Pzs 2a" v={fmt(c.pzsSeg,0)} col={AMB}/>
+                        <Chip label="Pzs Choice" v={fmt(c.pzsCho,0)} col="#c8a84b"/>
+                      </div>
+                      <div className="res-row" style={{marginTop:6}}>
+                        <Chip label="Kg total" v={fk(c.kgTot)} col="#5ab88a"/>
+                        <Chip label="Kg 1a" v={fk(c.kgPri)} col="#5ab88a"/>
+                        <Chip label="Kg 2a" v={fk(c.kgSeg)} col={AMB}/>
+                        <Chip label="Kg Choice" v={fk(c.kgCho)} col="#c8a84b"/>
+                      </div>
+                    </div>
+                  );})}
+
+                  {show("Slicer")&&TIPOS.map(function(t){var c=acS[t];if(!c.rj)return null;return(
+                    <div key={"sli"+t} className="bal-blk">
+                      <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:10}}>
+                        <span style={{fontSize:16,fontWeight:900,color:"#a8c840"}}>O Slicer</span>
+                        <span className={"ttag "+t}>{t==="org"?"ORG":"CONV"}</span>
+                        <span style={{fontSize:11,color:"#3a5c0a",marginLeft:"auto"}}>{fmt(c.rj,0)} rejas</span>
+                      </div>
+                      <div className="res-row">
+                        <Chip label="Pzs total" v={fmt(c.pzsTot,0)} col="#a8c840"/>
+                        <Chip label="Pzs 1a" v={fmt(c.pzsPri,0)} col="#a8c840"/>
+                        <Chip label="Pzs 2a" v={fmt(c.pzsSeg,0)} col="#a8c840"/>
+                        <Chip label="Pzs 3a" v={fmt(c.pzsTer,0)} col={AMB}/>
+                      </div>
+                      <div className="res-row" style={{marginTop:6}}>
+                        <Chip label="Kg total" v={fk(c.kgTot)} col="#a8c840"/>
+                        <Chip label="Kg 1a" v={fk(c.kgPri)} col="#a8c840"/>
+                        <Chip label="Kg 2a" v={fk(c.kgSeg)} col={AMB}/>
+                        <Chip label="Kg 3a" v={fk(c.kgTer)} col="#6a6a60"/>
+                      </div>
+                    </div>
+                  );})}
+
+                  {show("Morron")&&COLORES_M.map(function(col){return TIPOS.map(function(t){
+                    var c=acMs[col.id][t];if(!c.rj)return null;
+                    return(
+                      <div key={col.id+t} className="bal-blk" style={{borderColor:col.c+"44"}}>
+                        <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:10}}>
+                          <div className="dot" style={{background:col.c}}/>
+                          <span style={{fontSize:16,fontWeight:900,color:col.c}}>{col.l}</span>
+                          <span className={"ttag "+t}>{t==="org"?"ORG":"CONV"}</span>
+                          <span style={{fontSize:11,color:"#3a5c0a",marginLeft:"auto"}}>{fmt(c.rj,0)} rjs . {fk(c.kgTot)}</span>
+                        </div>
+                        <div style={{background:col.c+"0d",borderRadius:10,padding:"10px",marginBottom:8}}>
+                          <div style={{fontSize:9,color:col.c,fontWeight:900,marginBottom:8}}>PRIMERA - {fk(c.kgPri)}</div>
+                          <div className="res-row">
+                            <Chip label="L" v={fk(c.kgL)} col={col.c}/>
+                            <Chip label="XL" v={fk(c.kgXL)} col={col.c}/>
+                            <Chip label="Jumbo" v={fk(c.kgJ)} col={col.c}/>
+                          </div>
+                        </div>
+                        <div className="res-row">
+                          <Chip label="Segunda" v={fk(c.kgSeg)} col="#a0a080"/>
+                          <Chip label="Tercera" v={fk(c.kgTer)} col="#6a6a60"/>
+                        </div>
+                      </div>
+                    );
+                  });})}
+                </div>
+              );
+            })()}
+
+            <div className="sec" style={{marginTop:24}}>Resumen semanal</div>
+            <div style={{overflowX:"auto",borderRadius:12,border:"2px solid rgba(122,158,42,0.15)"}}>
+              <table className="stbl" style={{minWidth:520}}>
+                <thead><tr>
+                  <th style={{textAlign:"left"}}>Producto</th>
+                  {DIAS.map(function(d){return <th key={d}>{d.slice(0,3)}</th>;})}
+                  <th>Total</th>
+                </tr></thead>
+                <tbody>
+                  {TIPOS.map(function(t){
+                    var rows=[];
+                    var ec=t==="org"?GRN:AMB;
+                    var vP=DIAS.map(function(d,i){return calcDia(i).Persa[t].kgPri||0;});
+                    var tP=vP.reduce(function(s,v){return s+v;},0);
+                    if(tP)rows.push({l:"Persa 1a "+(t==="org"?"Org":"Conv"),c:ec,v:vP,t:tP,f:fmt});
+                    var vE=DIAS.map(function(d,i){return calcDia(i).Europeo[t].kgPri||0;});
+                    var tE=vE.reduce(function(s,v){return s+v;},0);
+                    if(tE)rows.push({l:"Euro 1a "+(t==="org"?"Org":"Conv"),c:"#5ab88a",v:vE,t:tE,f:fmt});
+                    var vS=DIAS.map(function(d,i){return calcDia(i).Slicer[t].pzsPri||0;});
+                    var tS=vS.reduce(function(s,v){return s+v;},0);
+                    if(tS)rows.push({l:"Slicer 1a pz "+(t==="org"?"Org":"Conv"),c:"#a8c840",v:vS,t:tS,f:fmt});
+                    return rows.map(function(row,ri){return(
+                      <tr key={t+ri}>
+                        <td style={{color:row.c}}>{row.l}</td>
+                        {row.v.map(function(v,i){return(
+                          <td key={i} style={{color:v>0?row.c:"rgba(255,255,255,0.12)",fontWeight:v>0?700:400}} onClick={function(){setDiaIdx(i);}}>
+                            {v>0?row.f(v,0):"--"}
+                          </td>
+                        );})}
+                        <td style={{color:row.c,fontWeight:900}}>{row.f(row.t,0)}</td>
+                      </tr>
+                    );});
+                  })}
+                  {COLORES_M.map(function(col){
+                    return TIPOS.map(function(t){
+                      var v=DIAS.map(function(d,i){return calcDia(i).Morron[col.id][t].kgPri||0;});
+                      var tot=v.reduce(function(s,x){return s+x;},0);
+                      if(!tot)return null;
+                      return(
+                        <tr key={col.id+t}>
+                          <td><span style={{display:"inline-block",width:9,height:9,borderRadius:"50%",background:col.c,marginRight:5,verticalAlign:"middle"}}/><span style={{color:col.c}}>{col.l} 1a {t==="org"?"Org":"Conv"}</span></td>
+                          {v.map(function(x,i){return(
+                            <td key={i} style={{color:x>0?col.c:"rgba(255,255,255,0.12)",fontWeight:x>0?700:400}} onClick={function(){setDiaIdx(i);}}>
+                              {x>0?fmt(x,0):"--"}
+                            </td>
+                          );})}
+                          <td style={{color:col.c,fontWeight:900}}>{fmt(tot,0)}</td>
+                        </tr>
+                      );
+                    });
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* COMPARACION VS RECIBO */}
+            {reciboData.length>0&&(
+              <div style={{marginTop:20}}>
+                <div className="sec">Comparacion vs recibo de fruta - {DIAS[diaIdx]}</div>
+                <div style={{fontSize:11,color:"#5a7a1a",marginBottom:12}}>Proyeccion (con ajuste si hay) vs lo que realmente llego segun el recibo de fruta.</div>
+                {["pvt","crp","f4h"].map(function(rid){
+                  var rNombres=RANCHO_MAP2[rid]||[];
+                  var rNombre=rid==="pvt"?"PVT":rid==="crp"?"Cordillera":"Forrajera";
+                  var rCol=rid==="pvt"?"#fbbf24":rid==="crp"?"#60a5fa":"#4ade80";
+                  // Sumar rejas del recibo para este rancho y dia
+                  var offsets=[-1,0,1,2,3,4,5];
+                  var base=new Date(semIni);var d2=new Date(base);d2.setDate(base.getDate()+offsets[diaIdx]);
+                  var fechaBusc=d2.toLocaleDateString("es-MX",{day:"2-digit",month:"2-digit",year:"numeric"});
+                  var rejasReal=0;var tieneReal=false;
+                  reciboData.forEach(function(h){
+                    if(!h||!h.fecha||h.fecha!==fechaBusc)return;
+                    rNombres.forEach(function(rn){
+                      if((h.rancho||"").toLowerCase()===rn.toLowerCase()){
+                        tieneReal=true;rejasReal+=nv(h.rejas||0);
+                      }
+                    });
+                  });
+                  // Rejas proyectadas (con ajuste)
+                  var rejasProyTotal=0;
+                  (RANCHO_PRODS[rid]||[]).forEach(function(prod){
+                    ["org","conv"].forEach(function(t){rejasProyTotal+=getRej(prod,diaIdx,t);});
+                  });
+                  if(!tieneReal&&!rejasProyTotal)return null;
+                  var diff=tieneReal?rejasReal-rejasProyTotal:null;
+                  var ok=diff===null?null:diff>=0;
+                  return(
+                    <div key={rid} style={{background:"rgba(255,255,255,0.02)",border:"2px solid "+rCol+"44",borderRadius:12,padding:"12px 16px",marginBottom:10}}>
+                      <div style={{fontSize:14,fontWeight:900,color:rCol,marginBottom:10}}>{rNombre}</div>
+                      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+                        <div style={{textAlign:"center",background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"10px"}}>
+                          <div style={{fontSize:8,color:"#5a7a1a",fontWeight:900,letterSpacing:1,marginBottom:4}}>PROYECTADO</div>
+                          <div style={{fontSize:20,fontWeight:900,color:"#c8d870",fontFamily:"Georgia,serif"}}>{fmt(rejasProyTotal,0)}</div>
+                          <div style={{fontSize:9,color:"#5a7a1a"}}>rejas</div>
+                        </div>
+                        <div style={{textAlign:"center",background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"10px"}}>
+                          <div style={{fontSize:8,color:"#5a7a1a",fontWeight:900,letterSpacing:1,marginBottom:4}}>LLEGARON</div>
+                          <div style={{fontSize:20,fontWeight:900,color:tieneReal?"#c8a84b":"rgba(255,255,255,0.2)",fontFamily:"Georgia,serif"}}>{tieneReal?fmt(rejasReal,0):"--"}</div>
+                          <div style={{fontSize:9,color:"#5a7a1a"}}>rejas</div>
+                        </div>
+                        <div style={{textAlign:"center",background:ok===null?"rgba(0,0,0,0.2)":ok?"rgba(74,222,128,0.1)":"rgba(239,68,68,0.1)",borderRadius:8,padding:"10px",border:"1px solid "+(ok===null?"transparent":ok?"rgba(74,222,128,0.3)":"rgba(239,68,68,0.3)")}}>
+                          <div style={{fontSize:8,fontWeight:900,letterSpacing:1,marginBottom:4,color:ok===null?"#5a7a1a":ok?"#4ade80":"#ef4444"}}>DIFERENCIA</div>
+                          <div style={{fontSize:20,fontWeight:900,color:ok===null?"rgba(255,255,255,0.2)":ok?"#4ade80":"#ef4444",fontFamily:"Georgia,serif"}}>{diff!==null?(diff>=0?"+":"")+fmt(diff,0):"--"}</div>
+                          <div style={{fontSize:9,color:ok===null?"#5a7a1a":ok?"#4ade80":"#ef4444"}}>{diff!==null?(ok?"sobraron":"faltaron"):"sin datos"}</div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
