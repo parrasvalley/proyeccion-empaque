@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Proyeccion Empaque - Parras Valley</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0c0f07;color:#e8e0c8;font-family:system-ui;min-height:100vh;}
+.hdr{background:linear-gradient(160deg,#0f1a08,#1c2e0a);border-bottom:3px solid #7a9e2a;padding:14px 16px 0;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;max-width:960px;margin-left:auto;margin-right:auto;}
+.logo{width:44px;height:44px;background:linear-gradient(135deg,#3a5c0a,#7a9e2a);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#d4e89a;flex-shrink:0;}
+.ttl{font-size:clamp(15px,4vw,22px);font-weight:900;color:#c8d870;}
+.sub{font-size:9px;color:#5a7a1a;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.sem-nav{display:flex;gap:5px;align-items:center;margin-left:auto;}
+.sem-lbl{font-size:10px;color:#7a9e2a;font-weight:700;}
+.nbtn{padding:4px 8px;background:rgba(122,158,42,0.08);border:1px solid rgba(122,158,42,0.2);border-radius:6px;color:#5a7a1a;font-size:11px;font-weight:700;cursor:pointer;font-family:system-ui;}
+.nbtn.hoy{border-color:rgba(200,168,75,0.3);color:#c8a84b;background:rgba(200,168,75,0.08);}
+.tabs{display:flex;max-width:960px;margin:0 auto;}
+.tab{flex:1;padding:9px 4px;border:none;background:transparent;font-family:system-ui;font-size:10px;font-weight:900;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:#3a5c0a;border-bottom:3px solid transparent;}
+.tab.on{color:#c8d870;border-bottom:3px solid #7a9e2a;background:rgba(122,158,42,0.08);}
+.wrap{max-width:960px;margin:0 auto;padding:16px 12px 80px;}
+.sec{font-size:9px;font-weight:900;letter-spacing:3px;text-transform:uppercase;color:#7a9e2a;margin:18px 0 10px;display:flex;align-items:center;gap:8px;}
+.sec::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(122,158,42,0.4),transparent);}
+.dias{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;}
+.dbtn{flex-shrink:0;padding:7px 12px;border:2px solid rgba(122,158,42,0.2);border-radius:16px;background:transparent;font-family:system-ui;font-size:11px;font-weight:800;cursor:pointer;color:#3a5c0a;}
+.dbtn.on{background:linear-gradient(135deg,#3a5c0a,#7a9e2a);border-color:#7a9e2a;color:#fff;}
+.card{border-radius:13px;margin-bottom:10px;overflow:hidden;border:2px solid;}
+.chead{padding:11px 15px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.35);}
+.cname{font-size:16px;font-weight:900;}
+.csub{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:0.55;margin-top:2px;}
+.cbody{padding:13px 15px;}
+.ttag{display:inline-block;padding:2px 7px;border-radius:9px;font-size:8px;font-weight:900;letter-spacing:1px;margin-bottom:7px;}
+.org{background:rgba(74,222,128,0.1);color:#4ade80;border:1px solid rgba(74,222,128,0.25);}
+.conv{background:rgba(200,168,75,0.1);color:#c8a84b;border:1px solid rgba(200,168,75,0.25);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.f label{display:block;font-size:8px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#5a7a1a;margin-bottom:4px;}
+.inp{width:100%;border:2px solid rgba(122,158,42,0.2);border-radius:7px;padding:8px 9px;font-family:system-ui;font-size:15px;font-weight:800;background:rgba(0,0,0,0.35);color:#e8e0c8;outline:none;text-align:center;}
+.inp:focus{border-color:#7a9e2a;}
+.inp::placeholder{color:rgba(255,255,255,0.1);font-weight:400;font-size:12px;}
+.inp.pct{color:#c8d870;} .inp.kg{color:#86c87a;} .inp.bts{color:#c8a84b;} .inp.pzs{color:#7ab8d8;}
+.ssec{font-size:8px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#5a7a1a;margin:10px 0 6px;padding-bottom:3px;border-bottom:1px solid rgba(122,158,42,0.12);}
+.dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.mbox{border-radius:9px;overflow:hidden;margin-bottom:8px;}
+.cpbtn{padding:9px 16px;border:2px solid rgba(122,158,42,0.35);border-radius:9px;background:rgba(122,158,42,0.08);color:#c8d870;font-family:system-ui;font-size:11px;font-weight:800;cursor:pointer;margin-right:8px;margin-bottom:10px;}
+.cpbtn.amb{border-color:rgba(200,168,75,0.35);color:#c8a84b;background:rgba(200,168,75,0.08);}
+/* Balance chips */
+.chip{border-radius:9px;padding:9px 10px;border:1px solid;text-align:center;min-width:80px;}
+.chip-l{font-size:7px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;}
+.chip-v{font-size:18px;font-weight:900;font-family:Georgia,serif;}
+.rrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;}
+/* Cruce */
+.cruce{background:rgba(0,0,0,0.2);border-radius:9px;padding:10px 12px;margin-top:8px;border:1px solid rgba(122,158,42,0.2);}
+.cruce-l{font-size:8px;color:#5a7a1a;font-weight:900;letter-spacing:1.5px;margin-bottom:7px;}
+.cruce-g{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;}
+.cruce-cell{border-radius:7px;padding:6px 4px;}
+.cruce-cl{font-size:7px;font-weight:900;margin-bottom:2px;}
+.cruce-cv{font-size:16px;font-weight:900;font-family:Georgia,serif;}
+/* Modal */
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal{background:#0c0f07;border:2px solid;border-radius:13px;padding:22px;max-width:350px;width:100%;}
+.mbtn{padding:10px;border-radius:8px;font-family:system-ui;font-size:12px;font-weight:900;cursor:pointer;}
+/* Bal filter */
+.frow{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.fbtn{padding:5px 10px;border:2px solid rgba(122,158,42,0.2);border-radius:7px;background:transparent;color:#5a7a1a;font-family:system-ui;font-size:10px;font-weight:800;cursor:pointer;}
+.fbtn.on{background:rgba(122,158,42,0.15);border-color:#7a9e2a;color:#c8d870;}
+/* Bal block */
+.bblk{border-radius:12px;padding:13px;margin-bottom:10px;border:2px solid rgba(122,158,42,0.18);background:rgba(122,158,42,0.04);}
+@media(max-width:600px){.g4{grid-template-columns:1fr 1fr;}.g3{grid-template-columns:1fr 1fr;}}
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+var uS=React.useState;
+var uE=React.useEffect;
+var FB_C="https://parrasvalley-default-rtdb.firebaseio.com/campo-proyeccion-v1.json";
+var FB_S="https://parrasvalley-default-rtdb.firebaseio.com/campo-proy-semanas-v1.json";
+var FB_A="https://parrasvalley-default-rtdb.firebaseio.com/campo-proy-ajustes-v1.json";
+var FB_R="https://parrasvalley-default-rtdb.firebaseio.com/recibo-hist-v1.json";
+var LS="emp-v3";
+var RANCHOS=["pvt","crp","f4h"];
+var RPRODS={pvt:["Persa","Slicer"],crp:["Europeo","Persa","Slicer","Morron","Minibel"],f4h:["Persa","Morron","Minibel"]};
+var DIAS=["Viernes","Sabado","Domingo","Lunes","Martes","Miercoles","Jueves"];
+var DIAS_C=["Viernes","Sabado","Domingo","Lunes","Martes","Miercoles","Jueves"];
+var TIPOS=["org","conv"];
+var CM=[{id:"rojo",l:"Rojo",c:"#ef4444"},{id:"amarillo",l:"Amarillo",c:"#eab308"},{id:"naranja",l:"Naranja",c:"#f97316"},{id:"verde",l:"Verde",c:"#22c55e"}];
+var PP=[{id:"p20",l:"20 lb",kg:9.25},{id:"p8x2",l:"8x2",kg:7.60},{id:"p12x1",l:"12x1",kg:5.70}];
+var PM=[{id:"m12x1lb",l:"12x1lb",kg:5.76},{id:"m12x8oz",l:"12x8oz",kg:2.88},{id:"m18lb",l:"18lb",kg:8.3}];
+var GRN="#86c87a"; var AMB="#c8a84b";
+function nv(v){var x=parseFloat(v);return isNaN(x)?0:x;}
+function pct(v){return nv(v)/100;}
+function fmt(v,d){d=d===undefined?1:d;if(!isFinite(v)||isNaN(v)||v===0)return "--";return v.toLocaleString("es-MX",{minimumFractionDigits:d,maximumFractionDigits:d});}
+function fk(v){return fmt(v,1)+" kg";}
+function lsL(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+function lsS(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function getSem(){var d=new Date();var dia=d.getDay();var diff=dia>=5?dia-5:dia+2;var ini=new Date(d);ini.setDate(d.getDate()-diff);return ini.toISOString().split("T")[0];}
+function addDias(f,n){var d=new Date(f+"T12:00:00");d.setDate(d.getDate()+n);return d.toISOString().split("T")[0];}
+function numSem(f){var d=new Date(f+"T12:00:00");var dia=d.getDay();var ini=new Date(d);ini.setDate(d.getDate()-((dia+3)%7));ini.setHours(0,0,0,0);var ft=new Date(ini.getFullYear(),0,4);return Math.ceil(((ini-ft)/(86400000*7)))+1;}
+function labelSem(f){var d=new Date(f+"T12:00:00");var fin=new Date(d);fin.setDate(d.getDate()+6);var m=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];return "Sem "+numSem(f)+" . "+d.getDate()+" "+m[d.getMonth()]+" al "+fin.getDate()+" "+m[fin.getMonth()];}
+function initF(){var f={Persa:{fpri:"",fseg:"",fpri_c:"",fseg_c:""},Minibel:{kgr:"7.35",kgr_c:"7.35"},Europeo:{pzs:"",kg:"",pp:"",ps:"",pc:"",pzs_c:"",kg_c:"",pp_c:"",ps_c:"",pc_c:""},Slicer:{pzs:"",kg:"",pp:"",ps:"",pt:"",pzs_c:"",kg_c:"",pp_c:"",ps_c:"",pt_c:""},Morron:{}};CM.forEach(function(c){TIPOS.forEach(function(t){f.Morron[c.id+"_"+t]={kg:"",ppri:"",pseg:"",pter:"",pl:"",pxl:"",pj:""};});});return f;}
+function initP(){return{Persa:{},Minibel:{},Europeo:{},Slicer:{},Morron:{}};}
+function initSem(){var s={fac:[],ped:[],campo:{}};for(var i=0;i<7;i++){s.fac.push(initF());s.ped.push(initP());}return s;}
+function App(){
+  var t1=uS("campo"); var tab=t1[0]; var setTab=t1[1];
+  var t2=uS(0); var di=t2[0]; var setDi=t2[1];
+  var t3=uS(function(){return lsL(LS,initSem());}); var sem=t3[0]; var setSem=t3[1];
+  var t4=uS(getSem()); var semSel=t4[0]; var setSemSel=t4[1];
+  var t5=uS({}); var sg=t5[0]; var setSg=t5[1];
+  var t6=uS({}); var aju=t6[0]; var setAju=t6[1];
+  var t7=uS([]); var recibo=t7[0]; var setRecibo=t7[1];
+  var t8=uS(false); var jalC=t8[0]; var setJalC=t8[1];
+  var t9=uS(false); var jalR=t9[0]; var setJalR=t9[1];
+  var t10=uS(false); var mC=t10[0]; var setMC=t10[1];
+  var t11=uS(false); var mR=t11[0]; var setMR=t11[1];
+  var t12=uS(DIAS_C[0]); var dJC=t12[0]; var setDJC=t12[1];
+  var t13=uS(new Date().toISOString().split("T")[0]); var fJR=t13[0]; var setFJR=t13[1];
+  var t14=uS("todos"); var bfD=t14[0]; var setBfD=t14[1];
+  var t15=uS("todos"); var bfP=t15[0]; var setBfP=t15[1];
+  var t16=uS(false); var jOk=t16[0]; var setJOk=t16[1];
+  var t17=uS(false); var rOk=t17[0]; var setROk=t17[1];
+  var t18=uS([]); var dbgFechas=t18[0]; var setDbgFechas=t18[1];
+  var sI=semSel;
+  function save(ns){setSem(ns);lsS(LS,ns);}
+  function setFac(i,prod,campo,val){var ns=JSON.parse(JSON.stringify(sem));if(ns.fac[i]&&ns.fac[i][prod])ns.fac[i][prod][campo]=val;save(ns);}
+  function setFM(i,cId,tipo,campo,val){var ns=JSON.parse(JSON.stringify(sem));var k=cId+"_"+tipo;if(ns.fac[i]&&ns.fac[i].Morron&&ns.fac[i].Morron[k])ns.fac[i].Morron[k][campo]=val;save(ns);}
+  function setPed(i,prod,path,val){var ns=JSON.parse(JSON.stringify(sem));if(!ns.ped[i])ns.ped[i]=initP();if(!ns.ped[i][prod])ns.ped[i][prod]={};var ref=ns.ped[i][prod];var parts=path.split(".");for(var x=0;x<parts.length-1;x++){if(!ref[parts[x]])ref[parts[x]]={};ref=ref[parts[x]];}ref[parts[parts.length-1]]=val;save(ns);}
+  function jalarCampo(diaLbl){
+    setJalC(true);setMC(false);
+    fetch(FB_C).then(function(r){return r.json();}).then(function(d){
+      var ci=DIAS_C.indexOf(diaLbl);
+      var ns=JSON.parse(JSON.stringify(sem));
+      if(d&&typeof d==="object"){
+        Object.keys(d).forEach(function(k){var pts=k.split("|");if(pts.length===3&&parseInt(pts[2])===ci)ns.campo[k]=d[k];});
+      }
+      save(ns);
+      fetch(FB_S).then(function(r2){return r2.json();}).then(function(ds){
+        if(ds&&typeof ds==="object")setSg(ds);
+        fetch(FB_A).then(function(r3){return r3.json();}).then(function(da){
+          if(da&&typeof da==="object")setAju(da);
+          setJalC(false);setJOk(true);setTimeout(function(){setJOk(false);},3000);
+        }).catch(function(){setJalC(false);});
+      }).catch(function(){setJalC(false);});
+    }).catch(function(){setJalC(false);});
+  }
+  function jalarRecibo(fIn){
+    setJalR(true);setMR(false);
+    var d2=new Date(fIn+"T12:00:00");
+    var fmts=[
+      d2.toLocaleDateString("es-MX",{weekday:"short",day:"2-digit",month:"short",year:"numeric"}),
+      d2.toLocaleDateString("es-MX",{day:"2-digit",month:"2-digit",year:"numeric"}),
+      d2.toLocaleDateString("es-MX"),
+      (d2.getDate())+"/"+(d2.getMonth()+1)+"/"+d2.getFullYear()
+    ];
+    fetch(FB_R).then(function(r){return r.json();}).then(function(data){
+      var arr=data&&Array.isArray(data)?data:(data&&typeof data==="object"?Object.keys(data).map(function(k){return data[k];}):[]);
+      var filtrados=arr.filter(function(h){if(!h||!h.fecha)return false;return fmts.some(function(f){return h.fecha===f;});});
+      if(!filtrados.length){
+        var muestra=arr.slice(0,5).map(function(h){return h&&h.fecha||"?";}).filter(Boolean);
+        setDbgFechas(muestra);
+      } else {setDbgFechas([]);}
+      setRecibo(filtrados);
+      setJalR(false);setROk(true);setTimeout(function(){setROk(false);},4000);
+    }).catch(function(){setJalR(false);});
+  }
+  var mapC=[0,1,2,3,4,5,6];
+  function getRej(prod,diaI,tipo){
+    var totalA=0;var tA=false;
+    RANCHOS.forEach(function(rid){if((RPRODS[rid]||[]).indexOf(prod)<0)return;var cl=sI+"_"+rid+"_"+diaI+"_"+prod+"_"+tipo;if(aju&&aju[cl]){tA=true;totalA+=nv(aju[cl].rejas);}});
+    if(tA)return totalA;
+    var totalS=0;var tS=false;
+    RANCHOS.forEach(function(rid){if((RPRODS[rid]||[]).indexOf(prod)<0)return;var s2=sg&&sg[sI+"_"+rid];if(s2&&s2.dias&&s2.dias[diaI]){var dx=s2.dias[diaI];var v=nv(dx[prod]&&dx[prod][tipo]&&dx[prod][tipo].rejas||0);if(v>0){tS=true;totalS+=v;}}});
+    if(tS)return totalS;
+    var total=0;var ci=mapC[diaI];
+    RANCHOS.forEach(function(rid){if((RPRODS[rid]||[]).indexOf(prod)<0)return;var k=sI+"|"+rid+"|"+ci;var dx=sem.campo[k];if(!dx||!dx[prod])return;total+=nv(dx[prod][tipo]&&dx[prod][tipo].rejas||0);});
+    return total;
+  }
+  function getRejM(cId,diaI,tipo){
+    var total=0;var ci=mapC[diaI];
+    RANCHOS.forEach(function(rid){if((RPRODS[rid]||[]).indexOf("Morron")<0)return;var k=sI+"|"+rid+"|"+ci;var dx=sem.campo[k];if(!dx||!dx.Morron)return;var cols=(dx.Morron[tipo]&&dx.Morron[tipo].colores)||[];var ca=cols.find(function(c){return c.id===cId;});if(ca)total+=nv(ca.rejas);});
+    return total;
+  }
+  function calcD(diaI){
+    var f=sem.fac[diaI]||initF(); var res={};
+    var fp=f.Persa||{}; res.Persa={};
+    TIPOS.forEach(function(t){var s=t==="org"?"":"_c";var rj=getRej("Persa",diaI,t);res.Persa[t]={rj:rj,bP:rj*nv(fp["fpri"+s]),bS:rj*nv(fp["fseg"+s]),kP:rj*nv(fp["fpri"+s])*9.25,kS:rj*nv(fp["fseg"+s])*9.25};});
+    var fm2=f.Minibel||{}; res.Minibel={};
+    TIPOS.forEach(function(t){var s=t==="org"?"":"_c";var rj=getRej("Minibel",diaI,t);var kP=rj*nv(fm2["kgr"+s]);res.Minibel[t]={rj:rj,kP:kP};});
+    var fe=f.Europeo||{}; res.Europeo={};
+    TIPOS.forEach(function(t){var s=t==="org"?"":"_c";var rj=getRej("Europeo",diaI,t);var pz=rj*nv(fe["pzs"+s]);var kg=rj*nv(fe["kg"+s]);res.Europeo[t]={rj:rj,pzT:pz,kgT:kg,pzP:pz*pct(fe["pp"+s]),kgP:kg*pct(fe["pp"+s]),pzS:pz*pct(fe["ps"+s]),kgS:kg*pct(fe["ps"+s]),pzC:pz*pct(fe["pc"+s]),kgC:kg*pct(fe["pc"+s])};});
+    var fs=f.Slicer||{}; res.Slicer={};
+    TIPOS.forEach(function(t){var s=t==="org"?"":"_c";var rj=getRej("Slicer",diaI,t);var pz=rj*nv(fs["pzs"+s]);var kg=rj*nv(fs["kg"+s]);res.Slicer[t]={rj:rj,pzT:pz,kgT:kg,pzP:pz*pct(fs["pp"+s]),kgP:kg*pct(fs["pp"+s]),pzS:pz*pct(fs["ps"+s]),kgS:kg*pct(fs["ps"+s]),pzTer:pz*pct(fs["pt"+s]),kgTer:kg*pct(fs["pt"+s])};});
+    res.Morron={};
+    CM.forEach(function(col){res.Morron[col.id]={};TIPOS.forEach(function(t){var fm=(f.Morron&&f.Morron[col.id+"_"+t])||{};var rj=getRejM(col.id,diaI,t);var kT=rj*nv(fm.kg);var kP=kT*pct(fm.ppri);res.Morron[col.id][t]={rj:rj,kT:kT,kP:kP,kS:kT*pct(fm.pseg),kTer:kT*pct(fm.pter),kL:kP*pct(fm.pl),kXL:kP*pct(fm.pxl),kJ:kP*pct(fm.pj)};});});
+    return res;
+  }
+  function acumRng(dias){
+    function ac(prod){var r={};TIPOS.forEach(function(t){r[t]={};var c0=calcD(0)[prod][t];Object.keys(c0).forEach(function(k){r[t][k]=dias.reduce(function(s,dI){return s+(calcD(dI)[prod][t][k]||0);},0);});});return r;}
+    function acM(cId){var r={};TIPOS.forEach(function(t){r[t]={};var c0=calcD(0).Morron[cId][t];Object.keys(c0).forEach(function(k){r[t][k]=dias.reduce(function(s,dI){return s+(calcD(dI).Morron[cId][t][k]||0);},0);});});return r;}
+    return{P:ac("Persa"),Mb:ac("Minibel"),E:ac("Europeo"),S:ac("Slicer"),M:CM.reduce(function(o,col){o[col.id]=acM(col.id);return o;},{})};
+  }
+  function getPed(diaI,prod,path){
+    var base=(sem.ped[diaI]&&sem.ped[diaI][prod])||{};
+    var parts=path.split(".");var ref=base;
+    for(var i=0;i<parts.length;i++){ref=ref&&ref[parts[i]];}
+    return nv(ref||0);
+  }
+  function acPed(dias,prod,tipo,path){return dias.reduce(function(s,dI){return s+getPed(dI,prod,tipo+"."+path);},0);}
+  function FI(props){
+    var ls=uS(props.val||"");var loc=ls[0];var setLoc=ls[1];
+    var lp=uS(props.val||"");var pv=lp[0];var setPv=lp[1];
+    if(props.val!==pv){setPv(props.val||"");setLoc(props.val||"");}
+    return(<div className="f" style={{marginBottom:props.mb!==undefined?props.mb:8}}><label style={{color:props.lc||"#5a7a1a"}}>{props.label}</label><input className={"inp "+(props.cls||"")} type="number" step={props.step||"0.01"} min="0" placeholder="0" value={loc} onChange={function(e){setLoc(e.target.value);}} onBlur={function(){props.set(loc);}} onKeyDown={function(e){if(e.key==="Enter")props.set(loc);}}/></div>);
+  }
+  function Chip(props){var ok=props.v&&props.v!=="--";return(<div className="chip" style={{borderColor:props.col+"44",background:props.col+"0d"}}><div className="chip-l" style={{color:props.col}}>{props.label}</div><div className="chip-v" style={{color:ok?props.col:"rgba(255,255,255,0.2)"}}>{ok?props.v:"--"}</div>{props.sub&&<div style={{fontSize:9,color:"rgba(255,255,255,0.3)",marginTop:2}}>{props.sub}</div>}</div>);}
+  function TBlq(props){return(<div style={{marginBottom:10}}><span className={"ttag "+props.t}>{props.t==="org"?"ORGANICO":"CONVENCIONAL"}</span>{props.children}</div>);}
+  function copyFacSig(){var ns=JSON.parse(JSON.stringify(sem));if(di<6)ns.fac[di+1]=JSON.parse(JSON.stringify(ns.fac[di]));save(ns);}
+  function copyFacSem(){var ns=JSON.parse(JSON.stringify(sem));for(var i=0;i<7;i++){if(i!==di)ns.fac[i]=JSON.parse(JSON.stringify(ns.fac[di]));}save(ns);}
+  var diasFilt=bfD==="todos"?DIAS.map(function(x,i){return i;}):[bfD];
+  var ac=acumRng(diasFilt);
+  function show(p){return bfP==="todos"||bfP===p;}
+  var PRODS_BAL=["Persa","Minibel","Europeo","Slicer","Morron"];
+  return(
+    <div>
+      <div className="hdr">
+        <div className="hdr-top">
+          <div className="logo">PV</div>
+          <div><div className="ttl">PROYECCION EMPAQUE</div><div className="sub">Parras Valley - Vie a Jue</div></div>
+          <div className="sem-nav">
+            <div className="sem-lbl">{labelSem(sI)}</div>
+            <button className="nbtn" onClick={function(){setSemSel(addDias(semSel,-7));}}>Ant</button>
+            {semSel!==getSem()&&<button className="nbtn hoy" onClick={function(){setSemSel(getSem());}}>Hoy</button>}
+            <button className="nbtn" onClick={function(){setSemSel(addDias(semSel,7));}}>Sig</button>
+          </div>
+        </div>
+        <div className="tabs">
+          {[["campo","Campo"],["factores","Factores"],["pedidos","Pedidos"],["balance","Balance"],["comparativa","Compar."]].map(function(t){return(<button key={t[0]} className={"tab "+(tab===t[0]?"on":"")} onClick={function(){setTab(t[0]);}}>{t[1]}</button>);})}
+        </div>
+      </div>
+      <div className="wrap">
+        <div className="dias">
+          {DIAS.map(function(d,i){return(<button key={d} className={"dbtn "+(di===i?"on":"")} onClick={function(){setDi(i);}}>{d.slice(0,3)}</button>);})}
+        </div>
+
+        {tab==="campo"&&(
+          <div>
+            <div className="sec">Proyeccion de campo</div>
+            <button className="cpbtn" onClick={function(){setMC(true);}}>{jalC?"Jalando...":"Traer proyeccion de campo"}</button>
+            <button className="cpbtn amb" onClick={function(){setMR(true);}}>{jalR?"Jalando...":"Jalar recibo de fruta"}</button>
+            {jOk&&<div style={{fontSize:11,color:GRN,fontWeight:700,marginBottom:8}}>Proyeccion actualizada</div>}
+            {rOk&&<div style={{fontSize:11,color:AMB,fontWeight:700,marginBottom:8}}>{recibo.length} registros del dia</div>}
+            {dbgFechas.length>0&&<div style={{fontSize:10,color:"#ef5350",background:"rgba(239,68,68,0.08)",border:"1px solid rgba(239,68,68,0.2)",borderRadius:8,padding:"10px 12px",marginBottom:10}}><div style={{fontWeight:900,marginBottom:5}}>Sin registros para esa fecha. Fechas en el recibo:</div>{dbgFechas.map(function(f,i){return(<div key={i} style={{color:"#fca5a5",marginTop:2}}>{f}</div>);})}</div>}
+            {mC&&(<div className="overlay"><div className="modal" style={{borderColor:"rgba(122,158,42,0.4)"}}>
+              <div style={{fontSize:13,fontWeight:900,color:"#c8d870",marginBottom:12}}>Selecciona el dia a jalar</div>
+              <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:14}}>
+                {DIAS_C.map(function(d){return(<button key={d} onClick={function(){setDJC(d);}} style={{padding:"6px 10px",border:"2px solid "+(dJC===d?"#7a9e2a":"rgba(122,158,42,0.2)"),borderRadius:7,background:dJC===d?"rgba(122,158,42,0.15)":"transparent",color:dJC===d?"#c8d870":"#5a7a1a",fontFamily:"system-ui",fontSize:11,fontWeight:800,cursor:"pointer"}}>{d.slice(0,3)}</button>);})}
+              </div>
+              <div style={{display:"flex",gap:8}}>
+                <button className="mbtn" style={{flex:1,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",color:"#5a7a1a"}} onClick={function(){setMC(false);}}>Cancelar</button>
+                <button className="mbtn" style={{flex:2,background:"rgba(122,158,42,0.15)",border:"2px solid rgba(122,158,42,0.4)",color:"#c8d870"}} onClick={function(){jalarCampo(dJC);}}>Jalar {dJC}</button>
+              </div>
+            </div></div>)}
+            {mR&&(<div className="overlay"><div className="modal" style={{borderColor:"rgba(200,168,75,0.4)"}}>
+              <div style={{fontSize:13,fontWeight:900,color:AMB,marginBottom:12}}>Fecha del recibo a jalar</div>
+              <input type="date" value={fJR} onChange={function(e){setFJR(e.target.value);}} style={{width:"100%",background:"rgba(0,0,0,0.4)",border:"2px solid rgba(200,168,75,0.4)",borderRadius:8,padding:"11px",color:AMB,fontFamily:"system-ui",fontSize:16,fontWeight:800,textAlign:"center",outline:"none",marginBottom:14}}/>
+              <div style={{display:"flex",gap:8}}>
+                <button className="mbtn" style={{flex:1,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",color:"#5a7a1a"}} onClick={function(){setMR(false);}}>Cancelar</button>
+                <button className="mbtn" style={{flex:2,background:"rgba(200,168,75,0.15)",border:"2px solid rgba(200,168,75,0.4)",color:AMB}} onClick={function(){jalarRecibo(fJR);}}>Jalar</button>
+              </div>
+            </div></div>)}
+            {RANCHOS.map(function(rid){
+              var rn=rid==="pvt"?"PVT":rid==="crp"?"Cordillera":"Forrajera";
+              var rc=rid==="pvt"?"#fbbf24":rid==="crp"?"#60a5fa":"#4ade80";
+              var k=sI+"|"+rid+"|"+mapC[di];
+              var dx=sem.campo[k];
+              if(!dx||!Object.keys(dx).length)return null;
+              return(<div key={rid} style={{background:"rgba(255,255,255,0.02)",border:"2px solid "+rc+"33",borderRadius:12,marginBottom:10,overflow:"hidden"}}>
+                <div style={{background:rc+"15",padding:"9px 14px",fontSize:13,fontWeight:900,color:rc}}>{rn}</div>
+                <div style={{padding:"10px 14px"}}>
+                  {(RPRODS[rid]||[]).map(function(prod){
+                    if(prod==="Morron"){
+                      var rows=TIPOS.map(function(t){
+                        var cols=(dx.Morron&&dx.Morron[t]&&dx.Morron[t].colores)||[];
+                        var act=cols.filter(function(c){return nv(c.rejas)>0;});
+                        if(!act.length)return null;
+                        return(<div key={t} style={{marginBottom:6}}>
+                          <span className={"ttag "+t} style={{marginBottom:4}}>{t==="org"?"ORG":"CONV"}</span>
+                          <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+                            {act.map(function(ca){var cd=CM.find(function(c){return c.id===ca.id;})||{c:"#888",l:ca.id};return(<span key={ca.id} style={{padding:"3px 8px",borderRadius:7,background:cd.c+"18",border:"1px solid "+cd.c+"44",color:cd.c,fontSize:11,fontWeight:700}}>{cd.l}: {fmt(nv(ca.rejas),0)} rjs</span>);})}
+                          </div>
+                        </div>);
+                      });
+                      var anyM=rows.some(function(r){return r!==null;});
+                      if(!anyM)return null;
+                      return(<div key={prod} style={{marginBottom:8}}><div style={{fontSize:12,fontWeight:800,color:"#f97316",marginBottom:4}}>! Morron</div>{rows}</div>);
+                    }
+                    var tp=TIPOS.some(function(t){return nv(dx[prod]&&dx[prod][t]&&dx[prod][t].rejas||0)>0;});
+                    if(!tp)return null;
+                    return(<div key={prod} style={{display:"flex",gap:6,alignItems:"center",marginBottom:6,flexWrap:"wrap"}}>
+                      <span style={{fontSize:12,fontWeight:800,color:"#86c87a",minWidth:60}}>{prod}</span>
+                      {TIPOS.map(function(t){var v=nv(dx[prod]&&dx[prod][t]&&dx[prod][t].rejas||0);if(!v)return null;return(<span key={t} className={"ttag "+t} style={{marginBottom:0}}>{t==="org"?"ORG":"CONV"}: {fmt(v,0)} rjs</span>);})}
+                    </div>);
+                  })}
+                </div>
+              </div>);
+            })}
+            {!Object.keys(sem.campo).length&&<div style={{textAlign:"center",padding:30,color:"#3a5c0a",fontSize:13}}>Da "Traer proyeccion de campo" para cargar datos</div>}
+          </div>
+        )}
+
+        {tab==="factores"&&(
+          <div>
+            <div className="sec">Factores - {DIAS[di]}</div>
+            <div style={{marginBottom:12}}>
+              <button className="cpbtn" onClick={copyFacSig} disabled={di>=6}>Copiar al dia siguiente</button>
+              <button className="cpbtn amb" onClick={copyFacSem}>Copiar a toda la semana</button>
+            </div>
+            <div className="card" style={{background:GRN+"06",borderColor:GRN+"30"}}>
+              <div className="chead"><div><div className="cname" style={{color:GRN}}>Persa</div><div className="csub">Bultos por reja</div></div></div>
+              <div className="cbody">
+                {TIPOS.map(function(t){var s=t==="org"?"":"_c";var f=sem.fac[di].Persa||{};return(<TBlq key={t} t={t}><div className="g2"><FI label="Factor 1a/reja" cls="bts" val={f["fpri"+s]||""} set={function(v){setFac(di,"Persa","fpri"+s,v);}}/><FI label="Factor 2a/reja" cls="bts" val={f["fseg"+s]||""} set={function(v){setFac(di,"Persa","fseg"+s,v);}}/></div></TBlq>);})}
+              </div>
+            </div>
+            <div className="card" style={{background:"#e0707006",borderColor:"#e0707030"}}>
+              <div className="chead"><div><div className="cname" style={{color:"#e07070"}}>Minibel</div><div className="csub">Kg de primera por reja (todo es 1a)</div></div></div>
+              <div className="cbody">
+                {TIPOS.map(function(t){var s=t==="org"?"":"_c";var f=sem.fac[di].Minibel||{};return(<TBlq key={t} t={t}><FI label="Kg de primera / reja" cls="kg" val={f["kgr"+s]||""} set={function(v){setFac(di,"Minibel","kgr"+s,v);}}/></TBlq>);})}
+                <div style={{fontSize:10,color:"#5a7a1a",marginTop:4}}>Ejemplo: a 7.35 kg/reja, 100 rejas = 735 kg de primera</div>
+              </div>
+            </div>
+            <div className="card" style={{background:GRN+"06",borderColor:GRN+"30"}}>
+              <div className="chead"><div><div className="cname" style={{color:"#5ab88a"}}>Europeo</div><div className="csub">Piezas y kg / reja</div></div></div>
+              <div className="cbody">
+                {TIPOS.map(function(t){var s=t==="org"?"":"_c";var f=sem.fac[di].Europeo||{};return(<TBlq key={t} t={t}><div className="g2" style={{marginBottom:7}}><FI label="Piezas/reja" cls="pzs" val={f["pzs"+s]||""} set={function(v){setFac(di,"Europeo","pzs"+s,v);}} step="1" mb={0}/><FI label="Kg/reja" cls="kg" val={f["kg"+s]||""} set={function(v){setFac(di,"Europeo","kg"+s,v);}} mb={0}/></div><div className="g3"><FI label="% 1a" cls="pct" val={f["pp"+s]||""} set={function(v){setFac(di,"Europeo","pp"+s,v);}} mb={0}/><FI label="% 2a" cls="pct" val={f["ps"+s]||""} set={function(v){setFac(di,"Europeo","ps"+s,v);}} mb={0}/><FI label="% Choice" cls="pct" val={f["pc"+s]||""} set={function(v){setFac(di,"Europeo","pc"+s,v);}} mb={0}/></div></TBlq>);})}
+              </div>
+            </div>
+            <div className="card" style={{background:"#a8c84006",borderColor:"#a8c84030"}}>
+              <div className="chead"><div><div className="cname" style={{color:"#a8c840"}}>Slicer</div><div className="csub">Piezas y kg / reja</div></div></div>
+              <div className="cbody">
+                {TIPOS.map(function(t){var s=t==="org"?"":"_c";var f=sem.fac[di].Slicer||{};return(<TBlq key={t} t={t}><div className="g2" style={{marginBottom:7}}><FI label="Piezas/reja" cls="pzs" val={f["pzs"+s]||""} set={function(v){setFac(di,"Slicer","pzs"+s,v);}} step="1" mb={0}/><FI label="Kg/reja" cls="kg" val={f["kg"+s]||""} set={function(v){setFac(di,"Slicer","kg"+s,v);}} mb={0}/></div><div className="g3"><FI label="% 1a" cls="pct" val={f["pp"+s]||""} set={function(v){setFac(di,"Slicer","pp"+s,v);}} mb={0}/><FI label="% 2a" cls="pct" val={f["ps"+s]||""} set={function(v){setFac(di,"Slicer","ps"+s,v);}} mb={0}/><FI label="% 3a" cls="pct" val={f["pt"+s]||""} set={function(v){setFac(di,"Slicer","pt"+s,v);}} mb={0}/></div></TBlq>);})}
+              </div>
+            </div>
+            <div className="sec">Morron - por color</div>
+            <div style={{fontSize:10,color:"#3a5c0a",marginBottom:10}}>% 1a sobre total. L/XL/Jumbo sobre kg 1a.</div>
+            {CM.map(function(col){return(<div key={col.id} style={{marginBottom:12}}>{TIPOS.map(function(t){var k=col.id+"_"+t;var fm=(sem.fac[di].Morron&&sem.fac[di].Morron[k])||{};var ec=t==="org"?"#4ade80":"#60a5fa";return(<div key={t}><div style={{display:"flex",alignItems:"center",gap:8,padding:"7px 12px",background:col.c+"10",border:"2px solid "+col.c+"33",borderRadius:"9px 9px 0 0",borderBottom:"none"}}><div className="dot" style={{background:col.c}}/><span style={{fontSize:13,fontWeight:900,color:col.c}}>{col.l}</span><span className={"ttag "+t} style={{marginBottom:0}}>{t==="org"?"ORG":"CONV"}</span></div><div style={{background:col.c+"06",border:"2px solid "+col.c+"33",borderTop:"none",borderRadius:"0 0 9px 9px",padding:"11px 12px",marginBottom:6}}><FI label="Kg/reja" cls="kg" val={fm.kg||""} set={function(v){setFM(di,col.id,t,"kg",v);}}/><div className="ssec">% DEL TOTAL</div><div className="g3"><FI label="% 1a" cls="pct" val={fm.ppri||""} set={function(v){setFM(di,col.id,t,"ppri",v);}} mb={0}/><FI label="% 2a" cls="pct" val={fm.pseg||""} set={function(v){setFM(di,col.id,t,"pseg",v);}} mb={0}/><FI label="% 3a" cls="pct" val={fm.pter||""} set={function(v){setFM(di,col.id,t,"pter",v);}} mb={0}/></div><div className="ssec" style={{marginTop:8}}>DENTRO DE 1a</div><div className="g3"><FI label="% L" cls="pct" val={fm.pl||""} set={function(v){setFM(di,col.id,t,"pl",v);}} mb={0}/><FI label="% XL" cls="pct" val={fm.pxl||""} set={function(v){setFM(di,col.id,t,"pxl",v);}} mb={0}/><FI label="% Jumbo" cls="pct" val={fm.pj||""} set={function(v){setFM(di,col.id,t,"pj",v);}} mb={0}/></div></div></div>);})}</div>);})}
+          </div>
+        )}
+
+        {tab==="pedidos"&&(
+          <div>
+            <div className="sec">Pedidos - {DIAS[di]}</div>
+            <div className="card" style={{background:GRN+"06",borderColor:GRN+"30"}}>
+              <div className="chead"><div className="cname" style={{color:GRN}}>Persa</div></div>
+              <div className="cbody">
+                {TIPOS.map(function(t){var base=(sem.ped[di].Persa&&sem.ped[di].Persa[t])||{};return(<TBlq key={t} t={t}><div className="ssec">1a</div><div className="g3">{PP.map(function(p){return(<FI key={p.id} label={p.l} cls="bts" val={(base.pri&&base.pri[p.id])||base[p.id]||""} set={function(v){setPed(di,"Persa",t+".pri."+p.id,v);}} step="1" mb={0}/>);})}</div><div className="ssec" style={{marginTop:8}}>2a</div><div className="g3">{PP.map(function(p){return(<FI key={"s"+p.id} label={p.l} cls="bts" val={(base.seg&&base.seg[p.id])||""} set={function(v){setPed(di,"Persa",t+".seg."+p.id,v);}} step="1" mb={0}/>);})}</div></TBlq>);})}
+              </div>
+            </div>
+            <div className="card" style={{background:"#e0707006",borderColor:"#e0707030"}}>
+              <div className="chead"><div className="cname" style={{color:"#e07070"}}>Minibel</div></div>
+              <div className="cbody">
+                {TIPOS.map(function(t){var base=(sem.ped[di].Minibel&&sem.ped[di].Minibel[t])||{};return(<TBlq key={t} t={t}><div className="g3">{PM.map(function(p){return(<FI key={p.id} label={p.l} cls="bts" val={base[p.id]||""} set={function(v){setPed(di,"Minibel",t+"."+p.id,v);}} step="1" mb={0}/>);})}</div></TBlq>);})}
+              </div>
+            </div>
+            <div className="card" style={{background:"#a8c84006",borderColor:"#a8c84030"}}>
+              <div className="chead"><div className="cname" style={{color:"#a8c840"}}>Slicer</div></div>
+              <div className="cbody">
+                {TIPOS.map(function(t){var base=(sem.ped[di].Slicer&&sem.ped[di].Slicer[t])||{};return(<TBlq key={t} t={t}><div className="ssec">1a - Piezas</div><div className="g4">{["18pz","24pz","36pz","62pz"].map(function(cl){return(<FI key={cl} label={cl} cls="pzs" val={(base.pz&&base.pz[cl])||""} set={function(v){setPed(di,"Slicer",t+".pz."+cl,v);}} step="1" mb={0}/>);})}</div><div className="ssec" style={{marginTop:6}}>1a - Peso</div><div className="g2">{["25lb","50lb"].map(function(cl){return(<FI key={cl} label={cl} cls="kg" val={(base.kg&&base.kg[cl])||""} set={function(v){setPed(di,"Slicer",t+".kg."+cl,v);}} step="1" mb={0}/>);})}</div><div className="ssec" style={{marginTop:6}}>Selecto (2a) - Piezas</div><div className="g4">{["18pz","24pz","36pz","62pz"].map(function(cl){return(<FI key={"s"+cl} label={cl} cls="bts" val={(base.seg_pz&&base.seg_pz[cl])||""} set={function(v){setPed(di,"Slicer",t+".seg_pz."+cl,v);}} step="1" mb={0}/>);})}</div><div className="ssec" style={{marginTop:6}}>Selecto (2a) - Peso</div><div className="g2">{["25lb","50lb"].map(function(cl){return(<FI key={"sk"+cl} label={cl} cls="kg" val={(base.seg_kg&&base.seg_kg[cl])||""} set={function(v){setPed(di,"Slicer",t+".seg_kg."+cl,v);}} step="1" mb={0}/>);})}</div></TBlq>);})}
+              </div>
+            </div>
+            <div className="card" style={{background:"#5ab88a06",borderColor:"#5ab88a30"}}>
+              <div className="chead"><div className="cname" style={{color:"#5ab88a"}}>Europeo</div></div>
+              <div className="cbody">
+                {TIPOS.map(function(t){var base=(sem.ped[di].Europeo&&sem.ped[di].Europeo[t])||{};return(<TBlq key={t} t={t}><div className="g3"><FI label="1a piezas" cls="pzs" val={base.pp||""} set={function(v){setPed(di,"Europeo",t+".pp",v);}} step="1" mb={0}/><FI label="1a kg" cls="kg" val={base.pri||""} set={function(v){setPed(di,"Europeo",t+".pri",v);}} mb={0}/><FI label="Choice kg" cls="kg" val={base.cho||""} set={function(v){setPed(di,"Europeo",t+".cho",v);}} mb={0}/></div><div className="ssec" style={{marginTop:8}}>2a</div><div className="g3"><FI label="2a piezas" cls="pzs" val={base.sp||""} set={function(v){setPed(di,"Europeo",t+".sp",v);}} step="1" mb={0}/><FI label="2a kg" cls="kg" val={base.seg||""} set={function(v){setPed(di,"Europeo",t+".seg",v);}} mb={0}/><div/></div></TBlq>);})}
+              </div>
+            </div>
+            <div className="card" style={{background:"#f87171 06",borderColor:"#f8717130"}}>
+              <div className="chead"><div className="cname" style={{color:"#f87171"}}>Morron</div></div>
+              <div className="cbody">
+                {CM.map(function(col){var base=(sem.ped[di].Morron&&sem.ped[di].Morron[col.id])||{};return(<div key={col.id} style={{marginBottom:12}}><div style={{display:"flex",alignItems:"center",gap:7,marginBottom:7}}><div className="dot" style={{background:col.c}}/><span style={{fontSize:13,fontWeight:900,color:col.c}}>{col.l}</span></div><div className="g4">{["L","XL","Jumbo","2a"].map(function(sz){return(<FI key={sz} label={sz+"  kg"} cls="kg" val={base[sz]||""} set={function(v){setPed(di,"Morron",col.id+"."+sz,v);}} mb={0}/>);})}</div></div>);})}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab==="balance"&&(
+          <div>
+            <div className="sec">Balance</div>
+            <div style={{background:"rgba(122,158,42,0.05)",border:"1px solid rgba(122,158,42,0.15)",borderRadius:10,padding:"10px 12px",marginBottom:14}}>
+              <div style={{fontSize:9,color:"#5a7a1a",fontWeight:900,letterSpacing:1.5,marginBottom:6}}>DIA</div>
+              <div className="frow">{[["todos","Semana"]].concat(DIAS.map(function(d,i){return [i,d.slice(0,3)];})).map(function(item){return(<button key={item[0]} className={"fbtn "+(bfD===item[0]?"on":"")} onClick={function(){setBfD(item[0]);if(item[0]!=="todos")setDi(item[0]);}}>{item[1]}</button>);})}</div>
+              <div style={{fontSize:9,color:"#5a7a1a",fontWeight:900,letterSpacing:1.5,margin:"8px 0 6px"}}>CULTIVO</div>
+              <div className="frow">{["todos","Persa","Europeo","Slicer","Morron","Minibel"].map(function(p){return(<button key={p} className={"fbtn "+(bfP===p?"on":"")} onClick={function(){setBfP(p);}}>{p==="todos"?"Todos":p}</button>);})}</div>
+            </div>
+            <div style={{fontSize:11,color:"#7a9e2a",fontWeight:800,marginBottom:12}}>{bfD==="todos"?"Semana completa":DIAS[bfD]}{bfP!=="todos"?" - "+bfP:""}</div>
+
+            {show("Persa")&&TIPOS.map(function(t){var c=ac.P[t];if(!c.rj)return null;var ec=t==="org"?GRN:AMB;
+              var kPP=PP.reduce(function(s,p){var b=acPed(diasFilt,"Persa",t,"pri."+p.id)||acPed(diasFilt,"Persa",t,p.id);return s+b*p.kg;},0);
+              var kPS=PP.reduce(function(s,p){return s+acPed(diasFilt,"Persa",t,"seg."+p.id)*p.kg;},0);
+              return(<div key={"P"+t} className="bblk">
+                <div style={{display:"flex",gap:7,alignItems:"center",marginBottom:9}}><span style={{fontSize:15,fontWeight:900,color:GRN}}>O Persa</span><span className={"ttag "+t}>{t==="org"?"ORG":"CONV"}</span><span style={{fontSize:10,color:"#3a5c0a",marginLeft:"auto"}}>{fmt(c.rj,0)} rjs</span></div>
+                <div className="rrow"><Chip label="Bts 1a" v={fmt(c.bP,0)} col={ec}/><Chip label="Kg 1a" v={fk(c.kP)} col={ec}/><Chip label="Bts 2a" v={fmt(c.bS,0)} col={GRN} sub={fk(c.kS)}/></div>
+                {(kPP>0||c.kP>0)&&(<div className="cruce"><div className="cruce-l">1a - CRUCE KG</div>{PP.filter(function(p){var b=acPed(diasFilt,"Persa",t,"pri."+p.id)||acPed(diasFilt,"Persa",t,p.id);return b>0;}).length>0&&<div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:7}}>{PP.map(function(p){var b=acPed(diasFilt,"Persa",t,"pri."+p.id)||acPed(diasFilt,"Persa",t,p.id);if(!b)return null;return(<span key={p.id} style={{fontSize:10,color:AMB,background:"rgba(200,168,75,0.08)",border:"1px solid rgba(200,168,75,0.2)",borderRadius:5,padding:"2px 7px"}}>{fmt(b,0)} x {p.l} = {fk(b*p.kg)}</span>);})}</div>}<div className="cruce-g"><div className="cruce-cell"><div className="cruce-cl" style={{color:"#5a7a1a"}}>PROYECT.</div><div className="cruce-cv" style={{color:ec}}>{fk(c.kP)}</div></div><div className="cruce-cell"><div className="cruce-cl" style={{color:"#5a7a1a"}}>PEDIDO</div><div className="cruce-cv" style={{color:AMB}}>{kPP>0?fk(kPP):"--"}</div></div><div className="cruce-cell" style={{background:(c.kP-kPP)>=0?"rgba(74,222,128,0.08)":"rgba(239,68,68,0.08)",borderRadius:6}}><div className="cruce-cl" style={{color:(c.kP-kPP)>=0?"#4ade80":"#ef5350"}}>{(c.kP-kPP)>=0?"SOBRA":"FALTA"}</div><div className="cruce-cv" style={{color:(c.kP-kPP)>=0?"#4ade80":"#ef5350"}}>{fk(Math.abs(c.kP-kPP))}</div></div></div></div>)}
+                {kPS>0&&(<div className="cruce"><div className="cruce-l">2a - CRUCE KG</div><div className="cruce-g"><div className="cruce-cell"><div className="cruce-cl" style={{color:"#5a7a1a"}}>PROYECT.</div><div className="cruce-cv" style={{color:GRN}}>{fk(c.kS)}</div></div><div className="cruce-cell"><div className="cruce-cl" style={{color:"#5a7a1a"}}>PEDIDO</div><div className="cruce-cv" style={{color:AMB}}>{fk(kPS)}</div></div><div className="cruce-cell" style={{background:(c.kS-kPS)>=0?"rgba(74,222,128,0.08)":"rgba(239,68,68,0.08)",borderRadius:6}}><div className="cruce-cl" style={{color:(c.kS-kPS)>=0?"#4ade80":"#ef5350"}}>{(c.kS-kPS)>=0?"SOBRA":"FALTA"}</div><div className="cruce-cv" style={{color:(c.kS-kPS)>=0?"#4ade80":"#ef5350"}}>{fk(Math.abs(c.kS-kPS))}</div></div></div></div>)}
+              </div>);
+            })}
+
+            {show("Minibel")&&TIPOS.map(function(t){var c=ac.Mb[t];if(!c.rj)return null;var ec=t==="org"?GRN:AMB;
+              var kPed=PM.reduce(function(s,p){return s+acPed(diasFilt,"Minibel",t,p.id)*p.kg;},0);
+              var diff=c.kP-kPed;
+              return(<div key={"Mb"+t} className="bblk">
+                <div style={{display:"flex",gap:7,alignItems:"center",marginBottom:9}}><span style={{fontSize:15,fontWeight:900,color:"#e07070"}}>* Minibel</span><span className={"ttag "+t}>{t==="org"?"ORG":"CONV"}</span><span style={{fontSize:10,color:"#3a5c0a",marginLeft:"auto"}}>{fmt(c.rj,0)} rjs</span></div>
+                <div className="rrow"><Chip label="Kg 1a proyect." v={fk(c.kP)} col={ec}/></div>
+                {(kPed>0||c.kP>0)&&(<div className="cruce"><div className="cruce-l">CRUCE KG (todo es 1a)</div>{PM.filter(function(p){return acPed(diasFilt,"Minibel",t,p.id)>0;}).length>0&&<div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:7}}>{PM.map(function(p){var b=acPed(diasFilt,"Minibel",t,p.id);if(!b)return null;return(<span key={p.id} style={{fontSize:10,color:AMB,background:"rgba(200,168,75,0.08)",border:"1px solid rgba(200,168,75,0.2)",borderRadius:5,padding:"2px 7px"}}>{fmt(b,0)} x {p.l} = {fk(b*p.kg)}</span>);})}</div>}<div className="cruce-g"><div className="cruce-cell"><div className="cruce-cl" style={{color:"#5a7a1a"}}>PROYECT.</div><div className="cruce-cv" style={{color:ec}}>{fk(c.kP)}</div></div><div className="cruce-cell"><div className="cruce-cl" style={{color:"#5a7a1a"}}>PEDIDO</div><div className="cruce-cv" style={{color:AMB}}>{kPed>0?fk(kPed):"--"}</div></div><div className="cruce-cell" style={{background:diff>=0?"rgba(74,222,128,0.08)":"rgba(239,68,68,0.08)",borderRadius:6}}><div className="cruce-cl" style={{color:diff>=0?"#4ade80":"#ef5350"}}>{diff>=0?"SOBRA":"FALTA"}</div><div className="cruce-cv" style={{color:diff>=0?"#4ade80":"#ef5350"}}>{fk(Math.abs(diff))}</div></div></div></div>)}
+              </div>);
+            })}
+
+            {show("Europeo")&&TIPOS.map(function(t){var c=ac.E[t];if(!c.rj)return null;var ec=t==="org"?"#5ab88a":AMB;return(<div key={"E"+t} className="bblk"><div style={{display:"flex",gap:7,alignItems:"center",marginBottom:9}}><span style={{fontSize:15,fontWeight:900,color:"#5ab88a"}}>O Europeo</span><span className={"ttag "+t}>{t==="org"?"ORG":"CONV"}</span><span style={{fontSize:10,color:"#3a5c0a",marginLeft:"auto"}}>{fmt(c.rj,0)} rjs . {fk(c.kgT)}</span></div><div className="rrow"><Chip label="Pzs 1a" v={fmt(c.pzP,0)} col="#5ab88a"/><Chip label="Kg 1a" v={fk(c.kgP)} col="#5ab88a"/><Chip label="Pzs 2a" v={fmt(c.pzS,0)} col={AMB}/><Chip label="Kg 2a" v={fk(c.kgS)} col={AMB}/><Chip label="Choice" v={fk(c.kgC)} col="#c8a84b"/></div></div>);})}
+
+            {show("Slicer")&&TIPOS.map(function(t){var c=ac.S[t];if(!c.rj)return null;return(<div key={"S"+t} className="bblk"><div style={{display:"flex",gap:7,alignItems:"center",marginBottom:9}}><span style={{fontSize:15,fontWeight:900,color:"#a8c840"}}>O Slicer</span><span className={"ttag "+t}>{t==="org"?"ORG":"CONV"}</span><span style={{fontSize:10,color:"#3a5c0a",marginLeft:"auto"}}>{fmt(c.rj,0)} rjs</span></div><div className="rrow"><Chip label="Pzs 1a" v={fmt(c.pzP,0)} col="#a8c840"/><Chip label="Kg 1a" v={fk(c.kgP)} col="#a8c840"/><Chip label="Pzs 2a" v={fmt(c.pzS,0)} col={AMB}/><Chip label="Kg 2a" v={fk(c.kgS)} col={AMB}/><Chip label="Pzs 3a" v={fmt(c.pzTer,0)} col="#6b7280"/></div></div>);})}
+
+            {show("Morron")&&CM.map(function(col){return TIPOS.map(function(t){var c=ac.M[col.id][t];if(!c.rj)return null;return(<div key={col.id+t} className="bblk" style={{borderColor:col.c+"44"}}><div style={{display:"flex",gap:7,alignItems:"center",marginBottom:9}}><div className="dot" style={{background:col.c}}/><span style={{fontSize:15,fontWeight:900,color:col.c}}>{col.l}</span><span className={"ttag "+t}>{t==="org"?"ORG":"CONV"}</span><span style={{fontSize:10,color:"#3a5c0a",marginLeft:"auto"}}>{fmt(c.rj,0)} rjs . {fk(c.kT)}</span></div><div style={{background:col.c+"0d",borderRadius:9,padding:"9px",marginBottom:7}}><div style={{fontSize:8,color:col.c,fontWeight:900,marginBottom:7}}>1a - {fk(c.kP)}</div><div className="rrow"><Chip label="L" v={fk(c.kL)} col={col.c}/><Chip label="XL" v={fk(c.kXL)} col={col.c}/><Chip label="Jumbo" v={fk(c.kJ)} col={col.c}/></div></div><div className="rrow"><Chip label="2a" v={fk(c.kS)} col="#a0a080"/><Chip label="3a" v={fk(c.kTer)} col="#6a6a60"/></div></div>);});})}
+          </div>
+        )}
+
+        {tab==="comparativa"&&(
+          <div>
+            <div className="sec">Comparativa por rancho y producto - {DIAS[di]}</div>
+            {!recibo.length&&<div style={{background:"rgba(200,168,75,0.06)",border:"1px solid rgba(200,168,75,0.2)",borderRadius:9,padding:"11px 14px",marginBottom:12,fontSize:11,color:AMB}}>Ve a Campo y da "Jalar recibo de fruta" con la fecha del dia.</div>}
+            {RANCHOS.map(function(rid){
+              var rn=rid==="pvt"?"PVT":rid==="crp"?"Cordillera":"Forrajera";
+              var rc=rid==="pvt"?"#fbbf24":rid==="crp"?"#60a5fa":"#4ade80";
+              var rNoms=rid==="pvt"?["PVT"]:rid==="crp"?["CRP","Cordillera"]:["Forrajera","F4H"];
+              var prods=RPRODS[rid]||[];
+
+              // Rejas cortadas por producto del recibo
+              var recProd={};
+              recibo.forEach(function(h){
+                if(!h||!h.lotes)return;
+                var prod=h.lineaNombre||"Otro";
+                h.lotes.forEach(function(l){
+                  var rn2=(l.rancho||"").trim();
+                  if(!rNoms.some(function(n){return rn2.toLowerCase()===n.toLowerCase();}))return;
+                  if(!recProd[prod])recProd[prod]=0;
+                  recProd[prod]+=(l.cajas||0);
+                });
+              });
+
+              var hayAlgo=prods.some(function(prod){
+                var aT=TIPOS.reduce(function(s,t){return s+getRej(prod,di,t);},0);
+                return aT>0||(recProd[prod]||0)>0;
+              });
+              if(!hayAlgo)return null;
+
+              return(
+                <div key={rid} style={{background:"rgba(255,255,255,0.02)",border:"2px solid "+rc+"33",borderRadius:13,marginBottom:14,overflow:"hidden"}}>
+                  <div style={{background:rc+"18",padding:"9px 14px"}}><span style={{fontSize:14,fontWeight:900,color:rc}}>{rn}</span></div>
+                  <div style={{padding:"12px 14px"}}>
+                    {/* Cabecera de columnas */}
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:6,marginBottom:8,paddingBottom:6,borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
+                      <div style={{fontSize:8,color:"#5a7a1a",fontWeight:900,letterSpacing:1}}>PRODUCTO</div>
+                      <div style={{fontSize:8,color:AMB,fontWeight:900,letterSpacing:1,textAlign:"center"}}>PROYECTADO</div>
+                      <div style={{fontSize:8,color:"#60a5fa",fontWeight:900,letterSpacing:1,textAlign:"center"}}>AJUSTE</div>
+                      <div style={{fontSize:8,color:"#4ade80",fontWeight:900,letterSpacing:1,textAlign:"center"}}>CORTADO</div>
+                    </div>
+                    {prods.map(function(prod){
+                      // Proyeccion inicial (semana guardada)
+                      var sg2=sg&&sg[sI+"_"+rid];
+                      var pT=TIPOS.reduce(function(s,t){
+                        var v=sg2&&sg2.dias&&sg2.dias[di]&&sg2.dias[di][prod]?nv(sg2.dias[di][prod][t]&&sg2.dias[di][prod][t].rejas||0):0;
+                        return s+v;
+                      },0);
+                      // Ajuste / dato mas reciente
+                      var aT=TIPOS.reduce(function(s,t){return s+getRej(prod,di,t);},0);
+                      // Si no hay semana guardada, proyectado = ajuste (mismo dato)
+                      var pShow=pT||aT;
+                      var cortado=recProd[prod]||0;
+                      if(!aT&&!cortado)return null;
+                      var hayAju=pT>0&&aT!==pT;
+                      var diff=cortado>0?cortado-aT:null;
+                      var prec=aT>0&&cortado>0?Math.round(cortado/aT*100):null;
+                      var colPrec=prec===null?"#5a7a1a":prec>=90?"#4ade80":prec>=75?AMB:"#ef5350";
+                      var colDiff=diff===null?"#5a7a1a":diff>=0?"#4ade80":"#ef5350";
+                      return(
+                        <div key={prod} style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:6,padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,0.04)",alignItems:"center"}}>
+                          <div style={{fontSize:12,fontWeight:800,color:"#c8d870"}}>{prod}</div>
+                          <div style={{textAlign:"center"}}>
+                            <div style={{fontSize:17,fontWeight:900,color:"#c8d870",fontFamily:"Georgia,serif"}}>{fmt(pShow,0)}</div>
+                            <div style={{fontSize:8,color:"#5a7a1a"}}>rjs</div>
+                          </div>
+                          <div style={{textAlign:"center"}}>
+                            {hayAju
+                              ?<div><div style={{fontSize:17,fontWeight:900,color:"#90caf9",fontFamily:"Georgia,serif"}}>{fmt(aT,0)}</div><div style={{fontSize:8,color:aT>pT?"#4ade80":"#ef5350"}}>{aT>pT?"+":""}{fmt(aT-pT,0)}</div></div>
+                              :<div style={{fontSize:11,color:"#3a5c0a",fontStyle:"italic"}}>sin ajuste</div>
+                            }
+                          </div>
+                          <div style={{textAlign:"center"}}>
+                            {cortado>0
+                              ?<div>
+                                <div style={{fontSize:17,fontWeight:900,color:"#4ade80",fontFamily:"Georgia,serif"}}>{fmt(cortado,0)}</div>
+                                <div style={{fontSize:9,fontWeight:700,color:colDiff}}>{diff>=0?"+":""}{fmt(diff,0)} rjs</div>
+                                {prec!==null&&<div style={{fontSize:9,fontWeight:900,color:colPrec}}>{prec}%</div>}
+                              </div>
+                              :<div style={{fontSize:11,color:"#3a5c0a",fontStyle:"italic"}}>--</div>
+                            }
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {/* Total del rancho */}
+                    {(function(){
+                      var totP=prods.reduce(function(s,pr){var sg2=sg&&sg[sI+"_"+rid];return s+TIPOS.reduce(function(ss,t){var v=sg2&&sg2.dias&&sg2.dias[di]&&sg2.dias[di][pr]?nv(sg2.dias[di][pr][t]&&sg2.dias[di][pr][t].rejas||0):0;return ss+v;},0);},0);
+                      var totA=prods.reduce(function(s,pr){return s+TIPOS.reduce(function(ss,t){return ss+getRej(pr,di,t);},0);},0);
+                      var totR=Object.values?Object.keys(recProd).reduce(function(s,k){return s+recProd[k];},0):0;
+                      if(!totA&&!totR)return null;
+                      var totPrec=totA>0&&totR>0?Math.round(totR/totA*100):null;
+                      return(
+                        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:6,padding:"9px 0 0",marginTop:4,borderTop:"2px solid rgba(255,255,255,0.08)"}}>
+                          <div style={{fontSize:10,fontWeight:900,color:rc}}>TOTAL</div>
+                          <div style={{textAlign:"center",fontSize:16,fontWeight:900,color:"#c8d870",fontFamily:"Georgia,serif"}}>{fmt(totP||totA,0)}</div>
+                          <div style={{textAlign:"center",fontSize:16,fontWeight:900,color:"#90caf9",fontFamily:"Georgia,serif"}}>{totP&&totA!==totP?fmt(totA,0):<span style={{color:"#3a5c0a",fontSize:11,fontStyle:"italic"}}>-</span>}</div>
+                          <div style={{textAlign:"center"}}>
+                            {totR>0&&<div>
+                              <div style={{fontSize:16,fontWeight:900,color:"#4ade80",fontFamily:"Georgia,serif"}}>{fmt(totR,0)}</div>
+                              {totPrec!==null&&<div style={{fontSize:11,fontWeight:900,color:totPrec>=90?"#4ade80":totPrec>=75?AMB:"#ef5350"}}>{totPrec}% precision</div>}
+                            </div>}
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
