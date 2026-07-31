@@ -527,16 +527,29 @@ inp.addEventListener("change",function(){onChange(parseFloat(inp.value)||0);});w
     var btnPrevF=btn(null,"Dia anterior");
     btnPrevF.style.cssText="padding:6px 14px;border-radius:7px;border:1.5px solid #1e4d1e;background:transparent;color:#86efac;font-size:12px;font-weight:700;cursor:pointer";
     btnPrevF.addEventListener("click",function(){
-      // Copiar del dia ACTUAL al dia ANTERIOR
-      var src=String(ST.di),dst=String(ST.di>0?ST.di-1:6);
       var fR=ST.sem.fR;if(!fR)fR=ST.sem.fR={};
+      var src=String(ST.di);
+      if(!fR[src]||Object.keys(fR[src]).length===0){
+        for(var d3=0;d3<7;d3++){if(fR[String(d3)]&&Object.keys(fR[String(d3)]).length>0){src=String(d3);break;}}
+      }
+      var dst=String(ST.di>0?ST.di-1:6);
       if(fR[src])fR[dst]=JSON.parse(JSON.stringify(fR[src]));
       savSemFR2();renderTab();
     });
     hdrF.appendChild(btnPrevF);
     var btnSemF=btn(null,"Aplicar semana");
     btnSemF.style.cssText="padding:6px 14px;border-radius:7px;border:1.5px solid #1e4d1e;background:transparent;color:#86efac;font-size:12px;font-weight:700;cursor:pointer";
-    btnSemF.addEventListener("click",function(){var src=String(ST.di);var fR=ST.sem.fR||{};[0,1,2,3,4,5,6].forEach(function(d){if(d!==ST.di&&fR[src])fR[String(d)]=JSON.parse(JSON.stringify(fR[src]));});savSemFR2();renderTab();});
+    btnSemF.addEventListener("click",function(){
+      var fR=ST.sem.fR||{};
+      // Buscar el dia con factores: primero el dia actual, luego cualquier otro
+      var src=String(ST.di);
+      if(!fR[src]||Object.keys(fR[src]).length===0){
+        for(var d2=0;d2<7;d2++){if(fR[String(d2)]&&Object.keys(fR[String(d2)]).length>0){src=String(d2);break;}}
+      }
+      if(!fR[src]||Object.keys(fR[src]).length===0){return;}
+      [0,1,2,3,4,5,6].forEach(function(d){fR[String(d)]=JSON.parse(JSON.stringify(fR[src]));});
+      savSemFR2();renderTab();
+    });
     hdrF.appendChild(btnSemF);
     var btnClrF=btn(null,"Limpiar");
     btnClrF.style.cssText="padding:6px 14px;border-radius:7px;border:1.5px solid rgba(239,68,68,.4);background:transparent;color:#ef4444;font-size:12px;font-weight:700;cursor:pointer";
