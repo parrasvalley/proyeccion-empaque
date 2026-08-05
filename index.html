@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Rendimientos | PVT</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,sans-serif;background:#07100a;color:#e0ead0;min-height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:rgba(74,222,128,.25);border-radius:3px}
+input[type=number]::-webkit-inner-spin-button{opacity:1}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.fi{animation:fi .25s ease both}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.float{animation:float 3s ease-in-out infinite}
+</style>
+</head>
+<body><div id="root"></div>
+<script type="text/babel">
+var uS=React.useState,uE=React.useEffect,uM=React.useMemo;
+var FB="https://parrasvalley-default-rtdb.firebaseio.com";
+var PIN="1986";
+var CULTS=["Persa","Slicer","Europeo","Morron","Minibel"];
+var RC=["#22c55e","#38bdf8","#f59e0b","#a78bfa","#f43f5e","#06b6d4"];
+var KG={"20lb":9.25,"20 lb":9.25,"8x2":7.60,"8x2lb":7.60,"12x1":5.70,"12x1lb":5.70,"11lb":5.13,"12x8oz":2.88,
+  "18lb":8.30,"18 lb":8.30,"25lb":11.57,"50lb":23.13,"Bushel":27,"1/9 bushel":9.07,
+  "RPC 35lb":15.88,"Verde RPC":13.61,"L":5.13,"XL":5.13,"Jumbo":5.13,"8x6":5.44,"12x2":5.00};
+var PZ={"33ct":33,"33 PZ":33,"18ct":18,"24ct":24,"36ct":36,"62ct":62,"12ct":12,"62 piezas":62};
+var CMAP={
+  Persa:{"Primera":"a","Segunda":"b","Tercera":"c"},
+  Slicer:{"Superselecto":"a","Super":"a","Selecto":"b","Large":"b","Choice":"c","Plain":"c","Small":"c"},
+  Europeo:{"Primera":"a","Segunda":"b","Tercera":"c","Choice":"c","Bushel":"c","1/9":"c","Merma":"c"},
+  Morron:{"Primera":"a","Segunda":"a","Choice":"b","Tercera":"c"},
+  Minibel:{"Primera":"a","Segunda":"b","Tercera":"b"}
+};
+var CLABS={
+  Persa:[{id:"a",l:"1a Primera",c:"#22c55e"},{id:"b",l:"2a Segunda",c:"#60a5fa"},{id:"c",l:"3a Tercera",c:"#f59e0b"}],
+  Slicer:[{id:"a",l:"Superselecto",c:"#22c55e"},{id:"b",l:"Selecto",c:"#60a5fa"},{id:"c",l:"Choice",c:"#f59e0b"}],
+  Europeo:[{id:"a",l:"1a Primera",c:"#22c55e"},{id:"b",l:"2a Segunda",c:"#60a5fa"},{id:"c",l:"3a Tercera",c:"#f59e0b"}],
+  Morron:[{id:"a",l:"1a Primera",c:"#22c55e"},{id:"b",l:"Choice",c:"#60a5fa"},{id:"c",l:"Tercera",c:"#f59e0b"}],
+  Minibel:[{id:"a",l:"1a Primera",c:"#22c55e"},{id:"b",l:"2a Segunda",c:"#60a5fa"}]
+};
+var KG_PZ_SLICER=0.325;
+var MES3={ene:1,feb:2,mar:3,abr:4,may:5,jun:6,jul:7,ago:8,sep:9,oct:10,nov:11,dic:12};
+// La app de Recibo guarda la fecha como texto ("mar, 05 ago 2026").
+// Aqui se maneja ISO ("2026-08-05"). Esta funcion traduce de uno al otro.
+function recISO(h){
+  var f=(h&&h.fecha)||"";
+  var m=String(f).toLowerCase().replace(/[.,]/g," ").match(/(\d{1,2})\s+([a-z]+)\s+(\d{4})/);
+  if(m){
+    var mo=MES3[m[2].slice(0,3)];
+    if(mo)return m[3]+"-"+(mo<10?"0":"")+mo+"-"+(m[1].length<2?"0":"")+m[1];
+  }
+  if(h&&h.id)return tsISO(h.id);
+  return f;
+}
+// El bushel (1/9) NO pesa igual en todos los cultivos:
+//   Europeo -> va por PIEZAS: 45 por caja, el peso no importa
+//   Morron  -> 25.5 lb  = 11.57 kg
+//   Slicer  -> 51 lb    = 23.13 kg   (igual que Plain de tercera)
+// produccion.html graba las presentaciones con distinto formato segun el
+// cultivo ("20 LBS", "12X1 LB", "11lb"...). Se normaliza antes de buscar.
+function nk(p){return String(p||"").toLowerCase().replace(/\s+/g,"").replace(/lbs/g,"lb");}
+var KGN={},PZN={};
+Object.keys(KG).forEach(function(k){KGN[nk(k)]=KG[k];});
+Object.keys(PZ).forEach(function(k){PZN[nk(k)]=PZ[k];});
+function esBushel(pres){var p=String(pres||"").toLowerCase().replace(/\s+/g,"");return p.indexOf("1/9")>=0||p.indexOf("bushel")>=0;}
+function esPlain(pres){return String(pres||"").toLowerCase().indexOf("plain")>=0;}
+function kgPres(pres,cu){
+  if(cu==="Slicer"){
+    if(PZN[nk(pres)])return null;
+    if(esBushel(pres)||esPlain(pres))return 23.13;
+  }
+  if(cu==="Morron"&&esBushel(pres))return 11.57;
+  // En Europeo SIEMPRE mandan las piezas, nunca el peso
+  if(cu==="Europeo")return null;
+  return KGN[nk(pres)]!==undefined?KGN[nk(pres)]:null;
+}
+function pzPres(pres,cu){
+  if(cu==="Europeo"&&esBushel(pres))return 45;
+  return PZN[nk(pres)]||0;
+}
+function r2(n){return Math.round((n||0)*100)/100}
+function pc(a,b){return b>0?Math.round((a||0)/b*1000)/10:0}
+function ni(v){var x=parseInt(v);return isNaN(x)?0:x}
+function nf(v){var x=parseFloat(v);return isNaN(x)?0:x}
+function hoy(){var d=new Date(),m=d.getMonth()+1,dd=d.getDate();return d.getFullYear()+"-"+(m<10?"0":"")+m+"-"+(dd<10?"0":"")+dd}
+function tsISO(ts){if(!ts)return "";var d=new Date(ts),m=d.getMonth()+1,dd=d.getDate();return d.getFullYear()+"-"+(m<10?"0":"")+m+"-"+(dd<10?"0":"")+dd}
+function fget(k){return fetch(FB+"/"+k+".json").then(function(r){return r.json()}).catch(function(){return null})}
+function fput(k,v){return fetch(FB+"/"+k+".json",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(v)}).catch(function(){})}
+function mCol(p){return p>20?"#ef4444":p>12?"#f59e0b":"#4ade80"}
+
+function App(){
+  var s1=uS(hoy()),fecha=s1[0],setFecha=s1[1];
+  var s2=uS("Persa"),cult=s2[0],setCult=s2[1];
+  var s3=uS("cap"),tab=s3[0],setTab=s3[1];
+  var s4=uS(false),auth=s4[0],setAuth=s4[1];
+  var s5=uS(""),pin=s5[0],setPin=s5[1];
+  var s6=uS(false),sp=s6[0],setSp=s6[1];
+  var s7=uS(""),msg=s7[0],setMsg=s7[1];
+  var s8=uS(""),jal=s8[0],setJal=s8[1];
+  var s9=uS({}),rec=s9[0],setRec=s9[1];
+  var s10=uS({}),prd=s10[0],setPrd=s10[1];
+  var s11=uS({}),inp=s11[0],setInp=s11[1];
+  var s12=uS({}),hist=s12[0],setHist=s12[1];
+  var s13=uS(false),grd=s13[0],setGrd=s13[1];
+  var s14=uS(false),showPrdModal=s14[0],setShowPrdModal=s14[1];
+  var s15=uS(hoy()),prdFecha=s15[0],setPrdFecha=s15[1];
+  var s16=uS(""),diag=s16[0],setDiag=s16[1];
+  var cals=CLABS[cult]||[];
+  var cmap=CMAP[cult]||{};
+
+  uE(function(){
+    fget("rendimientos-hist-v1").then(function(d){if(d&&typeof d==="object")setHist(d)});
+    try{var sv=localStorage.getItem("pvt-rend-trabajo");if(sv){var o=JSON.parse(sv);if(o.fecha)setFecha(o.fecha);if(o.cult)setCult(o.cult);if(o.rec)setRec(o.rec);if(o.prd)setPrd(o.prd);if(o.inp)setInp(o.inp)}}catch(e){}
+  },[]);
+  uE(function(){try{localStorage.setItem("pvt-rend-trabajo",JSON.stringify({fecha:fecha,cult:cult,rec:rec,prd:prd,inp:inp}))}catch(e){}},[fecha,cult,rec,prd,inp]);
+
+  function fl(m){setMsg(m);setTimeout(function(){setMsg("")},5000)}
+  function gi(r,k){var c=inp[cult];if(!c)return "";var x=c[r];if(!x)return "";return x[k]||""}
+  function si(r,k,v){setInp(function(p){var n=JSON.parse(JSON.stringify(p));if(!n[cult])n[cult]={};if(!n[cult][r])n[cult][r]={};n[cult][r][k]=v;return n})}
+
+  function jRec(){
+    setJal("r");
+    Promise.all([fget("recibo-inv-v1"),fget("recibo-hist-v1")]).then(function(vs){
+      var cn=cult.toLowerCase(),res={};
+      var inv=vs[0];
+      if(inv&&typeof inv==="object"){var lin=inv[cn]||{};var lts=lin.lotes||[];if(!Array.isArray(lts))lts=Object.values(lts).filter(Boolean);lts.forEach(function(l){if(!l||!l.rancho||tsISO(l.ts)!==fecha)return;if(!res[l.rancho])res[l.rancho]={rejas:0,malla:""};res[l.rancho].rejas+=ni(l.cajas);if(l.malla)res[l.rancho].malla=l.malla})}
+      var hc=vs[1];
+      if(hc){var arr=Array.isArray(hc)?hc:Object.values(hc).filter(Boolean);arr.forEach(function(h){if(!h||(h.lineaNombre||"").toLowerCase()!==cn)return;if(recISO(h)!==fecha)return;var lts2=h.lotes||[];if(!Array.isArray(lts2))lts2=Object.values(lts2).filter(Boolean);lts2.forEach(function(l){if(!l||!l.rancho)return;if(!res[l.rancho])res[l.rancho]={rejas:0,malla:""};res[l.rancho].rejas+=ni(l.cajas);if(l.malla)res[l.rancho].malla=l.malla})})}
+      setRec(function(p){var n=JSON.parse(JSON.stringify(p));n[cult]=res;return n});
+      setJal("");fl(Object.keys(res).length>0?"✓ Recibo: "+Object.keys(res).join(", ")+" · "+fecha:"Sin recibo para "+cult+" el "+fecha);
+    }).catch(function(){setJal("");fl("Error recibo")});
+  }
+
+  function jPrd(fechaObj){
+    var fec=fechaObj||prdFecha||fecha;
+    setShowPrdModal(false);
+    setJal("p");
+    fget("produccion-v1").then(function(data){
+      if(!data){setJal("");fl("Sin datos en produccion-v1");return}
+      var po=data[cult];if(!po){setJal("");fl("Sin datos de "+cult);return}
+      var ta=function(x){if(!x)return[];return Array.isArray(x)?x.filter(Boolean):Object.values(x).filter(Boolean)};
+      // Pallets activos (dia, embolsado, conversion_hoy)
+      var inv2=ta(po.inventario);
+      // Pallets embarcados: se mueven de inventario a registros con _descontadoPedido al cargar
+      var reg2=ta(po.registros).filter(function(r){return r&&r._descontadoPedido;});
+      var todos=inv2.concat(reg2);
+      var excl=0,acum={},tiposV={},fechasHay={},calsHay={},nMatch=0;
+      todos.forEach(function(r){
+        if(r){var _f1=r.fechaInventario||r.fecha||"";if(_f1)fechasHay[_f1]=(fechasHay[_f1]||0)+1;}
+        if(!r)return;var f1=r.fechaInventario||"",f2=r.fecha||"";if(f1!==fec&&f2!==fec)return;
+        if((r.tipo||"")==="reproceso"){excl++;return}
+        nMatch++;calsHay[String(r.calidad||"(sin calidad)")]=(calsHay[String(r.calidad||"(sin calidad)")]||0)+1;
+        var rancho=r.rancho||"SinRancho";var calId=cmap[r.calidad]||null;if(!calId){var _c=String(r.calidad||"").trim().toLowerCase();Object.keys(cmap).forEach(function(k){if(!calId&&k.toLowerCase()===_c)calId=cmap[k];});}if(!calId)return;var pres=r.presentacion||"";
+        if(!acum[rancho])acum[rancho]={malla:r.malla||""};if(!acum[rancho][calId])acum[rancho][calId]={};
+        acum[rancho][calId][pres]=(ni(acum[rancho][calId][pres])||0)+ni(r.cajas);
+        var t=r.tipo||"dia";tiposV[t]=(tiposV[t]||0)+1;
+      });
+      setPrd(function(p){var n=JSON.parse(JSON.stringify(p));n[cult]=Object.assign({},n[cult]||{},acum);return n});
+      setJal("");
+      var presL=[];Object.values(acum).forEach(function(rc){Object.keys(rc).forEach(function(ci){if(ci==="malla")return;Object.keys(rc[ci]).forEach(function(p){if(presL.indexOf(p)<0)presL.push(p)})})});
+      if(Object.keys(acum).length===0){
+        var fl2=Object.keys(fechasHay).sort().slice(-12);
+        setDiag("NO se encontro nada de "+cult+" con fecha "+fec+". Registros revisados: "+todos.length+
+          ". Coincidieron por fecha: "+nMatch+
+          ". Calidades vistas: "+(Object.keys(calsHay).join(", ")||"ninguna")+
+          ". Fechas que SI existen: "+(fl2.join(" | ")||"ninguna"));
+      } else { setDiag(""); }
+      fl("✓ Prod "+fec+": "+Object.keys(acum).length+" rancho(s) · Pres: "+(presL.join(", ")||"ninguna")+" · Tipos: "+Object.keys(tiposV).map(function(t){return t+"("+tiposV[t]+")"}).join(", ")+" ("+excl+" excl)");
+    }).catch(function(){setJal("");fl("Error produccion")});
+  }
+
+  function DiagBox(){
+    if(!diag)return null;
+    return React.createElement("div",{style:{background:"rgba(239,68,68,.1)",border:"1px solid rgba(239,68,68,.35)",
+      borderRadius:8,padding:"10px 12px",margin:"10px 0",fontSize:11,color:"#fca5a5",lineHeight:1.6,wordBreak:"break-word"}},diag);
+  }
+  var calcs=uM(function(){
+    var recC=rec[cult]||{},prdC=prd[cult]||{},rset={};
+    Object.keys(recC).forEach(function(r){rset[r]=true});
+    Object.keys(prdC).forEach(function(r){if(r!=="malla")rset[r]=true});
+    var res={};
+    Object.keys(rset).forEach(function(rancho){
+      var rv=recC[rancho]||{},pv=prdC[rancho]||{};
+      var rejas=ni(rv.rejas)||0,pr=nf(gi(rancho,"pesoReja"))||0,pzr=nf(gi(rancho,"piezasReja"))||0;
+      var kgRec=r2(rejas*pr),pzRec=Math.round(rejas*pzr),pp=pzRec>0?kgRec/pzRec:0;
+      var det={},tot=0,totPz=0,sinPeso=[],faltaPz=[];
+      var esEuro=(cult==="Europeo");
+      cals.forEach(function(cal){
+        var pa=pv[cal.id]||{},kgC=0,pzC=0,dsg={};
+        Object.keys(pa).forEach(function(pres){var cajas=ni(pa[pres]),kgP=0,pzP=0;var kc=kgPres(pres,cult),pzc=pzPres(pres,cult);if(cult==="Slicer"&&pzc){pzP=cajas*pzc;kgP=pzP*KG_PZ_SLICER}else if(kc!==null){kgP=cajas*kc}else if(pzc){pzP=cajas*pzc;kgP=pzP*pp;if(!esEuro&&cajas>0&&pp<=0&&faltaPz.indexOf(pres)<0)faltaPz.push(pres)}else if(cajas>0&&sinPeso.indexOf(pres)<0){sinPeso.push(pres)}kgC+=kgP;pzC+=pzP;if(cajas>0)dsg[pres]={cajas:cajas,kg:r2(kgP),pz:pzP}});
+        det[cal.id]={kg:r2(kgC),pz:pzC,dsg:dsg};tot+=kgC;totPz+=pzC;
+      });
+      tot=r2(tot);
+      // El Europeo se mide en PIEZAS, no en kilos
+      var bRec=esEuro?pzRec:kgRec;
+      var bEmp=esEuro?totPz:tot;
+      var bM=r2(bRec-bEmp);
+      res[rancho]={malla:rv.malla||pv.malla||"",rejas:rejas,pesoReja:pr,
+        kgRec:bRec,kgEmp:bEmp,kgM:bM,pctM:pc(bM,bRec),
+        u:esEuro?"pzas":"kg",esEuro:esEuro,
+        sinPeso:sinPeso,faltaPz:faltaPz,
+        fRend:bRec>0?Math.round(bEmp/bRec*1000)/10:0,det:det};
+    });
+    return res;
+  },[rec,prd,inp,cult,fecha]);
+
+  var activos=Object.keys(calcs).filter(function(r){return calcs[r].kgRec>0||calcs[r].kgEmp>0});
+  var hayD=activos.length>0;
+
+  function guardar(){
+    if(!auth){setSp(true);return}
+    setGrd(true);
+    var e={fecha:fecha,cult:cult,ts:Date.now(),ranchos:{}};
+    activos.forEach(function(r){e.ranchos[r]=calcs[r]});
+    var k="rendimientos-hist-v1/"+fecha.replace(/-/g,"")+"/"+cult;
+    fput(k,e).then(function(){
+      setHist(function(p){var n=JSON.parse(JSON.stringify(p));var dk=fecha.replace(/-/g,"");if(!n[dk])n[dk]={};n[dk][cult]=e;return n});
+      setRec({});setPrd({});setInp({});
+      try{localStorage.removeItem("pvt-rend-trabajo")}catch(ex){}
+      setGrd(false);fl("✓ Guardado. Listo para el siguiente día.");
+    });
+  }
+
+  var diasH=uM(function(){
+    var keys=Object.keys(hist).sort(function(a,b){return b>a?1:-1}).slice(0,14);
+    return keys.map(function(dk){var d=hist[dk];if(!d||!d[cult])return null;return{fec:(d[cult].fecha||dk.slice(0,4)+"-"+dk.slice(4,6)+"-"+dk.slice(6,8)),ranchos:d[cult].ranchos||{}}}).filter(Boolean);
+  },[hist,cult]);
+
+  var INP={background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:6,padding:"5px 8px",color:"#e0ead0",fontSize:13,fontFamily:"'DM Mono',monospace",textAlign:"center",outline:"none"};
+  var TH={padding:"4px 5px",textAlign:"right",fontSize:9,color:"#4a6a3a",fontWeight:700,letterSpacing:.5};
+  var TD=function(ex){return Object.assign({padding:"6px 5px",textAlign:"right",borderBottom:"1px solid rgba(255,255,255,.04)",verticalAlign:"middle"},ex||{})};
+
+  function Btn(p){return <button onClick={p.onClick} disabled={p.dis} style={{background:p.bg||"rgba(255,255,255,.07)",border:"1px solid "+(p.bc||"rgba(255,255,255,.12)"),borderRadius:8,padding:"8px 14px",color:p.col||"#e0ead0",fontWeight:700,fontSize:12,cursor:p.dis?"not-allowed":"pointer",opacity:p.dis?.5:1,transition:"all .15s"}}>{p.children}</button>}
+
+  return(
+    <div style={{minHeight:"100vh",background:"#07100a"}}>
+
+      {/* HEADER */}
+      <div style={{background:"linear-gradient(135deg,#051a09,#0a2e12)",padding:"11px 14px",borderBottom:"1px solid rgba(74,222,128,.1)",position:"sticky",top:0,zIndex:10,boxShadow:"0 2px 10px rgba(0,0,0,.5)"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:7,marginBottom:8}}>
+          <div>
+            <div style={{fontSize:9,color:"#4a8a5a",fontWeight:700,letterSpacing:3,textTransform:"uppercase"}}>Parras Valley Tomatoes</div>
+            <div style={{fontSize:16,fontWeight:900,color:"#a8e063"}}>Control General de Rendimientos</div>
+          </div>
+          <div style={{display:"flex",gap:7,alignItems:"center",flexWrap:"wrap"}}>
+            <input type="date" value={fecha} onChange={function(e){setFecha(e.target.value)}} style={Object.assign({},INP,{width:"auto"})}/>
+            {auth?<span style={{fontSize:10,color:"#4ade80",fontWeight:700}}>Editor</span>
+              :<Btn onClick={function(){setSp(true)}} bg="rgba(74,222,128,.08)" bc="rgba(74,222,128,.2)" col="#4ade80">Editar</Btn>}
+          </div>
+        </div>
+        <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+          {CULTS.map(function(c){var on=cult===c;return <button key={c} onClick={function(){setCult(c)}} style={{padding:"4px 10px",borderRadius:6,border:"1px solid "+(on?"#4ade80":"rgba(255,255,255,.08)"),background:on?"rgba(74,222,128,.1)":"transparent",color:on?"#4ade80":"#6a7a5a",fontSize:12,fontWeight:700,cursor:"pointer"}}>{c}</button>})}
+          <div style={{flex:1}}/>
+          {["cap","evo"].map(function(t){var on=tab===t;return <button key={t} onClick={function(){setTab(t)}} style={{padding:"4px 10px",borderRadius:6,border:"1px solid "+(on?"rgba(74,222,128,.5)":"rgba(255,255,255,.08)"),background:on?"rgba(74,222,128,.08)":"transparent",color:on?"#4ade80":"#6a7a5a",fontSize:11,fontWeight:700,cursor:"pointer"}}>{t==="cap"?"Captura":"Evolución"}</button>})}
+        </div>
+      </div>
+
+      {!!msg&&<div style={{background:"rgba(74,222,128,.08)",borderBottom:"1px solid rgba(74,222,128,.15)",padding:"6px 14px",fontSize:11,color:"#4ade80",fontWeight:600}}>{msg}</div>}
+
+      {/* PIN */}
+      {sp&&(
+        <div onClick={function(e){if(e.target===e.currentTarget)setSp(false)}} style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:50,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div style={{background:"#0f1f0a",border:"1px solid rgba(74,222,128,.3)",borderRadius:12,padding:"24px 20px",minWidth:220,textAlign:"center"}}>
+            <div style={{fontWeight:800,color:"#a8e063",marginBottom:11,fontSize:13}}>Acceso Editor</div>
+            <input type="password" value={pin} onChange={function(e){setPin(e.target.value)}} onKeyDown={function(e){if(e.key==="Enter"&&pin===PIN){setAuth(true);setSp(false);setPin("");fl("✓ Acceso concedido")}}} placeholder="PIN" style={Object.assign({},INP,{width:"100%",fontSize:18,marginBottom:9,textAlign:"center"})}/>
+            <Btn onClick={function(){if(pin===PIN){setAuth(true);setSp(false);setPin("");fl("✓ Acceso concedido")}else fl("PIN incorrecto")}} bg="rgba(74,222,128,.12)" bc="rgba(74,222,128,.3)" col="#4ade80">Entrar</Btn>
+          </div>
+        </div>
+      )}
+
+      {/* ===== TAB CAPTURA ===== */}
+      {tab==="cap"&&(
+        <div style={{padding:"11px 11px 40px"}}>
+          {/* Modal fecha producción */}
+          {showPrdModal&&(
+            <div onClick={function(e){if(e.target===e.currentTarget)setShowPrdModal(false)}} style={{position:"fixed",inset:0,background:"rgba(0,0,0,.7)",zIndex:50,display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <div style={{background:"#0f1f0a",border:"1px solid rgba(56,189,248,.3)",borderRadius:12,padding:"22px 20px",minWidth:260,textAlign:"center"}}>
+                <div style={{fontWeight:800,color:"#38bdf8",marginBottom:4,fontSize:13}}>Jalar Produccion</div>
+                <div style={{fontSize:11,color:"#4a6a3a",marginBottom:14}}>¿De qué fecha quieres jalar?</div>
+                <input type="date" value={prdFecha} onChange={function(e){setPrdFecha(e.target.value)}}
+                  style={{width:"100%",padding:"9px 10px",borderRadius:8,border:"1px solid rgba(56,189,248,.3)",background:"rgba(0,0,0,.3)",color:"#e0ead0",fontSize:15,fontWeight:700,outline:"none",marginBottom:14,textAlign:"center"}}/>
+                <div style={{display:"flex",gap:8}}>
+                  <button onClick={function(){setShowPrdModal(false)}}
+                    style={{flex:1,padding:"9px",borderRadius:8,border:"1px solid rgba(255,255,255,.1)",background:"transparent",color:"#4a6a3a",fontWeight:700,fontSize:12,cursor:"pointer"}}>Cancelar</button>
+                  <button onClick={function(){jPrd(prdFecha)}} disabled={!prdFecha||!!jal}
+                    style={{flex:2,padding:"9px",borderRadius:8,border:"none",background:"linear-gradient(135deg,#1e40af,#3b82f6)",color:"#fff",fontWeight:700,fontSize:12,cursor:"pointer"}}>
+                    Jalar del {prdFecha}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div style={{display:"flex",gap:7,marginBottom:11,flexWrap:"wrap",alignItems:"center"}}>
+            <Btn onClick={jRec} dis={!!jal} bg="rgba(234,179,8,.08)" bc="rgba(234,179,8,.25)" col="#fde047">{jal==="r"?"Jalando recibo...":"⬇ Jalar de Recibo"}</Btn>
+            <Btn onClick={function(){setPrdFecha(fecha);setShowPrdModal(true);}} dis={!!jal} bg="rgba(56,189,248,.08)" bc="rgba(56,189,248,.25)" col="#38bdf8">{jal==="p"?"Jalando produccion...":"⬇ Jalar de Produccion"}</Btn>
+            <div style={{flex:1}}/>
+            {hayD&&<Btn onClick={guardar} dis={grd} bg="rgba(74,222,128,.1)" bc="rgba(74,222,128,.3)" col="#4ade80">{grd?"Guardando...":" Guardar día"}</Btn>}
+          </div>
+
+          <div style={{background:"rgba(255,255,255,.02)",border:"1px solid rgba(255,255,255,.06)",borderRadius:8,padding:"9px 11px",marginBottom:11}}>
+            <div style={{fontSize:9,color:"#4a6a3a",fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",marginBottom:7}}>Peso de recibo por rancho</div>
+            <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+              {(Object.keys(rec[cult]||{}).length>0?Object.keys(rec[cult]||{}):["PVT","Cordillera","Forrajera"]).map(function(rancho,ri){
+                var rv=(rec[cult]||{})[rancho]||{};var rc=RC[ri%RC.length];
+                return(
+                  <div key={rancho} style={{background:"rgba(255,255,255,.03)",border:"1px solid "+rc+"33",borderLeft:"3px solid "+rc,borderRadius:7,padding:"8px 10px",minWidth:165}}>
+                    <div style={{fontWeight:800,color:rc,fontSize:12,marginBottom:5}}>{rancho} {rv.malla&&<span style={{fontSize:10,color:rc+"88",fontWeight:500}}>M{rv.malla}</span>}</div>
+                    <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                      <div><div style={{fontSize:8,color:"#4a6a3a",marginBottom:2}}>Rejas</div><div style={{fontSize:15,fontWeight:900}}>{rv.rejas||"—"}</div></div>
+                      <div><div style={{fontSize:8,color:"#4a6a3a",marginBottom:2}}>Kg/reja</div><input type="number" min="0" step="0.1" placeholder="0.0" value={gi(rancho,"pesoReja")} onChange={function(e){si(rancho,"pesoReja",e.target.value)}} style={Object.assign({},INP,{width:65})}/></div>
+                      {(cult==="Slicer"||cult==="Europeo"||cult==="Morron")&&<div><div style={{fontSize:8,color:"#4a6a3a",marginBottom:2}}>Pzas/reja</div><input type="number" min="0" placeholder="0" value={gi(rancho,"piezasReja")} onChange={function(e){si(rancho,"piezasReja",e.target.value)}} style={Object.assign({},INP,{width:65})}/></div>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {!hayD&&<div style={{textAlign:"center",padding:"36px 0",color:"#2a3a2a",fontSize:13}}><div style={{fontSize:28,marginBottom:7}}></div>Jala recibo y produccion, luego ingresa el peso por reja</div>}
+
+          {hayD&&(
+            <div style={{display:"flex",gap:12,alignItems:"flex-start",flexWrap:"wrap"}}>
+
+              {/* IZQUIERDA */}
+              <div style={{flex:"0 0 auto",width:"min(480px,100%)"}}>
+                {activos.map(function(rancho,ri){
+                  var d=calcs[rancho],rc=RC[ri%RC.length];
+                  var prR=(prd[cult]||{})[rancho]||{};
+                  return(
+                    <div key={rancho} className="fi" style={{background:"rgba(255,255,255,.025)",border:"1px solid "+rc+"44",borderLeft:"4px solid "+rc,borderRadius:8,marginBottom:10,overflow:"hidden"}}>
+                      <div style={{padding:"8px 12px",background:"rgba(0,0,0,.45)",display:"flex",alignItems:"center",gap:8,borderBottom:"1px solid "+rc+"33"}}>
+                        <span style={{fontWeight:900,color:rc,fontSize:16}}>{rancho}</span>
+                        {d.malla&&<span style={{fontSize:10,color:rc+"88",fontWeight:600}}>M{d.malla}</span>}
+                        <span style={{fontSize:11,color:"#6a7a5a"}}>{d.rejas} rejas × {d.pesoReja||0} kg/reja = {d.kgRec} kg</span>
+                        <div style={{flex:1}}/>
+                        <span style={{fontSize:12,fontWeight:800,color:mCol(d.pctM)}}>Merma {d.pctM}%</span>
+                      </div>
+                      <div style={{height:5,display:"flex",background:"rgba(239,68,68,.2)"}}>
+                        {cals.map(function(cal){var p=pc((d.det[cal.id]||{kg:0}).kg,d.kgRec);if(p<=0)return null;return <div key={cal.id} style={{width:p+"%",background:cal.c}}/>;})}</div>
+                      <div style={{padding:"7px 9px"}}>
+                        {(function(){var ps=[];cals.forEach(function(cal){var pr=prR[cal.id]||{};Object.keys(pr).forEach(function(p){if(ni(pr[p])>0)ps.push(cal.l.split(" ")[0]+" "+p+"("+pr[p]+")")})});if(!ps.length)return null;return <div style={{fontSize:9,color:"#4a5a3a",marginBottom:4,padding:"2px 4px",background:"rgba(255,255,255,.03)",borderRadius:3}}>Encontrado: {ps.join(" · ")}</div>})()}
+                        <table style={{width:"100%",borderCollapse:"collapse"}}>
+                          <thead>
+                            <tr style={{borderBottom:"1px solid rgba(255,255,255,.08)"}}>
+                              <th style={{padding:"3px 4px",textAlign:"left",fontSize:9,color:"#4a6a3a",fontWeight:700}}>Calidad · Presentación</th>
+                              <th style={TH}>Cajas</th><th style={TH}>Kg</th><th style={Object.assign({},TH,{color:"#a8e063"})}>Factor</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {cals.map(function(cal){
+                              var det=d.det[cal.id]||{kg:0,dsg:{}};var dsg=det.dsg||{};
+                              var pk=Object.keys(dsg).filter(function(k){return(dsg[k].cajas||0)>0});
+                              if(!pk.length&&det.kg===0)return null;
+                              var fac=d.rejas>0&&det.kg>0?r2((det.kg/9.25)/d.rejas):0;
+                              var totC=pk.reduce(function(s,p){return s+(dsg[p].cajas||0)},0);
+                              return [
+                                pk.map(function(pres){var pd=dsg[pres];return(
+                                  <tr key={cal.id+"_"+pres} style={{borderBottom:"1px solid rgba(255,255,255,.03)"}}>
+                                    <td style={{padding:"4px 4px 4px 9px",fontSize:13}}><span style={{color:cal.c,fontWeight:700,fontSize:10,marginRight:3}}>{cal.l.split(" ")[0]}</span>{pres}</td>
+                                    <td style={TD({fontFamily:"'DM Mono',monospace",fontSize:14,fontWeight:700,color:"#e0ead0"})}>{pd.cajas}</td>
+                                    <td style={TD({fontFamily:"'DM Mono',monospace",fontSize:13,color:"#b0c890"})}>{pd.kg}</td>
+                                    <td style={TD({fontSize:10,color:"#3a4a2a"})}>—</td>
+                                  </tr>
+                                )}),
+                                <tr key={cal.id+"_T"} style={{background:"rgba(255,255,255,.04)",borderTop:"1px solid rgba(255,255,255,.1)"}}>
+                                  <td style={{padding:"5px 4px",fontWeight:900,color:cal.c,fontSize:13}}>Total {cal.l.split(" ")[0]}</td>
+                                  <td style={TD({fontWeight:800,fontSize:14,fontFamily:"'DM Mono',monospace",color:"#e0ead0"})}>{totC}</td>
+                                  <td style={TD({fontWeight:900,fontSize:15,fontFamily:"'DM Mono',monospace",color:cal.c})}>{det.kg}</td>
+                                  <td style={TD({fontWeight:900,fontSize:14,fontFamily:"'DM Mono',monospace",color:"#a8e063"})}>{fac}</td>
+                                </tr>
+                              ];
+                            })}
+                            <tr style={{borderTop:"1px solid rgba(239,68,68,.25)"}}>
+                              <td style={{padding:"5px 4px",fontWeight:700,color:"#ef4444",fontSize:13}}>Merma</td>
+                              <td style={TD({color:"#4a5a3a"})}>—</td>
+                              <td style={TD({fontWeight:900,fontSize:15,fontFamily:"'DM Mono',monospace",color:"#ef4444"})}>{d.kgM}</td>
+                              <td style={TD({fontWeight:700,fontSize:13,color:mCol(d.pctM)})}>{d.pctM}%</td>
+                            </tr>
+                            <tr style={{borderTop:"1px solid rgba(74,222,128,.2)",background:"rgba(74,222,128,.04)"}}>
+                              <td style={{padding:"5px 4px",fontWeight:900,color:"#4ade80",fontSize:13}}>Empacado</td>
+                              <td style={TD({fontSize:12,fontFamily:"'DM Mono',monospace",color:"#6a7a5a"})}>{cals.reduce(function(s,cal){var dt=d.det[cal.id]||{dsg:{}};return s+Object.keys(dt.dsg||{}).reduce(function(ss,p){return ss+(dt.dsg[p].cajas||0)},0)},0)}</td>
+                              <td style={TD({fontWeight:900,fontSize:15,fontFamily:"'DM Mono',monospace",color:"#4ade80"})}>{d.kgEmp}</td>
+                              <td style={TD({fontSize:10,color:"#3a4a2a"})}>—</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* DERECHA: comparativa con donas */}
+              <div style={{flex:1,minWidth:240}}>
+                <div style={{background:"#0b1a0e",border:"1px solid rgba(74,222,128,.2)",borderRadius:10,overflow:"hidden",maxWidth:390}}>
+                  <div style={{background:"rgba(0,0,0,.5)",padding:"9px 12px",borderBottom:"1px solid rgba(74,222,128,.15)"}}>
+                    <div style={{fontSize:9,color:"#4a8a5a",fontWeight:700,letterSpacing:2,textTransform:"uppercase"}}>Parras Valley Tomatoes</div>
+                    <div style={{fontSize:14,fontWeight:900,color:"#a8e063",marginTop:1}}>Comparativa de Ranchos</div>
+                    <div style={{fontSize:10,color:"#4a6a3a"}}>{cult} · {fecha}</div>
+                  </div>
+                  {DiagBox()}
+                  {/* BARRAS POR RANCHO */}
+                  <div style={{padding:"12px 14px"}}>
+                    {activos.slice().sort(function(a,b){return calcs[b].fRend-calcs[a].fRend}).map(function(rancho,ri){
+                      var d=calcs[rancho],rc=RC[ri%RC.length];
+                      var sinRec=!(d.kgRec>0);
+                      var sobra=d.kgM<0;
+                      var segs=[];
+                      cals.forEach(function(cal){
+                        var _dd=d.det[cal.id]||{};var kgc=(d.esEuro?_dd.pz:_dd.kg)||0;
+                        if(kgc>0)segs.push({l:cal.l.split(" ").slice(-1)[0],c:cal.c,kg:kgc});
+                      });
+                      if(!sinRec&&d.kgM>0)segs.push({l:"Merma",c:"#ef4444",kg:d.kgM});
+                      var sumSeg=segs.reduce(function(t,x){return t+x.kg},0);
+                      var base=(d.kgRec>0?d.kgRec:sumSeg)||1;
+                      var alerta=(d.sinPeso&&d.sinPeso.length)||(d.faltaPz&&d.faltaPz.length);
+                      return(
+                        <div key={rancho} style={{marginBottom:14,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.07)",borderRadius:10,padding:"12px 14px"}}>
+                          <div style={{display:"flex",alignItems:"baseline",gap:10,marginBottom:9}}>
+                            <div style={{fontSize:14,fontWeight:900,color:rc,letterSpacing:.3}}>{rancho}</div>
+                            <div style={{fontSize:10,color:"#4a6a3a"}}>{d.rejas} rejas{d.malla?" . malla "+d.malla:""}</div>
+                            <div style={{marginLeft:"auto",textAlign:"right"}}>
+                              {sinRec
+                                ? <div style={{fontSize:11,fontWeight:700,color:"#6b7280"}}>sin recibo</div>
+                                : <div>
+                                    <span style={{fontSize:21,fontWeight:900,color:mCol(d.pctM),fontFamily:"'DM Mono',monospace",lineHeight:1}}>{d.fRend}%</span>
+                                    <span style={{fontSize:9,color:"#4a6a3a",marginLeft:5}}>rendimiento</span>
+                                  </div>}
+                            </div>
+                          </div>
+                          <div style={{display:"flex",height:24,borderRadius:5,overflow:"hidden",background:"rgba(0,0,0,.35)",marginBottom:8}}>
+                            {segs.map(function(x,i){
+                              var w=x.kg/base*100;
+                              return <div key={i} title={x.l+": "+r2(x.kg)+" kg"} style={{width:w+"%",background:x.c,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
+                                {w>11&&<span style={{fontSize:9,fontWeight:900,color:"rgba(0,0,0,.65)",whiteSpace:"nowrap"}}>{Math.round(w)}%</span>}
+                              </div>;
+                            })}
+                          </div>
+                          <div style={{display:"flex",gap:14,flexWrap:"wrap",fontSize:10,marginBottom:2}}>
+                            {segs.map(function(x,i){
+                              var pcx=Math.round(x.kg/base*1000)/10;
+                              return(
+                              <span key={i} style={{display:"flex",alignItems:"center",gap:5,background:"rgba(0,0,0,.25)",padding:"4px 8px",borderRadius:6}}>
+                                <span style={{width:8,height:8,borderRadius:2,background:x.c,display:"inline-block"}}/>
+                                <span style={{color:"#9ab88a",fontWeight:700}}>{x.l}</span>
+                                <span style={{color:"#e5e7eb",fontWeight:900,fontFamily:"'DM Mono',monospace"}}>{Math.round(x.kg).toLocaleString()}</span>
+                                <span style={{color:"#5a7a4a",fontSize:9}}>{d.u||"kg"}</span>
+                                <span style={{color:x.c,fontWeight:900,fontFamily:"'DM Mono',monospace"}}>{pcx}%</span>
+                              </span>
+                            );})}
+                          </div>
+                          <div style={{display:"flex",gap:16,fontSize:10,color:"#4a6a3a",marginTop:7,paddingTop:7,borderTop:"1px solid rgba(255,255,255,.05)"}}>
+                            <span>Recibido <b style={{color:"#a8e063",fontFamily:"'DM Mono',monospace"}}>{d.kgRec}</b> {d.u||"kg"}</span>
+                            <span>Empacado <b style={{color:"#a8e063",fontFamily:"'DM Mono',monospace"}}>{d.kgEmp}</b> {d.u||"kg"}</span>
+                            {!sinRec&&!sobra&&<span>Merma <b style={{color:mCol(d.pctM),fontFamily:"'DM Mono',monospace"}}>{d.kgM}</b> {d.u||"kg"} . {d.pctM}%</span>}
+                            {sobra&&<span style={{color:"#60a5fa",fontWeight:700}}>Empacado mayor que recibido por {r2(-d.kgM)} kg</span>}
+                          </div>
+                          {alerta&&(
+                            <div style={{marginTop:8,background:"rgba(239,68,68,.08)",border:"1px solid rgba(239,68,68,.3)",borderRadius:7,padding:"7px 10px",fontSize:10,color:"#fca5a5",lineHeight:1.5}}>
+                              {d.sinPeso&&d.sinPeso.length>0&&<div><b>Estas cajas no tienen peso configurado:</b> {d.sinPeso.join(", ")}. Sus kilos entran como cero y se ven como merma.</div>}
+                              {d.faltaPz&&d.faltaPz.length>0&&<div>Falta capturar piezas por reja para: {d.faltaPz.join(", ")}.</div>}
+                            </div>
+                          )}
+                          {sinRec&&(
+                            <div style={{marginTop:8,background:"rgba(148,163,184,.08)",border:"1px solid rgba(148,163,184,.25)",borderRadius:7,padding:"7px 10px",fontSize:10,color:"#cbd5e1"}}>
+                              No hay rejas recibidas ni peso por reja para este rancho, asi que no se puede calcular merma. Las barras muestran solo lo empacado.
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div style={{padding:"5px 9px",display:"flex",gap:7,flexWrap:"wrap",borderTop:"1px solid rgba(255,255,255,.06)",background:"rgba(0,0,0,.3)"}}>
+                    {cals.map(function(cal){return <span key={cal.id} style={{display:"flex",alignItems:"center",gap:3,fontSize:8,color:cal.c,fontWeight:700}}><span style={{width:6,height:6,borderRadius:1,background:cal.c,display:"inline-block"}}/>{cal.l}</span>})}
+                    <span style={{display:"flex",alignItems:"center",gap:3,fontSize:8,color:"#ef4444",fontWeight:700}}><span style={{width:6,height:6,borderRadius:1,background:"#ef4444",display:"inline-block"}}/>Merma</span>
+                    <span style={{fontSize:8,color:"#3a4a2a",marginLeft:"auto"}}>F=cajas 20lb/reja</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ===== TAB EVOLUCIÓN ===== */}
+      {tab==="evo"&&(
+        <div style={{padding:"11px 11px 40px"}}>
+          {diasH.length===0&&<div style={{textAlign:"center",padding:"40px 0",color:"#2a3a2a",fontSize:13}}>Sin historial. Guarda los rendimientos desde Captura.</div>}
+          {diasH.length>0&&(
+            <div>
+              <div style={{fontSize:9,color:"#4a6a3a",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:11}}>{cult} · últimos {diasH.length} días</div>
+              {(function(){
+                var rH=[];diasH.forEach(function(d){Object.keys(d.ranchos||{}).forEach(function(r){if(rH.indexOf(r)<0)rH.push(r)})});
+                return rH.map(function(rancho,ri){
+                  var rc=RC[ri%RC.length];
+                  var datos=diasH.map(function(d){var rd=d.ranchos[rancho];if(!rd)return null;return{fec:d.fec.slice(5),pctM:rd.pctM||0}}).filter(Boolean).reverse();
+                  if(!datos.length)return null;
+                  var W=300,H=80,PAD=10;
+                  var maxM=Math.max.apply(null,datos.map(function(x){return x.pctM}))||1;
+                  var minM=Math.max(0,Math.min.apply(null,datos.map(function(x){return x.pctM}))-5);
+                  var rng=Math.max(maxM-minM,5);
+                  var xSt=datos.length>1?(W-PAD*2)/(datos.length-1):W-PAD*2;
+                  var yP=function(v){return PAD+(1-(v-minM)/rng)*(H-PAD*2)};
+                  var pts=datos.map(function(x,i){return[(PAD+i*xSt).toFixed(1),yP(x.pctM).toFixed(1)]});
+                  var poly=pts.map(function(p){return p[0]+","+p[1]}).join(" ");
+                  var area="M "+pts[0][0]+","+(H-2)+" L "+poly+" L "+pts[pts.length-1][0]+","+(H-2)+" Z";
+                  var last=datos[datos.length-1],prev=datos.length>1?datos[datos.length-2]:null;
+                  return(
+                    <div key={rancho} style={{background:"rgba(255,255,255,.02)",border:"1px solid "+rc+"33",borderLeft:"3px solid "+rc,borderRadius:8,padding:"10px",marginBottom:8}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                        <span style={{fontSize:12,fontWeight:800,color:rc}}>{rancho}</span>
+                        <span style={{fontSize:9,color:"#3a5a3a"}}>merma % · {datos.length} días</span>
+                        <div style={{flex:1}}/>
+                        <span style={{fontSize:12,color:mCol(last.pctM),fontWeight:700,fontFamily:"'DM Mono',monospace"}}>Hoy: {last.pctM}%</span>
+                        {prev&&<span style={{fontSize:10,fontWeight:700,padding:"2px 6px",borderRadius:4,background:last.pctM<prev.pctM?"rgba(74,222,128,.1)":"rgba(239,68,68,.1)",color:last.pctM<prev.pctM?"#4ade80":"#ef4444"}}>{last.pctM<prev.pctM?"▼":"▲"} {Math.abs(last.pctM-prev.pctM).toFixed(1)}%</span>}
+                      </div>
+                      <svg width="100%" viewBox={"0 0 "+W+" "+H} style={{overflow:"visible"}}>
+                        <defs><linearGradient id={"g"+ri} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={rc} stopOpacity=".15"/><stop offset="100%" stopColor={rc} stopOpacity=".02"/></linearGradient></defs>
+                        <path d={area} fill={"url(#g"+ri+")"}/>
+                        {minM<12&&12<maxM&&<g><line x1={PAD} y1={yP(12)} x2={W-PAD} y2={yP(12)} stroke="rgba(251,146,60,.35)" strokeWidth="1" strokeDasharray="4,3"/><text x={W-PAD+3} y={yP(12)+3} fontSize="7" fill="rgba(251,146,60,.7)" fontWeight="700">12%</text></g>}
+                        <polyline points={poly} fill="none" stroke={rc} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/>
+                        {pts.map(function(p,i){var col=mCol(datos[i].pctM);return(
+                          <g key={i}>
+                            <circle cx={p[0]} cy={p[1]} r="5" fill="#07100a" stroke={col} strokeWidth="2"/>
+                            <circle cx={p[0]} cy={p[1]} r="2.5" fill={col}/>
+                            <text x={p[0]} y={parseFloat(p[1])-8} textAnchor="middle" fontSize="8" fill={col} fontWeight="700">{datos[i].pctM}%</text>
+                            <text x={p[0]} y={H+3} textAnchor="middle" fontSize="7" fill="#2a4a2a">{datos[i].fec}</text>
+                          </g>
+                        )})}
+                      </svg>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+ReactDOM.render(<App/>,document.getElementById("root"));
+</script>
+</body>
+</html>
