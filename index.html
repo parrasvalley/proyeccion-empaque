@@ -350,7 +350,7 @@ var DIAS=["Vie","Sab","Dom","Lun","Mar","Mie","Jue"];
 var TIPOS=["org","conv"];
 var GRN="#86c87a";
 var CM=[{id:"rojo",l:"Rojo",c:"#ef4444"},{id:"naranja",l:"Naranja",c:"#f97316"},{id:"amarillo",l:"Amarillo",c:"#eab308"},{id:"verde",l:"Verde",c:"#22c55e"}];
-var KG_CAJA={"42CT":7.60,"42 CT SMALL":7.60,"36CT OG SUPER SELECT":9.72,"175 PZS":13.61,"20 LBS":9.25,"20 LBS XF":9.25,"20 LBS MDL":9.25,"20lb":9.25,"12X1 LB":5.70,"12X1 LB RPC":5.70,"12X1 LB CV":5.70,"12X1 LBS STO":5.70,"12x1":5.70,"8X2 LBS":7.60,"8x2":7.60,"25 LBS":11.57,"1/9 PLAIN":23.13,"1/9 SMALL":23.13,"1/9 LARGE":23.13,"1/9 SELECT":23.13,"1/9 SUPER SELECT":23.13,"25 LB XL OG GREEN":11.57,"25lb":11.57,"50 LBS":23.13,"50lb":23.13,"18CT":4.86,"18ct":4.86,"12X8 OZ":2.88,"12X8OZ":2.88,"12x8oz":2.88,"22/24":5.08,"24CT":5.08,"24ct":5.08,"24 CT RED":5.08,"24 CT ORANGE":5.08,"24 CT YELLOW":5.08,"24 CT GREEN":5.08,"36CT":9.72,"36ct":9.72,"36CT OG":9.72,"11 LBS":5.13,"11LBS":5.13,"11lb":5.13,"11LB YELLOW":5.13,"11LB RED":5.13,"11LB ORANGE":5.13,"11LB GREEN":5.13,"30LB":13.61,"30lb":13.61,"30 LBS":13.61,"175 PZS":13.61,"175 PZS XF":13.61,"175PZS":13.61,"175PZSXF":13.61,"175 PIEZAS":13.61,"12ct":5.44,"12CT SM":5.44,"12CT M":5.44,"12ct_small":5.44,"12ct_mediano":5.44,"12x1lb":5.70,"12X1LB":5.70,"12x8oz":2.88,"12X8OZ":2.88,"18lb":8.30,"18 lb":8.30,"18LB":8.30,"RPC 35lb":13.00,"RPC35LB":13.00,"11lb":5.13,"11LB":5.13,"12x2":5.00,"12X2":5.00,"12X2CT MIX":5.00,"8x6":5.44,"8X6":5.44,"BELL MIX 8X6":5.44,"1/9 bushel":11.57,"1/9BUSHEL":11.57,"25lb":11.57,"50lb":23.13,"62 piezas":11.57,"small":5.08,"SMALL":5.08,"25LB":11.34,"1/9 bushel":8.16,"12ct":5.08,"12x2":5.00,"10lb":4.54,"15lb":6.80};
+var KG_CAJA={"20 LBS MEDIANOS":9.25,"42CT":7.60,"42 CT SMALL":7.60,"36CT OG SUPER SELECT":9.72,"175 PZS":13.61,"20 LBS":9.25,"20 LBS XF":9.25,"20 LBS MDL":9.25,"20lb":9.25,"12X1 LB":5.70,"12X1 LB RPC":5.70,"12X1 LB CV":5.70,"12X1 LBS STO":5.70,"12x1":5.70,"8X2 LBS":7.60,"8x2":7.60,"25 LBS":11.57,"1/9 PLAIN":23.13,"1/9 SMALL":23.13,"1/9 LARGE":23.13,"1/9 SELECT":23.13,"1/9 SUPER SELECT":23.13,"25 LB XL OG GREEN":11.57,"25lb":11.57,"50 LBS":23.13,"50lb":23.13,"18CT":4.86,"18ct":4.86,"12X8 OZ":2.88,"12X8OZ":2.88,"12x8oz":2.88,"22/24":5.08,"24CT":5.08,"24ct":5.08,"24 CT RED":5.08,"24 CT ORANGE":5.08,"24 CT YELLOW":5.08,"24 CT GREEN":5.08,"36CT":9.72,"36ct":9.72,"36CT OG":9.72,"11 LBS":5.13,"11LBS":5.13,"11lb":5.13,"11LB YELLOW":5.13,"11LB RED":5.13,"11LB ORANGE":5.13,"11LB GREEN":5.13,"30LB":13.61,"30lb":13.61,"30 LBS":13.61,"175 PZS":13.61,"175 PZS XF":13.61,"175PZS":13.61,"175PZSXF":13.61,"175 PIEZAS":13.61,"12ct":5.44,"12CT SM":5.44,"12CT M":5.44,"12ct_small":5.44,"12ct_mediano":5.44,"12x1lb":5.70,"12X1LB":5.70,"12x8oz":2.88,"12X8OZ":2.88,"18lb":8.30,"18 lb":8.30,"18LB":8.30,"RPC":13.00,"RPC 35lb":13.00,"RPC35LB":13.00,"11lb":5.13,"11LB":5.13,"12x2":5.00,"12X2":5.00,"12X2CT MIX":5.00,"8x6":5.44,"8X6":5.44,"BELL MIX 8X6":5.44,"1/9 bushel":11.57,"1/9BUSHEL":11.57,"25lb":11.57,"50lb":23.13,"62 piezas":11.57,"small":5.08,"SMALL":5.08,"25LB":11.34,"1/9 bushel":8.16,"12ct":5.08,"12x2":5.00,"10lb":4.54,"15lb":6.80};
 var PZS_CAJA={"12CT":12,"24S RPC":24,"24CT":24,"BUSHEL":45,"33PZ":33,"33 PZ":33,"33CT":33,"30CT":30,"48CT":48,"36CT":36};
 
 // -- Estado global -----------------------------------------------------
@@ -822,7 +822,7 @@ function span(attrs,inner){return h("span",attrs,inner);}
 function btn(attrs,label){return h("button",attrs,label);}
 function badge(tipo){return span({className:tipo==="org"?"badge-org":"badge-conv"},tipo==="org"?"org":"cnv");}
 
-var BUILD="v2026-08-14-CT270B";
+var BUILD="v2026-08-14-MED";
 function renderHeader(){
   // Marca de version, para saber si el navegador tiene el codigo nuevo
   try{
@@ -1251,8 +1251,8 @@ inp.addEventListener("change",function(){onChange(parseFloat(inp.value)||0);});w
       {lbl:"Morron Verde CNV",fruta:"Morron Verde",cals:["Primera","Choice"],pres:["24 CT GREEN","11LB GREEN","25 LBS"]},
       {lbl:"Morron Mix ORG",fruta:"Morron OG",cals:["Primera","Choice"],pres:["12X2","12X2CT MIX","8X6","BELL MIX 8X6"]},
       {lbl:"Morron Mix CNV",fruta:"Morron",cals:["Primera","Choice"],pres:["12X2","8X6"]},
-      {lbl:"Minibel ORG",fruta:"Minibel OG",cals:["Primera"],pres:["12X1 LB","12CT","18CT","8 OZ","12X8OZ"]},
-      {lbl:"Minibel CNV",fruta:"Minibel",cals:["Primera"],pres:["12CT","18CT","12X1 LB CV"]}
+      {lbl:"Minibel ORG",fruta:"Minibel OG",cals:["Primera"],pres:["RPC","12X1 LB","12CT","18CT","8 OZ","12X8OZ"]},
+      {lbl:"Minibel CNV",fruta:"Minibel",cals:["Primera"],pres:["RPC","12CT","18CT","12X1 LB CV"]}
     ];
 
     function prodFromFruta(f){for(var i=0;i<PROD_DEF.length;i++){if(PROD_DEF[i].fruta===f)return PROD_DEF[i];}return null;}
