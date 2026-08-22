@@ -179,11 +179,11 @@ function factorCaja(prod,cal){
   var c=String(cal||"").toLowerCase();
   if(p.indexOf("persa")>=0)return {f:9.25,lbl:"cj 20 LBS"};
   if(p.indexOf("slicer")>=0){
-    // La TERCERA (plain) y la 1a NACIONAL (small y large) se empacan en caja
-    // de 1/9 a 51 libras reales. Solo la primera de exportacion va en 25 LBS.
+    // Todo el Slicer se expresa en cajas de 36 CT (36 piezas).
+    // La tercera y la 1a nacional siguen en caja de 1/9.
     if(c.indexOf("tercera")>=0||c.indexOf("choice")>=0||c.indexOf("plain")>=0)return {f:23.13,lbl:"cj 1/9"};
     if(c.indexOf("nacional")>=0||c.indexOf("segunda")>=0||c==="2")return {f:23.13,lbl:"cj 1/9"};
-    return {f:11.57,lbl:"cj 25 LBS"};
+    return {f:r2(36*KG_PZ_SLICER),lbl:"cj 36CT"};
   }
   if(p.indexOf("minibel")>=0)return {f:5.70,lbl:"cj 12x1"};
   if(p.indexOf("morron")>=0){
@@ -385,12 +385,21 @@ function getCountFromPres(pres){
 }
 // Kg por caja de conteo: peso de la pieza x el count (Slicer)
 var KG_PZ_SLICER=0.270;
+// Piezas que vale cada caja de Slicer. Todo se mide contra la de 36 CT:
+// la de 25 LBS vale una, la de 50 LBS vale dos, la de 18 CT vale media.
+function pzsSlicer(pres){
+  var u=(pres||"").toUpperCase().replace(/\s/g,"");
+  var m=u.match(/(\d+)(CT|PIEZAS|PZS|PZ)/);
+  if(m)return parseInt(m[1],10);
+  if(u.indexOf("50LB")>=0||u.indexOf("1/9")>=0||u.indexOf("BUSHEL")>=0)return 72;
+  if(u.indexOf("25LB")>=0)return 36;
+  return 0;
+}
 function kgCajaProd(pres,fruta){
   var f=normFruta((fruta||"").replace(/ OG$| ORG$/,"").trim());
   if(f==="Slicer"){
-    var u=(pres||"").toUpperCase().replace(/\s/g,"");
-    var m=u.match(/^(\d+)(CT|PIEZAS|PZS|PZ)/);
-    if(m)return Math.round(parseInt(m[1],10)*KG_PZ_SLICER*100)/100;
+    var pz=pzsSlicer(pres);
+    if(pz>0)return Math.round(pz*KG_PZ_SLICER*100)/100;
   }
   return KG_CAJA[pres]||KG_CAJA[(pres||"").toUpperCase()]||0;
 }
@@ -524,7 +533,17 @@ function calcD(diaI){
         var f=(frR[prod]&&frR[prod][tipo])||{};
         if(prod==="Persa"){res.Persa[tipo].kP+=r2(rj*nv(f.fpri)*9.25);res.Persa[tipo].kS+=r2(rj*nv(f.fseg)*9.25);res.Persa[tipo].kT3+=r2(rj*nv(f.fter)*9.25);}
         else if(prod==="Minibel"){res.Minibel[tipo].kP+=r2(rj*nv(f.fpri)*5.70);res.Minibel[tipo].kS+=r2(rj*nv(f.fseg)*5.70);}
-        else if(prod==="Slicer"){var kg=rj*(nv(f.kgPz)||0);if(!kg)return;res.Slicer[tipo].kgP+=r2(kg*nv(f.rPri)/100);res.Slicer[tipo].kgPl+=r2(kg*nv(f.rPl)/100);res.Slicer[tipo].kgMer+=r2(kg*nv(f.rMer)/100);}
+        else if(prod==="Slicer"){
+          // Se calcula por PIEZAS: rejas x piezas por reja. El kilo sigue
+          // siendo la unidad interna, pero sale del conteo, no del peso.
+          // Asi 2,000 rejas x 50 pzas x 85% / 36 = 2,361 cajas de 36 CT.
+          var _pz=nv(f.pzRej)||0;
+          var kg=_pz>0?(rj*_pz*KG_PZ_SLICER):(rj*(nv(f.kgPz)||0));
+          if(!kg)return;
+          res.Slicer[tipo].kgP+=r2(kg*nv(f.rPri)/100);
+          res.Slicer[tipo].kgPl+=r2(kg*nv(f.rPl)/100);
+          res.Slicer[tipo].kgMer+=r2(kg*nv(f.rMer)/100);
+        }
         else if(prod==="Europeo"){var pzT=rj*nv(f.pzCaja);res.Europeo[tipo].pzP+=Math.round(pzT*nv(f.rPri)/100);res.Europeo[tipo].pzS+=Math.round(pzT*nv(f.rSeg)/100);res.Europeo[tipo].pzC+=Math.round(pzT*nv(f.rCho)/100);}
         else if(prod==="Morron"){
           // Se recorren los cuatro colores, pero CADA UNO pide sus propias rejas
@@ -823,7 +842,7 @@ function span(attrs,inner){return h("span",attrs,inner);}
 function btn(attrs,label){return h("button",attrs,label);}
 function badge(tipo){return span({className:tipo==="org"?"badge-org":"badge-conv"},tipo==="org"?"org":"cnv");}
 
-var BUILD="v2026-08-21-P3TER";
+var BUILD="v2026-08-22-SL36";
 function renderHeader(){
   // Marca de version, para saber si el navegador tiene el codigo nuevo
   try{
