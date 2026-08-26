@@ -4,107 +4,136 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
-<title>Excedentes · Parras Valley</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<title>Excedentes Parras Valley</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
 :root{
-  --ground:#060d07; --panel:#0d1a0f; --panel-2:#122316;
-  --line:#1d3d22; --line-soft:#16301a;
-  --lime:#b8e840; --lime-dim:#8ab52c;
-  --good:#5ddc8b; --bad:#ff7a6b;
-  --ink:#e6f2e5; --ink-2:#9db3a0; --ink-3:#6a8270;
-  --radius:10px;
-  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
-  --disp:"Archivo","IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  --ground:#f2f1ec; --panel:#ffffff; --panel-2:#e9e8e1; --panel-3:#dedcd2;
+  --line:#c6c4b8; --line-soft:#e0ded4;
+  --ink:#22241f; --ink-2:#5c6055; --ink-3:#8a8d80;
+  --falta:#b2331f; --falta-bg:rgba(178,51,31,.11);
+  --hoy-bg:#fff6d6; --hoy-bar:#d9a300;
+  --persa:#3b62ad; --slicer:#4f8f3f; --europeo:#5b93c9;
+  --minibel:#d9b400; --morron:#c9622c;
+  --sobre-minibel:#2a2400;
+  --cond:"Barlow Condensed","Barlow",ui-sans-serif,system-ui,sans-serif;
+  --sans:"Barlow",ui-sans-serif,system-ui,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,monospace;
 }
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:var(--ground);color:var(--ink);
-  font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-#motor{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;border:0;left:-9999px}
-.shell{max-width:1080px;margin:0 auto;padding:0 0 64px}
-header{position:sticky;top:0;z-index:30;background:rgba(6,13,7,.94);
-  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:13px 12px 12px}
-.hrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.mark{width:38px;height:38px;border-radius:9px;flex-shrink:0;background:var(--lime);
-  color:#0a1405;display:grid;place-items:center;font-family:var(--disp);
-  font-weight:800;font-size:17px;letter-spacing:-.5px}
-h1{font-family:var(--disp);font-weight:800;font-size:23px;letter-spacing:-.4px;margin:0;line-height:1.1}
-.sub{font-size:11px;color:var(--ink-3);letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
-.wk{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--lime);
-  border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 13px;white-space:nowrap}
-main{padding:14px 12px}
-.deck{display:flex;flex-direction:column;gap:13px;margin-bottom:16px}
-.field{display:flex;flex-direction:column;gap:8px}
-.flabel{font-family:var(--disp);font-size:15px;color:var(--lime);font-weight:700}
-.pills{display:flex;flex-wrap:wrap;gap:8px}
-.pills button{font-family:var(--sans);font-weight:500;font-size:13.5px;padding:9px 15px;
-  border-radius:999px;cursor:pointer;background:var(--panel);color:var(--ink-2);
-  border:1.5px solid var(--line);transition:background .12s,color .12s,border-color .12s}
-.pills button:hover{border-color:var(--lime-dim);color:var(--ink)}
-.pills button[aria-pressed="true"]{background:var(--lime);color:#0a1405;border-color:var(--lime);font-weight:600}
-.pills button.gone{opacity:.42;text-decoration:line-through}
-.pills button.gone[aria-pressed="true"]{opacity:1;text-decoration:line-through}
-button:focus-visible{outline:2.5px solid var(--lime);outline-offset:2px}
-.blockhead{display:flex;align-items:baseline;gap:10px;margin:22px 0 9px}
-.blockhead h2{font-family:var(--disp);font-weight:700;font-size:17px;margin:0}
-.blockhead span{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-left:auto}
-.note{display:flex;gap:10px;align-items:flex-start;background:var(--panel);
-  border:1px solid var(--line-soft);border-left:3px solid var(--ink-3);
-  border-radius:0 var(--radius) var(--radius) 0;padding:11px 13px;
-  font-size:12.5px;line-height:1.55;color:var(--ink-2);margin-bottom:14px}
-.tablewrap{border:1px solid var(--line);background:var(--panel);
-  margin-left:-12px;margin-right:-12px;border-left:none;border-right:none;overflow:hidden}
-.scroller{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:340px}
-thead th{background:var(--panel-2);color:var(--ink-3);font-size:9.5px;font-weight:600;
-  letter-spacing:.11em;text-transform:uppercase;text-align:right;padding:9px;
-  border-bottom:1px solid var(--line);white-space:nowrap}
-thead th.l{text-align:left}
-tbody td{padding:9px;text-align:right;border-bottom:1px solid var(--line-soft);
-  font-family:var(--mono);font-size:15px;font-weight:500;
-  font-variant-numeric:tabular-nums;white-space:nowrap}
-tbody td.l{text-align:left;font-family:var(--sans);font-size:14px;
-  white-space:normal;line-height:1.25;padding-left:13px}
-tbody tr:last-child td{border-bottom:none}
-tbody tr.zebra td{background:rgba(255,255,255,.017)}
-.name{font-weight:600;color:var(--ink);display:block}
-.meta{font-size:10px;color:var(--ink-3);font-family:var(--mono);display:block;margin-top:1px}
-td.total{font-weight:600;font-size:16px}
-.up{color:var(--good)} .down{color:var(--bad)} .flat{color:var(--ink-3)}
-.ido{opacity:.4}
-tr.stripe td:first-child{box-shadow:inset 3px 0 0 var(--lime)}
-tr.short td:first-child{box-shadow:inset 3px 0 0 var(--bad)}
-tr.short td{background:rgba(255,122,107,.07)}
-tr.past td{color:var(--ink-3);background:rgba(255,255,255,.015)}
-tr.past td.l .name{text-decoration:line-through;color:var(--ink-3);font-weight:500}
-tr.today td{background:rgba(184,232,64,.07)}
-tr.divider td{background:rgba(255,122,107,.13);color:var(--bad);text-align:left;
-  font-family:var(--sans);font-size:10.5px;font-weight:600;letter-spacing:.13em;
-  text-transform:uppercase;padding:8px 12px}
-#puerta{position:fixed;inset:0;z-index:100;background:var(--ground);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px}
-#puerta .cand{width:62px;height:62px;border-radius:16px;background:var(--lime);color:#0a1405;
-  display:grid;place-items:center;font-family:var(--disp);font-weight:800;font-size:26px}
-#puerta h2{font-family:var(--disp);font-size:22px;font-weight:800;margin:0;color:var(--ink)}
-#puerta p{margin:0;font-size:13px;color:var(--ink-3)}
-#clave{font-family:var(--mono);font-size:22px;letter-spacing:.4em;text-align:center;
-  width:min(240px,80vw);padding:14px;border-radius:12px;background:var(--panel);
-  color:var(--ink);border:1.5px solid var(--line);outline:none}
-#clave:focus{border-color:var(--lime)}
-#entrar{font-family:var(--disp);font-weight:700;font-size:15px;padding:13px 34px;
-  border-radius:999px;background:var(--lime);color:#0a1405;border:none;cursor:pointer}
-#malo{color:var(--bad);font-size:13px;min-height:18px}
-.cargando{text-align:center;padding:3rem 1rem;color:var(--ink-2);font-size:14px}
-.cargando b{display:block;font-family:var(--disp);font-size:19px;color:var(--lime);margin-bottom:8px}
-.recargar{margin-top:16px;padding:10px 20px;border-radius:999px;background:var(--panel);
-  color:var(--ink-2);border:1.5px solid var(--line);cursor:pointer;font-family:var(--sans);font-size:13px}
-@media(min-width:700px){
-  main{padding:26px 24px}
-  .tablewrap{margin-left:0;margin-right:0;border:1px solid var(--line);border-radius:var(--radius)}
-  h1{font-size:29px} .flabel{font-size:16px}
-  tbody td{padding:13px 14px} thead th{padding:12px 14px}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#14161a; --panel:#1b1e23; --panel-2:#232830; --panel-3:#2b313a;
+    --line:#3a414b; --line-soft:#2a2f37;
+    --ink:#e8eaec; --ink-2:#a3a9b2; --ink-3:#767d87;
+    --falta:#ff8a72; --falta-bg:rgba(255,138,114,.14);
+    --hoy-bg:#3a3416; --hoy-bar:#e0b32e;
+    --persa:#4d78c6; --slicer:#5da54c; --europeo:#6ba3d6;
+    --minibel:#c8a600; --morron:#d4703a;
+  }
 }
+:root[data-theme="dark"]{
+  --ground:#14161a; --panel:#1b1e23; --panel-2:#232830; --panel-3:#2b313a;
+  --line:#3a414b; --line-soft:#2a2f37;
+  --ink:#e8eaec; --ink-2:#a3a9b2; --ink-3:#767d87;
+  --falta:#ff8a72; --falta-bg:rgba(255,138,114,.14);
+  --hoy-bg:#3a3416; --hoy-bar:#e0b32e;
+  --persa:#4d78c6; --slicer:#5da54c; --europeo:#6ba3d6;
+  --minibel:#c8a600; --morron:#d4703a;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--sans);font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column}
+#motor{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;border:0;left:-9999px}
+
+.barra{flex:0 0 auto;background:var(--panel);border-bottom:1px solid var(--line);
+  padding:9px 12px;display:flex;align-items:center;gap:10px}
+.mark{width:32px;height:32px;border-radius:6px;flex-shrink:0;background:var(--persa);
+  color:#fff;display:grid;place-items:center;font-family:var(--cond);
+  font-weight:700;font-size:13px}
+h1{font-family:var(--cond);font-weight:700;font-size:21px;letter-spacing:.02em;
+  margin:0;line-height:1;text-transform:uppercase}
+.sub{font-size:11.5px;color:var(--ink-3);margin-top:1px;line-height:1.2}
+.wk{margin-left:auto;font-family:var(--cond);font-size:14px;font-weight:600;
+  letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);
+  border:1px solid var(--line);background:var(--panel-2);border-radius:5px;
+  padding:5px 10px;white-space:nowrap;text-align:right}
+
+#out{flex:1 1 auto;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--panel)}
+table{border-collapse:separate;border-spacing:0}
+th,td{border-right:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+
+thead th{font-family:var(--cond);text-transform:uppercase;text-align:center;
+  white-space:nowrap;line-height:1.05;position:sticky;z-index:4}
+.tr-cult th{top:0;height:27px;font-size:14.5px;font-weight:700;letter-spacing:.07em;
+  color:#fff;padding:0 6px;border-right:1px solid rgba(255,255,255,.4);border-bottom:none}
+.tr-cal th{top:27px;height:29px;font-size:12.5px;font-weight:600;letter-spacing:.04em;
+  background:var(--panel-3);color:var(--ink-2);padding:0 6px;
+  border-right:1px solid var(--line)}
+.tr-cal th span{display:block;font-size:10.5px;font-weight:500;letter-spacing:.02em;
+  color:var(--ink-3);text-transform:none;margin-top:-1px}
+.tr-tipo th{top:56px;height:24px;font-size:11px;font-weight:600;letter-spacing:.07em;
+  background:var(--panel-2);color:var(--ink-3);padding:0 4px;
+  border-bottom:2px solid var(--line)}
+
+.c-persa{background:var(--persa)} .c-slicer{background:var(--slicer)}
+.c-europeo{background:var(--europeo)}
+.c-minibel{background:var(--minibel);color:var(--sobre-minibel)!important}
+.c-morron{background:var(--morron)}
+
+th.esq{left:0;top:0;z-index:7;background:var(--panel-3);
+  text-align:left;padding:0 10px;min-width:88px;width:88px;
+  font-size:13px;font-weight:700;letter-spacing:.09em;color:var(--ink-2);
+  border-right:2px solid var(--line);border-bottom:2px solid var(--line)}
+td.dia{position:sticky;left:0;z-index:3;background:var(--panel-2);
+  text-align:left;padding:9px 10px;min-width:88px;width:88px;
+  font-family:var(--cond);font-size:16.5px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.03em;color:var(--ink);border-right:2px solid var(--line)}
+
+tbody td{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:15px;
+  font-weight:500;text-align:right;padding:9px 9px;min-width:76px;white-space:nowrap;
+  background-color:var(--panel)}
+tr.par td{background-color:var(--panel-2)}
+td.vacio{background-image:linear-gradient(135deg,transparent 46%,var(--line-soft) 46%,var(--line-soft) 54%,transparent 54%)}
+
+tr.hoy td{background-color:var(--hoy-bg)}
+tr.hoy td.dia{background-color:var(--hoy-bg);font-weight:700;
+  box-shadow:inset 4px 0 0 var(--hoy-bar)}
+
+.pie{flex:0 0 auto;background:var(--panel-2);border-top:1px solid var(--line);
+  padding:7px 12px;font-size:11.5px;color:var(--ink-3);
+  display:flex;gap:14px;flex-wrap:wrap;align-items:center;line-height:1.3}
+#puerta{position:fixed;inset:0;z-index:100;background:var(--ground);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px}
+#puerta .cand{width:62px;height:62px;border-radius:12px;background:var(--persa);color:#fff;
+  display:grid;place-items:center;font-family:var(--cond);font-weight:700;font-size:22px}
+#puerta h2{font-family:var(--cond);font-size:26px;font-weight:700;margin:0;
+  text-transform:uppercase;letter-spacing:.04em}
+#puerta p{margin:0;font-size:13.5px;color:var(--ink-3)}
+#clave{font-family:var(--mono);font-size:21px;letter-spacing:.35em;text-align:center;
+  width:min(240px,80vw);padding:13px;border-radius:8px;background:var(--panel);
+  color:var(--ink);border:1px solid var(--line);outline:none}
+#clave:focus{border-color:var(--persa)}
+#entrar{font-family:var(--cond);font-weight:700;font-size:16px;letter-spacing:.06em;
+  text-transform:uppercase;padding:12px 34px;border-radius:8px;background:var(--persa);
+  color:#fff;border:none;cursor:pointer}
+#entrar:focus-visible,#clave:focus-visible{outline:2px solid var(--hoy-bar);outline-offset:2px}
+#malo{color:var(--falta);font-size:13px;min-height:18px}
+.cargando{padding:3rem 1rem;text-align:center;color:var(--ink-2);font-size:14px}
+.cargando b{display:block;font-family:var(--cond);font-size:20px;text-transform:uppercase;
+  letter-spacing:.05em;color:var(--ink);margin-bottom:8px}
+.recargar{margin-top:16px;padding:9px 20px;border-radius:6px;background:var(--panel);
+  color:var(--ink-2);border:1px solid var(--line);cursor:pointer;font-family:var(--sans);font-size:13px}
+
+@media(max-width:620px){
+  h1{font-size:19px}
+  .wk{font-size:12.5px;padding:4px 8px}
+  tbody td{font-size:14px;padding:8px 7px;min-width:68px}
+  th.esq,td.dia{min-width:74px;width:74px;padding-left:8px;padding-right:6px}
+  td.dia{font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
@@ -117,48 +146,54 @@ tr.divider td{background:rgba(255,122,107,.13);color:var(--bad);text-align:left;
   <button id="entrar" type="button">Entrar</button>
 </div>
 <iframe id="motor" src="index.html" title="motor"></iframe>
-<div class="shell">
-  <header>
-    <div class="hrow">
-      <div class="mark">PV</div>
-      <div><h1>Excedentes</h1><div class="sub" id="sello">Parras Valley · empaque</div></div>
-      <div class="wk" id="wk">—</div>
-    </div>
-  </header>
-  <main>
-    <div class="deck" id="deck" style="display:none">
-      <div class="field"><div class="flabel">Día</div><div class="pills" id="p1"></div></div>
-      <div class="field"><div class="flabel">Cultivo</div><div class="pills" id="p2"></div></div>
-    </div>
-    <div id="out"><div class="cargando"><b>Leyendo la aplicación…</b>
-      Trayendo campo, pedidos e inventario.</div></div>
-  </main>
+
+<div class="barra">
+  <div class="mark">PV</div>
+  <div>
+    <h1>Excedentes</h1>
+    <div class="sub" id="sello">Parras Valley · bultos para vender</div>
+  </div>
+  <div class="wk" id="wk">—</div>
+</div>
+
+<div id="out"><div class="cargando"><b>Leyendo la aplicación</b>
+  Trayendo campo, pedidos e inventario.</div></div>
+
+<div class="pie">
+  <div>Bultos libres para vender ese día, ya descontado lo que hace falta
+  los días que siguen. Casilla vacía: no hay.</div>
 </div>
 
 <script>
 var DIAS = ["Vie","Sab","Dom","Lun","Mar","Mie","Jue"];
+var LARGO = ["Viernes","Sábado","Domingo","Lunes","Martes","Miércoles","Jueves"];
 var MES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 var TALLAS = {L:1,XL:1,JUMBO:1,SMALL:1,MED:1,LARGE:1};
 var PRODS = ["Persa","Slicer","Europeo","Minibel","Morron"];
-var ORDEN = {Persa:0,Slicer:1,Europeo:2,Minibel:3,Morron:4};
-var ORDCAL = {Primera:0,"1a Nacional":1,Segunda:1,Tercera:2};
+var BONITO = {Persa:"Persa",Slicer:"Slicer",Europeo:"Europeo",
+              Minibel:"Mini Bell",Morron:"Morrón"};
+var CLASE  = {Persa:"c-persa",Slicer:"c-slicer",Europeo:"c-europeo",
+              Minibel:"c-minibel",Morron:"c-morron"};
+// Calidades que ventas no maneja: toda la segunda (en Slicer esa ranura es la
+// 1a nacional), la tercera de Persa y el 1/9 plain de Slicer.
+var FUERA = {
+  "Persa|2":1, "Slicer|2":1, "Europeo|2":1, "Minibel|2":1, "Morron|2":1,
+  "Persa|3":1, "Slicer|3":1
+};
 var nf = new Intl.NumberFormat("es-MX");
-var DATOS = null, diaSel = 0, culSel = "Todos";
+var DATOS = null;
 
-function firma(v){ var n = Math.round(v); return (n > 0 ? "+" : "") + nf.format(n); }
-function tono(v){ return v > 0 ? "up" : v < 0 ? "down" : "flat"; }
-function celda(v, extra){
-  if (v === null || v === undefined) return '<td class="flat">—</td>';
-  return '<td class="' + (extra || "") + " " + tono(v) + '">' + (v === 0 ? "0" : firma(v)) + "</td>";
-}
 function cifra(txt){
-  if (!txt) return [null, null];
+  if (!txt) return null;
   var t = String(txt).trim();
-  if (t === "-" || t === "—") return [null, null];
+  if (t === "-" || t === "—") return null;
   var m = t.match(/^(-?[\d,]+)/);
-  if (!m) return [null, null];
-  var caja = t.match(/cj\s+([^(]+)/);
-  return [parseInt(m[1].replace(/,/g, ""), 10), caja ? caja[1].trim().toLowerCase() : null];
+  return m ? parseInt(m[1].replace(/,/g, ""), 10) : null;
+}
+function normCal(c){
+  if (TALLAS[c.toUpperCase()]) return "Primera";
+  if (c === "Choice") return "Tercera";
+  return c;
 }
 
 function leerDia(W, dia, tipo){
@@ -191,14 +226,8 @@ function leerSem(W, prod, tipo, cal){
   })};
 }
 
-function normCal(c){
-  if (TALLAS[c.toUpperCase()]) return "Primera";
-  if (c === "Choice") return "Tercera";
-  return c;
-}
-
+// Aqui no se calcula nada: se copia el Acumulado que ya trae la app.
 function extraer(W){
-  // 1. Ver dia: sirve para saber que calidades existe de verdad en cada cultivo
   var validas = {};
   for (var d = 0; d < 7; d++){
     ["org","conv"].forEach(function(tipo){
@@ -209,183 +238,142 @@ function extraer(W){
         var cal = (f[1] || "").trim();
         if (!prod || !cal) return;
         cal = normCal(cal);
-        if (cifra(f[6])[0] === null) return;
+        if (cifra(f[6]) === null) return;
         validas[(prod.indexOf("Morron") === 0 ? "Morron" : prod) + "|" + cal] = 1;
       });
     });
   }
-  // 2. Ver semana: la columna Acumulado, que arrastra el piso una sola vez
   var CAL = [["1","Primera"],["2","Segunda"],["3","Tercera"]];
-  var sem = {};
+  var cols = [];
   PRODS.forEach(function(prod){
-    ["org","conv"].forEach(function(tipo){
-      CAL.forEach(function(par){
-        var cid = par[0], clbl = par[1];
-        if (prod === "Slicer" && cid === "2") clbl = "1a Nacional";
-        if (!validas[prod + "|" + clbl]) return;
+    CAL.forEach(function(par){
+      var cid = par[0], clbl = par[1];
+      if (prod === "Slicer" && cid === "2") clbl = "1a Nacional";
+      if (FUERA[prod + "|" + cid]) return;
+      if (!validas[prod + "|" + clbl]) return;
+      var col = {p: prod, lbl: clbl, cj: "", org: null, conv: null, vivo: false};
+      ["org","conv"].forEach(function(tipo){
         var r = leerSem(W, prod, tipo, cid);
         if (!r) return;
-        var caja = r.u.replace("TODO EN CAJAS DE ", "").trim().toLowerCase();
-        var acum = [null,null,null,null,null,null,null], vivo = false;
+        if (!col.cj) col.cj = r.u.replace("TODO EN CAJAS DE ", "").trim().toLowerCase();
+        var acum = [null,null,null,null,null,null,null], hay = false;
         r.f.forEach(function(f){
           if (f.length < 5) return;
           var i = DIAS.indexOf(f[0]);
           if (i < 0) return;
-          var v = cifra(f[4])[0], p = cifra(f[1])[0], dd = cifra(f[2])[0];
+          var v = cifra(f[4]), p = cifra(f[1]), dd = cifra(f[2]);
           if (v !== null) acum[i] = v;
-          if (p || dd || v) vivo = true;
+          if (p || dd || v) hay = true;
         });
-        if (!vivo) return;
-        var k = prod + "|" + clbl;
-        if (!sem[k]) sem[k] = {p: prod, c: clbl, k: caja, org: null, conv: null};
-        if (!sem[k].k) sem[k].k = caja;
-        sem[k][tipo] = acum;
+        if (!hay) return;
+        col[tipo] = acum;
+        col.vivo = true;
       });
+      if (col.vivo) cols.push(col);
     });
   });
-  // 3. La regla: el organico tapa al convencional, nunca al reves
-  var g = [];
-  Object.keys(sem).forEach(function(k){
-    var e = sem[k], filas = [];
-    for (var d = 0; d < 7; d++){
-      var o = e.org ? e.org[d] : null, v = e.conv ? e.conv[d] : null;
-      var tr = 0, no = o, nv = v, exc, fal, caso;
-      if (o !== null && v !== null && v < 0 && o > 0){
-        tr = Math.min(o, -v); no = o - tr; nv = v + tr;
-      }
-      if (no !== null && nv !== null){
-        if (no >= 0 && nv >= 0){ exc = no + nv; fal = 0; caso = 0; }
-        else if (no >= 0 && nv < 0){ exc = 0; fal = no + nv; caso = 1; }
-        else if (nv >= 0 && no < 0){ exc = nv; fal = no; caso = 2; }
-        else { exc = 0; fal = no + nv; caso = 3; }
-      } else if (no === null && nv === null){ exc = null; fal = null; caso = 4; }
-      else {
-        var s = (no === null ? 0 : no) + (nv === null ? 0 : nv);
-        exc = Math.max(s, 0); fal = Math.min(s, 0); caso = 4;
-      }
-      filas.push([o, v, tr, exc, fal, caso]);
-    }
-    g.push({p: e.p === "Morron" ? "Morrón" : e.p, raw: e.p, c: e.c, k: e.k, f: filas});
-  });
-  function ordCal(c){ return ORDCAL[c] === undefined ? 3 : ORDCAL[c]; }
-  g.sort(function(a, b){
-    var d = ORDEN[a.raw] - ORDEN[b.raw];
-    return d !== 0 ? d : ordCal(a.c) - ordCal(b.c);
-  });
-  return g;
+  return cols;
 }
 
-function pastilla(host, items, actual, alSoltar){
-  host.innerHTML = "";
-  items.forEach(function(it){
-    var b = document.createElement("button");
-    b.type = "button"; b.textContent = it.l;
-    b.setAttribute("aria-pressed", it.v === actual ? "true" : "false");
-    if (it.ido) b.className = "gone";
-    b.addEventListener("click", function(){ alSoltar(it.v); pinta(); });
-    host.appendChild(b);
-  });
-}
-
-function tablaSemana(vivos){
-  if (culSel !== "Todos"){
-    return vivos.map(function(g){
-      var filas = g.f.map(function(f, i){
-        var tot = (f[4] && f[4] < 0 && !f[3]) ? f[4] : f[3];
-        var cls = i < DATOS.hoy ? "past" : i === DATOS.hoy ? "today" : "";
-        return '<tr' + (cls ? ' class="' + cls + '"' : "") + '><td class="l">'
-          + '<span class="name">' + DATOS.dias[i] + "</span></td>"
-          + celda(f[0]) + celda(f[1]) + celda(tot, "total") + "</tr>";
-      }).join("");
-      return '<div class="blockhead"><h2>' + g.c + '</h2><span>' + g.k + "</span></div>"
-        + '<div class="tablewrap"><div class="scroller"><table><colgroup>'
-        + '<col style="width:34%"><col style="width:22%"><col style="width:22%">'
-        + '<col style="width:22%"></colgroup><thead><tr><th class="l">Día</th>'
-        + "<th>Org</th><th>Cnv</th><th>Total</th></tr></thead><tbody>"
-        + filas + "</tbody></table></div></div>";
-    }).join("");
+// Lo que de verdad se puede vender ese dia sin dejar colgado un dia posterior:
+// el acumulado mas bajo de hoy en adelante. Si en algun dia que viene se cae,
+// ese es el techo. Si no queda nada arriba de cero, no hay excedente.
+function libre(arr, d){
+  if (!arr) return 0;
+  var m = null;
+  for (var i = d; i < 7; i++){
+    var v = arr[i];
+    if (v === null || v === undefined) continue;
+    if (m === null || v < m) m = v;
   }
-  var cab = DATOS.dias.map(function(l, i){
-    return "<th" + (i < DATOS.hoy ? ' class="ido"' : "") + ">" + l.split(" ")[0] + "</th>";
-  }).join("");
-  var cuerpo = vivos.map(function(g, n){
-    var celdas = g.f.map(function(f, i){
-      var tot = (f[4] && f[4] < 0 && !f[3]) ? f[4] : f[3];
-      return '<td class="' + (i < DATOS.hoy ? "ido " : "") + tono(tot || 0) + '">'
-        + (tot ? firma(tot) : "—") + "</td>";
-    }).join("");
-    return '<tr class="' + (n % 2 ? "zebra" : "") + '"><td class="l">'
-      + '<span class="name">' + g.p + '</span><span class="meta">'
-      + g.c.toLowerCase() + " · " + g.k + "</span></td>" + celdas + "</tr>";
-  }).join("");
-  return '<div class="tablewrap"><div class="scroller"><table style="min-width:660px">'
-    + '<thead><tr><th class="l">Cultivo</th>' + cab + "</tr></thead><tbody>"
-    + cuerpo + "</tbody></table></div></div>"
-    + '<div class="note"><div>Acumulado: arrastra el piso y le va sumando el corte de '
-    + "cada día y restando los pedidos. Desliza la tabla de lado.</div></div>";
+  if (m === null || m <= 0) return 0;
+  return m;
+}
+function celda(v){
+  return v > 0 ? "<td>" + nf.format(v) + "</td>" : '<td class="vacio"></td>';
 }
 
 function pinta(){
-  pastilla(document.getElementById("p1"),
-    [{l:"Semana", v:"sem"}].concat(DATOS.dias.map(function(l, i){
-      return {l: l, v: i, ido: i < DATOS.hoy};
-    })), diaSel, function(v){ diaSel = v; });
-  pastilla(document.getElementById("p2"),
-    DATOS.cultivos.map(function(c){ return {l: c, v: c}; }), culSel, function(v){ culSel = v; });
-
-  var vivos = DATOS.g.filter(function(g){ return culSel === "Todos" || g.p === culSel; });
   var out = document.getElementById("out");
-  if (diaSel === "sem"){ out.innerHTML = tablaSemana(vivos); return; }
 
-  var n = 0;
-  function fila(g, esFalta){
-    var f = g.f[diaSel];
-    var cls = (esFalta ? "short" : "stripe") + (n++ % 2 ? " zebra" : "");
-    return '<tr class="' + cls + '"><td class="l"><span class="name">'
-      + (culSel === "Todos" ? g.p : g.c) + '</span><span class="meta">'
-      + (culSel === "Todos" ? g.c.toLowerCase() + " · " + g.k : g.k) + "</span></td>"
-      + celda(f[0]) + celda(f[1]) + celda(esFalta ? f[4] : f[3], "total") + "</tr>";
+  // Primero la rejilla completa, luego se tira lo que salga en blanco.
+  var todas = DATOS.cols.map(function(c){
+    var org = [], cnv = [];
+    for (var d = 0; d < 7; d++){
+      var pasado = d < DATOS.hoy;
+      org.push(pasado ? 0 : libre(c.org, d));
+      cnv.push(pasado ? 0 : libre(c.conv, d));
+    }
+    return {p: c.p, lbl: c.lbl, cj: c.cj, org: org, conv: cnv};
+  });
+  var dias = [];
+  for (var d = DATOS.hoy; d < 7; d++){
+    var hay = todas.some(function(c){ return c.org[d] > 0 || c.conv[d] > 0; });
+    if (hay) dias.push(d);
   }
-  var sobra = vivos.filter(function(g){ return g.f[diaSel][3] > 0; });
-  var falta = vivos.filter(function(g){ return g.f[diaSel][4] < 0; });
-  var cuerpo = sobra.map(function(g){ return fila(g, false); }).join("");
-  if (falta.length){
-    n = 0;
-    cuerpo += '<tr class="divider"><td colspan="4">Faltantes</td></tr>'
-      + falta.map(function(g){ return fila(g, true); }).join("");
+  var cols = [];
+  todas.forEach(function(c){
+    var vivoO = dias.some(function(d){ return c.org[d] > 0; });
+    var vivoC = dias.some(function(d){ return c.conv[d] > 0; });
+    if (vivoO || vivoC) cols.push(c);
+  });
+
+  if (!cols.length || !dias.length){
+    out.innerHTML = '<div class="cargando"><b>No hay excedentes</b>'
+      + "Esta semana no queda producto libre para vender.</div>";
+    return;
   }
-  if (!cuerpo){ out.innerHTML = '<div class="note"><div>Sin movimiento aquí.</div></div>'; return; }
-  var aviso = diaSel < DATOS.hoy
-    ? '<div class="note"><div>Este día ya pasó. Se muestra de referencia.</div></div>' : "";
-  out.innerHTML = aviso + '<div class="tablewrap"><div class="scroller"><table><colgroup>'
-    + '<col style="width:34%"><col style="width:22%"><col style="width:22%">'
-    + '<col style="width:22%"></colgroup><thead><tr><th class="l">'
-    + (culSel === "Todos" ? "Cultivo" : "Calidad") + "</th>"
-    + "<th>Org</th><th>Cnv</th><th>Total</th></tr></thead><tbody>"
-    + cuerpo + "</tbody></table></div></div>";
+
+  var h1 = "", h2 = "", h3 = "";
+  var i = 0;
+  while (i < cols.length){
+    var p = cols[i].p, n = 0;
+    while (i + n < cols.length && cols[i + n].p === p) n++;
+    h1 += '<th colspan="' + (n * 2) + '" class="' + CLASE[p] + '">' + BONITO[p] + "</th>";
+    i += n;
+  }
+  cols.forEach(function(c){
+    h2 += '<th colspan="2">' + c.lbl + "<span>" + (c.cj || "—") + "</span></th>";
+    h3 += "<th>Orgánico</th><th>Conv</th>";
+  });
+
+  var cuerpo = "";
+  dias.forEach(function(d, n){
+    var cls = [];
+    if (d === DATOS.hoy) cls.push("hoy");
+    if (n % 2) cls.push("par");
+    var fila = '<td class="dia">' + DIAS[d] + " " + DATOS.num[d] + "</td>";
+    cols.forEach(function(c){ fila += celda(c.org[d]) + celda(c.conv[d]); });
+    cuerpo += "<tr" + (cls.length ? ' class="' + cls.join(" ") + '"' : "") + ">" + fila + "</tr>";
+  });
+
+  out.innerHTML = "<table>"
+    + '<thead><tr class="tr-cult"><th class="esq" rowspan="3">Día</th>' + h1 + "</tr>"
+    + '<tr class="tr-cal">' + h2 + "</tr>"
+    + '<tr class="tr-tipo">' + h3 + "</tr></thead>"
+    + "<tbody>" + cuerpo + "</tbody></table>";
 }
 
 function listo(W){
-  var g = extraer(W);
+  var cols = extraer(W);
   var hoy = W.getDiHoy();
   var partes = String(W.ST.sI).split("-");
   var vie = new Date(+partes[0], +partes[1] - 1, +partes[2]);
-  var dias = [], jue = null;
+  var num = [], jue = null;
   for (var i = 0; i < 7; i++){
     var d = new Date(vie); d.setDate(vie.getDate() + i);
-    dias.push(DIAS[i] + " " + d.getDate());
+    num.push(d.getDate());
     if (i === 6) jue = d;
   }
-  var cultivos = ["Todos"];
-  g.forEach(function(x){ if (cultivos.indexOf(x.p) < 0) cultivos.push(x.p); });
-  DATOS = {g: g, dias: dias, hoy: hoy, cultivos: cultivos};
-  diaSel = hoy;
+  DATOS = {cols: cols, num: num, hoy: hoy};
+
   var ahora = new Date();
-  document.getElementById("wk").textContent = vie.getDate() + " — " + jue.getDate()
-    + " " + MES[jue.getMonth()];
-  document.getElementById("sello").textContent = "al " + dias[hoy] + ", "
-    + String(ahora.getHours()).padStart(2, "0") + ":" + String(ahora.getMinutes()).padStart(2, "0");
-  document.getElementById("deck").style.display = "flex";
+  document.getElementById("wk").textContent =
+    vie.getDate() + " — " + jue.getDate() + " " + MES[jue.getMonth()];
+  document.getElementById("sello").textContent =
+    LARGO[hoy] + " " + num[hoy] + " de " + MES[vie.getMonth()] + " · "
+    + String(ahora.getHours()).padStart(2, "0") + ":"
+    + String(ahora.getMinutes()).padStart(2, "0") + " h";
   pinta();
 }
 
@@ -423,20 +411,15 @@ function esperar(){
     }
   }, 500);
 }
+
 var arrancado = false;
 function arranca(){ if (arrancado) return; arrancado = true; esperar(); }
 
-// La clave va revuelta para que no salte a simple vista en el codigo.
-// Aun asi, esto no es seguridad de verdad: frena al curioso, no al que sabe.
+// La clave va revuelta para que no salte a la vista en el codigo.
+// Frena al curioso, no al que sabe: no es seguridad de verdad.
 var LLAVE = "MTk4Ng==";
 function correcta(v){ return btoa(String(v).trim()) === LLAVE; }
-
-function abrir(){
-  document.getElementById("puerta").style.display = "none";
-  var f = document.getElementById("motor");
-  arranca();
-  if (f.contentWindow && f.contentWindow.document.readyState === "complete") arranca();
-}
+function abrir(){ document.getElementById("puerta").style.display = "none"; arranca(); }
 function intentar(){
   var v = document.getElementById("clave").value;
   if (correcta(v)){
@@ -459,6 +442,7 @@ try{
   if (localStorage.getItem("pv_ok") === "1") abrir();
   else document.getElementById("clave").focus();
 }catch(e){ document.getElementById("clave").focus(); }
+setTimeout(arranca, 1200);
 </script>
 </body>
 </html>
