@@ -178,7 +178,17 @@ var CLASE  = {Persa:"c-persa",Slicer:"c-slicer",Europeo:"c-europeo",
 // 1a nacional), la tercera de Persa y el 1/9 plain de Slicer.
 var FUERA = {
   "Persa|2":1, "Slicer|2":1, "Europeo|2":1, "Minibel|2":1, "Morron|2":1,
-  "Persa|3":1, "Slicer|3":1
+  "Persa|3":1, "Slicer|3":1, "Europeo|3":1, "Morron|3":1
+};
+// Cajas por tarima. Salidas de tu propia hoja DAYS OF SHIPMENT (cajas/pallets).
+// Abajo de una tarima no se vende, asi que esa casilla se va en blanco.
+// Las que no estan aqui todavia no traen minimo.
+var TARIMA = {
+  "Persa|1": 80,     // 20 lbs -> 80 en Mama Mia, 88 en Perfresh: se toma la chica
+  "Slicer|1": 80,    // 36ct
+  "Europeo|1": 160,  // 12ct
+  "Minibel|1": 96,   // 12x1
+  "Morron|1": 80     // 11 lbs
 };
 var nf = new Intl.NumberFormat("es-MX");
 var DATOS = null;
@@ -251,7 +261,7 @@ function extraer(W){
       if (prod === "Slicer" && cid === "2") clbl = "1a Nacional";
       if (FUERA[prod + "|" + cid]) return;
       if (!validas[prod + "|" + clbl]) return;
-      var col = {p: prod, lbl: clbl, cj: "", org: null, conv: null, vivo: false};
+      var col = {p: prod, g: cid, lbl: clbl, cj: "", org: null, conv: null, vivo: false};
       ["org","conv"].forEach(function(tipo){
         var r = leerSem(W, prod, tipo, cid);
         if (!r) return;
@@ -273,6 +283,20 @@ function extraer(W){
     });
   });
   return cols;
+}
+
+// Regla de la casa: el organico tapa el hoyo del convencional, nunca al reves.
+// Dia por dia, si el convencional va corto, esas cajas salen del organico y ya
+// no se pueden vender. El convencional nunca completa un faltante de organico.
+function compensa(org, conv){
+  var oL = [], cL = [];
+  for (var i = 0; i < 7; i++){
+    var o = org ? org[i] : null, c = conv ? conv[i] : null;
+    var falta = (c !== null && c < 0) ? c : 0;
+    oL.push(o === null ? null : o + falta);
+    cL.push(c === null ? null : (c > 0 ? c : 0));
+  }
+  return [oL, cL];
 }
 
 // Lo que de verdad se puede vender ese dia sin dejar colgado un dia posterior:
@@ -298,13 +322,17 @@ function pinta(){
 
   // Primero la rejilla completa, luego se tira lo que salga en blanco.
   var todas = DATOS.cols.map(function(c){
+    var par = compensa(c.org, c.conv);
+    var min = TARIMA[c.p + "|" + c.g] || 0;
     var org = [], cnv = [];
     for (var d = 0; d < 7; d++){
       var pasado = d < DATOS.hoy;
-      org.push(pasado ? 0 : libre(c.org, d));
-      cnv.push(pasado ? 0 : libre(c.conv, d));
+      var o = pasado ? 0 : libre(par[0], d);
+      var v = pasado ? 0 : libre(par[1], d);
+      org.push(o >= min ? o : 0);
+      cnv.push(v >= min ? v : 0);
     }
-    return {p: c.p, lbl: c.lbl, cj: c.cj, org: org, conv: cnv};
+    return {p: c.p, g: c.g, lbl: c.lbl, cj: c.cj, org: org, conv: cnv};
   });
   var dias = [];
   for (var d = DATOS.hoy; d < 7; d++){
