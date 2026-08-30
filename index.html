@@ -803,6 +803,15 @@ function doJalInv(conHoy){
 var _ssePed=null,_sseCam=null;
 var _tRec=null;
 function initSSE(){
+  // Leer /ped.json de una vez, sin esperar al stream. El arranque, el cambio de
+  // semana y cada reconexion pasan por aqui. Antes solo se abria el stream y si
+  // no empujaba, el inventario y los pedidos nunca entraban.
+  try{
+    fetch(FB_PED+"/"+ST.sI+"/ped.json?t="+Date.now(),{cache:"no-store"})
+      .then(function(r){return r.json();})
+      .then(function(d){if(d){procesarPed(d);renderTab();}})
+      .catch(function(){});
+  }catch(xF){}
   if(_ssePed){try{_ssePed.close();}catch(x){}}
   if(_sseCam){try{_sseCam.close();}catch(x){}}
   if(_tRec){clearTimeout(_tRec);_tRec=null;}
@@ -842,7 +851,7 @@ function span(attrs,inner){return h("span",attrs,inner);}
 function btn(attrs,label){return h("button",attrs,label);}
 function badge(tipo){return span({className:tipo==="org"?"badge-org":"badge-conv"},tipo==="org"?"org":"cnv");}
 
-var BUILD="v2026-08-29-62CT";
+var BUILD="v2026-08-30-LIVE";
 function renderHeader(){
   // Marca de version, para saber si el navegador tiene el codigo nuevo
   try{
