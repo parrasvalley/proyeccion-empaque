@@ -35,8 +35,11 @@ th{background:#DCE8D5;font-size:10px;font-weight:900;letter-spacing:.5px;
   text-transform:uppercase;padding:5px 4px;border:1px solid var(--rej);
   text-align:center;color:#2A3A2C;white-space:nowrap}
 td{border:1px solid var(--rej);padding:0;vertical-align:middle}
-td.cj{background:#F7F7F2;text-align:right;padding:6px 7px;font-weight:900;
-  font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.cj{background:#F7F7F2;padding:0;font-weight:900}
+input.tot{text-align:right;font-weight:900;font-size:15px;padding:6px 7px;
+  font-variant-numeric:tabular-nums;background:transparent}
+input.tot.man{color:#1B5E20;background:#E4F2E0}
+input.tot::placeholder{color:#C8CCC4}
 td.x{width:32px;text-align:center;background:#F7F7F2}
 input,select{width:100%;border:0;background:transparent;padding:8px 6px;
   font-size:14px;font-family:inherit;color:#111;font-weight:700}
@@ -162,6 +165,9 @@ td.mal input{color:#A82C22}
 
 <div class="pie">
   <button class="ed" id="edit">EDITAR LISTAS</button>
+  <div style="text-align:center;font-size:10.5px;color:#6B7A6E;margin-bottom:5px">
+    El total se calcula solo. Si la tarima trae otra cantidad, escribela encima.
+  </div>
   <div class="ley">
     <span><i style="background:#EAF6E4;border:1px solid #B9BCAF"></i>Bien</span>
     <span><i style="background:#FFE97A"></i>Ojo con esta</span>
@@ -302,7 +308,8 @@ function nueva(prod){
   var ult=l.length?l[l.length-1]:null;
   return {dia:ult?ult.dia:hoyISO(), tipo:ult?ult.tipo:"CV",
           pres:ult?ult.pres:-1, cal:ult?ult.cal:-1,
-          tpres:ult?ult.tpres:"", tcal:ult?ult.tcal:"", pal:"", suel:""};
+          tpres:ult?ult.tpres:"", tcal:ult?ult.tcal:"", pal:"", suel:"",
+          man:false, tot:""};
 }
 /* Reconoce lo escrito contra la lista, sin importar acentos,
    mayusculas, espacios ni guiones. Si no lo halla, devuelve -1. */
@@ -382,6 +389,8 @@ function datosDe(prod,f){
 }
 function nv2(x){var n=parseFloat(x);return isNaN(n)?0:n;}
 function cajasDe(prod,f){
+  /* Si escribieron el total a mano, ese manda sobre la cuenta */
+  if(f.man)return nv(f.tot);
   if(f.pres<0||f.cal<0)return 0;
   var dd=datosDe(prod,f);
   if(dd.cp<=0)return 0;
@@ -436,7 +445,8 @@ function pinta(){
       h+='</select></td>'+
         '<td><input class="num" type="number" inputmode="numeric" value="'+f.pal+'" placeholder="" data-p="'+P.id+'" data-i="'+i+'" data-c="pal"></td>'+
         '<td><input class="num" type="number" inputmode="numeric" value="'+f.suel+'" placeholder="" data-p="'+P.id+'" data-i="'+i+'" data-c="suel"></td>'+
-        '<td class="cj">'+fmt(cajasDe(P.id,f))+'</td>'+
+        '<td class="cj"><input class="num tot'+(f.man?" man":"")+'" type="number" inputmode="numeric" value="'+
+          (cajasDe(P.id,f)||"")+'" data-p="'+P.id+'" data-i="'+i+'" data-c="tot"></td>'+
         '<td class="x"><button class="del" data-p="'+P.id+'" data-i="'+i+'">&times;</button></td></tr>';
     });
     h+='</tbody></table><button class="mas" data-p="'+P.id+'">+ AGREGAR RENGLON</button>';
@@ -459,11 +469,16 @@ function liga(){
          y el renglon se marca hasta que lo corrijan. */
       if(c==="pres"||c==="cal"){f[c]=parseInt(el.value,10);}
       else{f[c]=el.value;}
+      /* Si tocan el total, ese manda. Si tocan pallets o bultos,
+         se vuelve a la cuenta automatica. */
+      if(c==="tot"){f.man=(String(el.value).trim()!=="");f.tot=el.value;}
+      if(c==="pal"||c==="suel"){f.man=false;f.tot="";}
       guardaLocal();
       var tr=el.closest("tr");
       var b2=cajasDe(pr,f);
-      var cj=tr.querySelector(".cj");
-      if(cj)cj.textContent=b2>0?fmt(b2):"";
+      var cj=tr.querySelector(".cj input");
+      if(cj&&c!=="tot"){cj.value=b2>0?b2:"";cj.className="num tot"+(f.man?" man":"");}
+      if(cj&&c==="tot")cj.className="num tot"+(f.man?" man":"");
       tr.className=b2>0?estadoDe(pr,f):"";
       var dd=tr.querySelector(".dd");
       if(dd)dd.textContent=b2>0?diasDe(f):"";
