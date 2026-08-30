@@ -47,6 +47,25 @@ input:focus,select:focus{outline:2px solid var(--verde);outline-offset:-2px;back
 input.num{font-variant-numeric:tabular-nums;font-weight:900;font-size:15px}
 .rep input,.rep select{color:#9AA79C}
 td.bus{position:relative}
+/* Antiguedad de la fruta.
+   Persa: 1 y 2 dias bien, 3 amarillo, 4 o mas rojo.
+   Los demas: hasta 3 bien, 4 amarillo, 5 o mas rojo. */
+tr.d-ok td{background:#EAF6E4}
+tr.d-ok td.cj{background:#DDEFD5}
+tr.d-am td{background:#FFE97A}
+tr.d-am td.cj{background:#F5DC5E}
+tr.d-rj td{background:#F5B7B1}
+tr.d-rj td.cj{background:#EE9A92;color:#7B1B14}
+tr.d-am input,tr.d-am select{color:#3A2E00}
+tr.d-rj input,tr.d-rj select{color:#7B1B14;font-weight:900}
+td.dd{width:44px;text-align:center;font-weight:900;font-size:13px;
+  font-variant-numeric:tabular-nums}
+.ley{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+  font-size:11px;font-weight:800;color:var(--gris);margin:8px 0 2px}
+.ley i{display:inline-block;width:11px;height:11px;border-radius:2px;
+  margin-right:4px;vertical-align:-1px}
+.urge{background:#F5B7B1;color:#7B1B14;border-radius:6px;padding:5px 9px;
+  font-size:12px;font-weight:900;text-align:center;margin-top:6px}
 input.esc{text-align:left;padding-left:8px}
 .lst{position:absolute;left:0;right:0;top:100%;background:#fff;
   border:2px solid var(--verde);border-top:0;z-index:90;max-height:230px;
@@ -110,6 +129,12 @@ input.esc{text-align:left;padding-left:8px}
 <div class="wrap" id="wrap"></div>
 
 <div class="pie">
+  <div class="ley">
+    <span><i style="background:#EAF6E4;border:1px solid #B9BCAF"></i>Bien</span>
+    <span><i style="background:#FFE97A"></i>Ojo con esta</span>
+    <span><i style="background:#F5B7B1"></i>Urge sacarla</span>
+  </div>
+  <div id="urge"></div>
   <div class="l"><span>TOTAL DEL INVENTARIO EN BULTOS</span><b id="tt2">0</b></div>
   <button class="gu" id="gu">GUARDAR INVENTARIO</button>
   <div id="msg"></div>
@@ -232,6 +257,21 @@ function nueva(prod){
   return {dia:ult?ult.dia:hoyISO(), tipo:ult?ult.tipo:"CV",
           pres:ult?ult.pres:0, cal:ult?ult.cal:0, pal:"", suel:""};
 }
+function diasDe(f){
+  var p=String(f.dia||"").split("/");
+  if(p.length!==3)return 0;
+  var d1=new Date(Number(p[2]),Number(p[1])-1,Number(p[0]),12,0,0);
+  var q=String(ST.fInv||"").split("-");
+  if(q.length!==3)return 0;
+  var d2=new Date(Number(q[0]),Number(q[1])-1,Number(q[2]),12,0,0);
+  var n=Math.round((d2-d1)/86400000);
+  return n>0?n:0;
+}
+function estadoDe(prod,f){
+  var n=diasDe(f);
+  if(prod==="Persa")return n>=4?"d-rj":(n===3?"d-am":"d-ok");
+  return n>=5?"d-rj":(n===4?"d-am":"d-ok");
+}
 function cajasDe(prod,f){
   var p=PRES[prod][f.pres];if(!p)return 0;
   var n=nv(f.pal)*p[3]+nv(f.suel);
@@ -251,6 +291,7 @@ function pinta(){
     var h='<div class="tt">'+P.lbl+'<span>'+fmt(sub)+' bultos</span></div>'+
       '<table><thead><tr>'+
       '<th style="width:88px">Dia</th>'+
+      '<th style="width:44px">Dias</th>'+
       '<th style="width:60px">Producto</th>'+
       '<th>Envase</th>'+
       '<th>Calidad</th>'+
@@ -263,8 +304,11 @@ function pinta(){
       var rDia=ant&&ant.dia===f.dia?" rep":"";
       var rCal=ant&&ant.cal===f.cal?" rep":"";
       var rPre=ant&&ant.pres===f.pres?" rep":"";
-      h+='<tr>'+
+      var est=(nv(f.pal)||nv(f.suel))?estadoDe(P.id,f):"";
+      var nd=diasDe(f);
+      h+='<tr class="'+est+'">'+
         '<td class="'+rDia.trim()+'"><input value="'+f.dia+'" data-p="'+P.id+'" data-i="'+i+'" data-c="dia"></td>'+
+        '<td class="dd">'+((nv(f.pal)||nv(f.suel))?nd:"")+'</td>'+
         '<td><select data-p="'+P.id+'" data-i="'+i+'" data-c="tipo">'+
           '<option'+(f.tipo==="ORG"?" selected":"")+'>ORG</option>'+
           '<option'+(f.tipo==="CV"?" selected":"")+'>CV</option></select></td>'+
@@ -284,6 +328,7 @@ function pinta(){
   $("tt").textContent=fmt(total);
   $("tt2").textContent=fmt(total);
   $("gu").disabled=total<=0;
+  urgente();
   liga();
 }
 /* ---- Campo que se escribe y filtra la lista ---- */
@@ -382,9 +427,16 @@ function liga(){
       guardaLocal();
       if(c==="pal"||c==="suel"){
         var tr=el.closest("tr");
-        tr.querySelector(".cj").textContent=fmt(cajasDe(el.getAttribute("data-p"),f));
+        var pr=el.getAttribute("data-p");
+        tr.querySelector(".cj").textContent=fmt(cajasDe(pr,f));
+        /* el color y los dias se refrescan al momento */
+        var b2=cajasDe(pr,f);
+        tr.className=b2>0?estadoDe(pr,f):"";
+        var dd=tr.querySelector(".dd");
+        if(dd)dd.textContent=b2>0?diasDe(f):"";
         recalc();
       }else if(c==="tipo"){recalc();}
+      else if(c==="dia"){pinta();}
     });
   });
   Array.prototype.forEach.call(document.querySelectorAll(".del"),function(b){
@@ -415,8 +467,21 @@ function recalc(){
   $("tt").textContent=fmt(t);
   $("tt2").textContent=fmt(t);
   $("gu").disabled=t<=0;
+  urgente();
 }
-
+function urgente(){
+  var n=0,c=0;
+  PRODS.forEach(function(P){
+    ST.filas[P.id].forEach(function(f){
+      var b=cajasDe(P.id,f);
+      if(b>0&&estadoDe(P.id,f)==="d-rj"){n++;c+=b;}
+    });
+  });
+  var e=$("urge");if(!e)return;
+  if(n){e.className="urge";
+    e.textContent="URGE SACAR: "+n+" renglon"+(n>1?"es":"")+" con "+fmt(c)+" bultos";}
+  else{e.className="";e.textContent="";}
+}
 function invEsc(o){
   if(!o||typeof o!=="object")return o;
   var r={};
