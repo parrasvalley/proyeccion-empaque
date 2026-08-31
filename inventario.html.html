@@ -199,78 +199,115 @@ var PRODS=[
 ];
 
 var CALS={
- /* calidad: [calidad, nombre, kg por caja, cajas por tarima, nombre a guardar]
-    los ultimos tres son opcionales; cuando vienen, le ganan al envase */
+ /* calidad | nombre | kg por caja | cajas por tarima | nombre a guardar
+    los tres ultimos son opcionales; cuando vienen, le ganan al envase */
  Persa:[["1","XFANCY"],["1","FANCY"],["1","MEDIUM"],["2","MDL"],["2","MDS"],
         ["3","CHOICE"],
         ["1","12X1",5.70,0,"12X1 LB"],
         ["1","12X1 STO",5.70,0,"12X1 LBS STO"],
         ["1","8X2",7.60,96,"8X2 LBS"],
-        ["1","20 LBS",9.25,0,"20 LBS"]],
- Europeo:[["1","PRIMERA"],["1","12'S"],["1","24'S"],["2","12'S #2"],["3","BUSHEL"]],
- Slicer:[["1","SELECT"],["1","SUPER SELECT"],["1","36 CT / S"],["1","36 CT / SS"],
-         ["2","LARGE"],["2","SMALL"],["3","PLAIN"],["3","36 CT #2"]],
- Morron:[["1","XL"],["1","L"],["1","M"],["1","XXL"],["1","JUMBO"],["1","SM GREEN"],
-         ["3","CHOICE"]],
- Minibel:[["1","MIX PRIMERA"]]
+        ["1","20 LBS",9.25,0,"20 LBS"],
+        ["1","175 PZS",13.61,88,"175 PZS"],
+        ["3","MERMA",0,0,"MERMA"]],
+ Europeo:[["1","PRIMERA"],["1","12'S",0,0,"12CT"],["1","24'S",0,80,"24S RPC"],
+        ["1","12'S / S",0,0,"12CT"],["1","12'S / M",0,0,"12CT"],
+        ["2","12'S #2",0,0,"12CT"],
+        ["3","BUSHEL",0,49,"1/9 bushel"],
+        ["3","MERMA",0,0,"MERMA"]],
+ Slicer:[["1","SELECT",19.44,42,"1/9 SELECT"],
+        ["1","SUPER SELECT",19.44,42,"1/9 SUPER SELECT"],
+        ["1","36 CT / S",9.72,80,"36CT"],
+        ["1","36 CT / SS",9.72,80,"36CT"],
+        ["1","36 CT",9.72,80,"36CT"],
+        ["1","25 LBS",9.72,80,"25 LBS"],
+        ["1","18 CT",4.86,120,"18CT"],
+        ["2","LARGE",19.44,42,"1/9 LARGE"],
+        ["2","SMALL",19.44,42,"1/9 SMALL"],
+        ["3","PLAIN",19.44,42,"1/9 PLAIN"],
+        ["3","36 CT #2",9.72,80,"1/9 PLAIN"],
+        ["3","36 CT / PLAIN",9.72,80,"1/9 PLAIN"],
+        ["3","MERMA",0,0,"MERMA"]],
+ Morron:[["1","XL"],["1","L"],["1","M"],["1","XXL"],["1","JUMBO"],
+        ["1","L-XL"],["1","SM GREEN"],
+        ["1","11 LB",5.13,80,"11LB RED"],
+        ["1","24 CT",5.08,80,"24 CT RED"],
+        ["1","8X6",5.00,80,"8X6"],
+        ["3","CHOICE",11.57,42,"1/9 BUSHEL RED"],
+        ["3","MERMA",0,0,"MERMA"]],
+ Minibel:[["1","MIX PRIMERA"],["1","MIX"],
+        ["1","12X8 OZ",2.88,0,"12X8 OZ"],
+        ["1","12X1",5.70,96,"12X1 LB"],
+        ["1","ROJO-NARANJA",13.00,40,"RPC"],
+        ["2","SEGUNDA"],
+        ["3","MERMA",0,0,"MERMA"]]
 };
 
 /* nombre visible | nombre que se guarda | kg por caja | cajas por pallet */
 var PRES={
+ /* envase o marca | nombre que se guarda | kg por caja | cajas por tarima */
  Persa:[
   ["PERFRESH","20 LBS",9.25,88],
+  ["PERFRESH ORG","20 LBS",9.25,88],
   ["MAMAMIA","20 LBS",9.25,80],
+  ["MAMAMIA ORG","20 LBS",9.25,80],
+  ["GENERICA","20 LBS",9.25,88],
   ["LAKEWAY","12X1 LB",5.70,120],
   ["NATURE SWEET","12X1 LB",5.70,112],
   ["4 EARTH FARMS","12X1 LB",5.70,120],
   ["DQP","12X1 LB",5.70,120],
+  ["DQP ORG","12X1 LB",5.70,120],
   ["WHOLESUM","12X1 LBS STO",5.70,120],
   ["CUSTOM PAK","12X1 LB",5.70,120],
-  ["GENERICA","20 LBS",9.25,88],
+  ["LIPMAN","20 LBS",9.25,88],
   ["CHAROLA","CHAROLA",9.25,90],
-  ["RPC 40 CAJAS (vale doble)","20 LBS",9.25,80],
-  ["175 PZS","175 PZS",13.61,88]],
+  ["RPC (vale doble)","20 LBS",9.25,80],
+  ["175 PZS","175 PZS",13.61,88],
+  ["CONTENEDOR","MERMA",0,0]],
  Europeo:[
-  ["12'S 4 EARTH / PERFRESH","12CT",0,120],
-  ["12'S NATURE SWEET","12CT",0,128],
-  ["12'S CUSTOM PAK / DQP / MUCCI","12CT",0,160],
-  ["24'S RPC","24S RPC",0,80],
-  ["1 1/9 PRIMERA","1/9 PRIMERA",0,49],
-  ["1 1/9 BUSHEL","1/9 bushel",0,49]],
+  ["4 EARTH FARMS","12CT",0,120],
+  ["PERFRESH","12CT",0,120],
+  ["PERFRESH ORG","12CT",0,120],
+  ["NATURE SWEET","12CT",0,128],
+  ["CUSTOM PAK","12CT",0,160],
+  ["DQP","12CT",0,160],
+  ["DQP ORG","12CT",0,160],
+  ["DQP RPC","24S RPC",0,80],
+  ["MUCCI","12CT",0,160],
+  ["LAKEWAY RPC","24S RPC",0,80],
+  ["GENERICA","12CT",0,120],
+  ["1 1/9","1/9 bushel",0,49],
+  ["CARGA NACIONAL","1/9 bushel",0,49],
+  ["CONTENEDOR","MERMA",0,0]],
  Slicer:[
-  ["36 CT","36CT",9.72,80],
-  ["18 CT","18CT",4.86,120],
-  ["25 LBS","25 LBS",9.72,80],
-  ["42 CT","42CT",7.60,80],
-  ["1 1/9 SELECT","1/9 SELECT",19.44,42],
-  ["1 1/9 SUPER SELECT","1/9 SUPER SELECT",19.44,42],
-  ["1 1/9 LARGE","1/9 LARGE",19.44,42],
-  ["1 1/9 SMALL","1/9 SMALL",19.44,42],
-  ["1 1/9 PLAIN","1/9 PLAIN",19.44,42],
-  ["50 LBS","1/9 PLAIN",19.44,42]],
+  ["GENERICA","36CT",9.72,80],
+  ["PERFRESH","36CT",9.72,80],
+  ["PERFRESH ORG","36CT",9.72,80],
+  ["PERO FAMILY","36CT",9.72,80],
+  ["4 EARTH FARMS","18CT",4.86,120],
+  ["WHOLESUM 25 LBS","25 LBS",9.72,80],
+  ["WHOLESUM 1 1/9","1/9 SELECT",19.44,42],
+  ["LAKEWAY RPC","36CT",9.72,80],
+  ["KING HARVEST","36CT",9.72,80],
+  ["1 1/9","1/9 PLAIN",19.44,42],
+  ["CONTENEDOR","MERMA",0,0]],
  Morron:[
-  ["11 LB RED","11LB RED",5.13,80],
-  ["11 LB RED XL","11LB RED XL",5.13,80],
-  ["11 LB YELLOW","11LB YELLOW",5.13,80],
-  ["11 LB YELLOW XL","11LB YELLOW XL",5.13,80],
-  ["11 LB ORANGE","11LB ORANGE",5.13,80],
-  ["11 LB ORANGE XL","11LB ORANGE XL",5.13,80],
-  ["11 LB GREEN","11LB GREEN",5.13,80],
-  ["24 CT RED","24 CT RED",5.08,80],
-  ["24 CT YELLOW","24 CT YELLOW",5.08,80],
-  ["12X2","12X2",5.00,80],
-  ["8X6","8X6",5.00,80],
-  ["1 1/9 RED","1/9 BUSHEL RED",11.57,42],
-  ["1 1/9 YELLOW","1/9 BUSHEL YELLOW",11.57,42],
-  ["1 1/9 ORANGE","1/9 BUSHEL ORANGE",11.57,42],
-  ["1 1/9 GREEN","1/9 BUSHEL GREEN",11.57,42],
-  ["1 1/9 CARGA NACIONAL","1/9 BUSHEL RED",11.57,49]],
+  ["PERFRESH","11LB RED",5.13,80],
+  ["PERFRESH ORG","11LB RED",5.13,80],
+  ["GENERICA","11LB RED",5.13,80],
+  ["LAKEWAY","11LB RED",5.13,80],
+  ["WHOLESUM","24 CT RED",5.08,80],
+  ["NATURE SWEET","8X6",5.00,80],
+  ["1 1/9","1/9 BUSHEL RED",11.57,42],
+  ["CARGA NACIONAL","1/9 BUSHEL RED",11.57,49],
+  ["CONTENEDOR","MERMA",0,0]],
  Minibel:[
-  ["12X1","12X1 LB",5.70,96],
-  ["12X8 OZ NATURE SWEET","12X8 OZ",2.88,156],
-  ["12X8 OZ PERO FAMILY","12X8 OZ",2.88,144],
+  ["NATURE SWEET","12X8 OZ",2.88,156],
+  ["PERO FAMILY","12X8 OZ",2.88,144],
+  ["PERFRESH","12X1 LB",5.70,96],
+  ["WILSON","12X1 LB",5.70,96],
   ["RPC","RPC",13.00,40],
-  ["1 1/9","1/9 MINIBEL",13.00,42]]
+  ["1 1/9","1/9 MINIBEL",13.00,42],
+  ["CONTENEDOR","MERMA",0,0]]
 };
 
 var PRES_BASE=PRES, CALS_BASE=CALS;
@@ -475,10 +512,10 @@ function pinta(){
         '<td><input class="lib" autocomplete="off" value="'+(f.tipo||"")+'" '+
           'placeholder="ORG/CV" data-p="'+P.id+'" data-i="'+i+'" data-c="tipo"></td>'+
         '<td class="'+rPre.trim()+((f.tpres&&f.pres<0)?" mal":"")+'"><input class="lib izq" '+
-          'autocomplete="off" value="'+(f.tpres||"")+'" placeholder="envase" '+
+          'autocomplete="off" value="'+(f.tpres||"")+'" '+
           'data-p="'+P.id+'" data-i="'+i+'" data-c="pres"></td>'+
         '<td class="'+rCal.trim()+((f.tcal&&f.cal<0)?" mal":"")+'"><input class="lib izq" '+
-          'autocomplete="off" value="'+(f.tcal||"")+'" placeholder="calidad" '+
+          'autocomplete="off" value="'+(f.tcal||"")+'" '+
           'data-p="'+P.id+'" data-i="'+i+'" data-c="cal"></td>'+
         '<td><input class="num" type="number" inputmode="numeric" value="'+f.pal+'" placeholder="" data-p="'+P.id+'" data-i="'+i+'" data-c="pal"></td>'+
         '<td><input class="num" type="number" inputmode="numeric" value="'+f.suel+'" placeholder="" data-p="'+P.id+'" data-i="'+i+'" data-c="suel"></td>'+
@@ -594,7 +631,8 @@ function armaInv(){
       /* si la calidad es la presentacion (embolsado), ese nombre se guarda */
       if(nv2(q[2])>0)nom=q[4]||q[1];
       if(q[1]==="36 CT #2"){nom="1/9 PLAIN";cal="3";kgc=dd.kg*2;}
-      var tipo=f.tipo==="ORG"?"org":"conv";
+      /* se acepta org, ORG, o, organico, Organico... */
+      var tipo=(normTipo(f.tipo)==="ORG")?"org":"conv";
       var kg=(P.id==="Europeo")?0:Math.round(n*kgc*100)/100;
       var pr=invR.pvt[P.id]||(invR.pvt[P.id]={});
       var tp=pr[tipo]||(pr[tipo]={});
