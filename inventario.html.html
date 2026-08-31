@@ -97,6 +97,11 @@ td.dd{width:44px;text-align:center;font-weight:900;font-size:13px;
 .cd .gg{background:var(--verde);color:#fff}
 .cd .cc{background:#fff;color:var(--gris);border:2px solid var(--rej)}
 @media (max-width:640px){.nv{grid-template-columns:1fr 1fr;gap:4px}}
+.nore{background:#FFF3CD;border:2px solid #E0A800;color:#7A5200;
+  border-radius:7px;padding:8px 11px;font-size:11.5px;font-weight:700;
+  line-height:1.6;margin-bottom:7px;max-width:1000px;margin-left:auto;
+  margin-right:auto}
+.nore u{font-weight:900;color:#A82C22}
 .urge{background:#F5B7B1;color:#7B1B14;border-radius:6px;padding:5px 9px;
   font-size:12px;font-weight:900;text-align:center;margin-top:6px}
 input.izq{text-align:left;padding-left:8px}
@@ -165,6 +170,7 @@ td.mal input{color:#A82C22}
 
 <div class="pie">
   <button class="ed" id="edit">EDITAR LISTAS</button>
+  <div id="nore"></div>
   <div style="text-align:center;font-size:10.5px;color:#6B7A6E;margin-bottom:5px">
     El total se calcula solo. Si la tarima trae otra cantidad, escribela encima.
   </div>
@@ -314,42 +320,80 @@ function nueva(prod){
 /* Reconoce lo escrito contra la lista, sin importar acentos,
    mayusculas, espacios ni guiones. Si no lo halla, devuelve -1. */
 function limpia(t){
-  /* quita acentos sin escribirlos en el archivo */
   var a="\u00C1\u00C0\u00C4\u00C2\u00E1\u00E0\u00E4\u00E2";
   var e="\u00C9\u00C8\u00CB\u00CA\u00E9\u00E8\u00EB\u00EA";
   var i2="\u00CD\u00CC\u00CF\u00CE\u00ED\u00EC\u00EF\u00EE";
   var o="\u00D3\u00D2\u00D6\u00D4\u00F3\u00F2\u00F6\u00F4";
   var u="\u00DA\u00D9\u00DC\u00DB\u00FA\u00F9\u00FC\u00FB";
   var n="\u00D1\u00F1";
-  var r=String(t||"").toUpperCase();
-  function q(src,ch){
-    for(var k=0;k<src.length;k++){r=r.split(src.charAt(k)).join(ch);}
-  }
+  var r=" "+String(t||"").toUpperCase()+" ";
+  function q(src,ch){for(var k=0;k<src.length;k++){r=r.split(src.charAt(k)).join(ch);}}
   q(a,"A");q(e,"E");q(i2,"I");q(o,"O");q(u,"U");q(n,"N");
+  /* Se empareja como se escribe en el empaque:
+     libras, lbs, lb -> LB ; por, x, * -> X ; count, ct -> CT ; onzas -> OZ */
+  r=r.replace(/[^A-Z0-9\/ ]/g," ");
+  r=r.replace(/\bLIBRAS?\b/g,"LB").replace(/\bLBS\b/g,"LB");
+  r=r.replace(/\bPOR\b/g,"X");
+  r=r.replace(/\bCOUNT\b/g,"CT").replace(/\bCONTEO\b/g,"CT");
+  r=r.replace(/\bONZAS?\b/g,"OZ").replace(/\bOUNCES?\b/g,"OZ");
+  r=r.replace(/\bPIEZAS?\b/g,"PZS").replace(/\bPZ\b/g,"PZS");
+  r=r.replace(/\bBUSHELL?\b/g,"BUSHEL").replace(/\bBUCHEL\b/g,"BUSHEL");
+  r=r.replace(/\bTARIMAS?\b/g,"").replace(/\bPALLETS?\b/g,"");
+  r=r.replace(/1\s*1\s*\/\s*9/g,"19").replace(/1\s*\/\s*9/g,"19");
+  r=r.replace(/\bCJ\b|\bCJS\b|\bCAJAS?\b/g,"");
+  /* colores en espanol y en ingles se emparejan */
+  r=r.replace(/\bROJOS?\b/g,"RED").replace(/\bROJA\b/g,"RED");
+  r=r.replace(/\bAMARILLOS?\b/g,"YELLOW").replace(/\bAMARILLA\b/g,"YELLOW");
+  r=r.replace(/\bNARANJAS?\b/g,"ORANGE").replace(/\bANARANJADO\b/g,"ORANGE");
+  r=r.replace(/\bVERDES?\b/g,"GREEN");
+  r=r.replace(/\bMEDIANOS?\b/g,"MEDIUM").replace(/\bMEDIANA\b/g,"MEDIUM");
+  r=r.replace(/\bPRIMERA\b/g,"PRIMERA").replace(/\bTERCERA\b/g,"BUSHEL");
+  r=r.replace(/\bMERMA\b/g,"MERMA").replace(/\bCONTENEDOR(ES)?\b/g,"CONTENEDOR");
   return r.replace(/[^A-Z0-9]/g,"");
 }
-function hallaPres(prod,txt){
-  var t=limpia(txt);if(!t)return -1;
-  var l=PRES[prod],ex=-1,ini=-1,par=-1;
-  l.forEach(function(p,k){
-    var a=limpia(p[0]),b=limpia(p[1]);
-    if(a===t||b===t){ex=k;return;}
-    if(ini<0&&(a.indexOf(t)===0||b.indexOf(t)===0))ini=k;
-    if(par<0&&(a.indexOf(t)>=0||b.indexOf(t)>=0))par=k;
-  });
-  return ex>=0?ex:(ini>=0?ini:par);
+/* distancia entre dos palabras, para aguantar errores de dedo */
+function dist(a,b){
+  if(a===b)return 0;
+  var m=a.length,n=b.length;
+  if(!m)return n;if(!n)return m;
+  if(Math.abs(m-n)>2)return 9;
+  var pre=[],cur=[],i,j;
+  for(j=0;j<=n;j++)pre[j]=j;
+  for(i=1;i<=m;i++){
+    cur[0]=i;
+    for(j=1;j<=n;j++){
+      cur[j]=Math.min(pre[j]+1,cur[j-1]+1,
+        pre[j-1]+(a.charAt(i-1)===b.charAt(j-1)?0:1));
+    }
+    for(j=0;j<=n;j++)pre[j]=cur[j];
+  }
+  return pre[n];
 }
-function hallaCal(prod,txt){
+function buscaEn(lista,txt,campo){
   var t=limpia(txt);if(!t)return -1;
-  var l=CALS[prod],ex=-1,ini=-1,par=-1;
-  l.forEach(function(q,k){
-    var a=limpia(q[1]);
-    if(a===t){ex=k;return;}
-    if(ini<0&&a.indexOf(t)===0)ini=k;
-    if(par<0&&a.indexOf(t)>=0)par=k;
+  var ex=-1,ini=-1,par=-1,cer=-1,mej=9;
+  lista.forEach(function(it,k){
+    var nombres=(campo==="pres")?[it[0],it[1]]:[it[1],it[4]||""];
+    (it[5]||[]).forEach(function(al){nombres.push(al);});
+    nombres.forEach(function(nm){
+      if(!nm)return;
+      var a=limpia(nm);if(!a)return;
+      if(a===t){if(ex<0)ex=k;return;}
+      if(ini<0&&(a.indexOf(t)===0||t.indexOf(a)===0))ini=k;
+      if(par<0&&(a.indexOf(t)>=0||t.indexOf(a)>=0))par=k;
+      var dd=dist(a,t);
+      var tope=t.length<=4?1:2;
+      if(dd<=tope&&dd<mej){mej=dd;cer=k;}
+    });
   });
-  return ex>=0?ex:(ini>=0?ini:par);
+  if(ex>=0)return ex;
+  if(ini>=0)return ini;
+  if(cer>=0)return cer;
+  return par;
 }
+function hallaPres(prod,txt){return buscaEn(PRES[prod],txt,"pres");}
+function hallaCal(prod,txt){return buscaEn(CALS[prod],txt,"cal");}
+
 function normTipo(txt){
   var t=limpia(txt);
   if(!t)return "";
@@ -428,21 +472,14 @@ function pinta(){
       h+='<tr class="'+est+'">'+
         '<td class="'+rDia.trim()+'"><input value="'+f.dia+'" data-p="'+P.id+'" data-i="'+i+'" data-c="dia"></td>'+
         '<td class="dd">'+((nv(f.pal)||nv(f.suel))?nd:"")+'</td>'+
-        '<td><select data-p="'+P.id+'" data-i="'+i+'" data-c="tipo">'+
-          '<option'+(f.tipo==="ORG"?" selected":"")+'>ORG</option>'+
-          '<option'+(f.tipo==="CV"?" selected":"")+'>CV</option></select></td>'+
-        '<td class="'+rPre.trim()+'"><select data-p="'+P.id+'" data-i="'+i+'" data-c="pres">'+
-          '<option value="-1"'+(f.pres<0?" selected":"")+'>-</option>';
-      PRES[P.id].forEach(function(pp,k){
-        h+='<option value="'+k+'"'+(f.pres===k?" selected":"")+'>'+pp[0]+'</option>';
-      });
-      h+='</select></td>'+
-        '<td class="'+rCal.trim()+'"><select data-p="'+P.id+'" data-i="'+i+'" data-c="cal">'+
-          '<option value="-1"'+(f.cal<0?" selected":"")+'>-</option>';
-      CALS[P.id].forEach(function(qq,k){
-        h+='<option value="'+k+'"'+(f.cal===k?" selected":"")+'>'+qq[1]+'</option>';
-      });
-      h+='</select></td>'+
+        '<td><input class="lib" autocomplete="off" value="'+(f.tipo||"")+'" '+
+          'placeholder="ORG/CV" data-p="'+P.id+'" data-i="'+i+'" data-c="tipo"></td>'+
+        '<td class="'+rPre.trim()+((f.tpres&&f.pres<0)?" mal":"")+'"><input class="lib izq" '+
+          'autocomplete="off" value="'+(f.tpres||"")+'" placeholder="envase" '+
+          'data-p="'+P.id+'" data-i="'+i+'" data-c="pres"></td>'+
+        '<td class="'+rCal.trim()+((f.tcal&&f.cal<0)?" mal":"")+'"><input class="lib izq" '+
+          'autocomplete="off" value="'+(f.tcal||"")+'" placeholder="calidad" '+
+          'data-p="'+P.id+'" data-i="'+i+'" data-c="cal"></td>'+
         '<td><input class="num" type="number" inputmode="numeric" value="'+f.pal+'" placeholder="" data-p="'+P.id+'" data-i="'+i+'" data-c="pal"></td>'+
         '<td><input class="num" type="number" inputmode="numeric" value="'+f.suel+'" placeholder="" data-p="'+P.id+'" data-i="'+i+'" data-c="suel"></td>'+
         '<td class="cj"><input class="num tot'+(f.man?" man":"")+'" type="number" inputmode="numeric" value="'+
@@ -457,17 +494,19 @@ function pinta(){
   $("tt2").textContent=fmt(total);
   $("gu").disabled=total<=0;
   urgente();
+  noReconocidos();
   liga();
 }
 function liga(){
   Array.prototype.forEach.call(document.querySelectorAll("[data-c]"),function(el){
     var c=el.getAttribute("data-c");
-    el.addEventListener(el.tagName==="SELECT"?"change":"input",function(){
+    el.addEventListener("input",function(){
       var pr=el.getAttribute("data-p");
       var f=ST.filas[pr][nv(el.getAttribute("data-i"))];
       /* Lo escrito se reconoce contra la lista. Si no se halla, queda en -1
          y el renglon se marca hasta que lo corrijan. */
-      if(c==="pres"||c==="cal"){f[c]=parseInt(el.value,10);}
+      if(c==="pres"){f.tpres=el.value;f.pres=hallaPres(pr,el.value);}
+      else if(c==="cal"){f.tcal=el.value;f.cal=hallaCal(pr,el.value);}
       else{f[c]=el.value;}
       /* Si tocan el total, ese manda. Si tocan pallets o bultos,
          se vuelve a la cuenta automatica. */
@@ -479,6 +518,12 @@ function liga(){
       var cj=tr.querySelector(".cj input");
       if(cj&&c!=="tot"){cj.value=b2>0?b2:"";cj.className="num tot"+(f.man?" man":"");}
       if(cj&&c==="tot")cj.className="num tot"+(f.man?" man":"");
+      if(c==="pres"||c==="cal"){
+        var td=el.parentNode;
+        var mala=(c==="pres")?(f.tpres&&f.pres<0):(f.tcal&&f.cal<0);
+        td.className=td.className.replace(/ *mal/g,"")+(mala?" mal":"");
+        noReconocidos();
+      }
       tr.className=b2>0?estadoDe(pr,f):"";
       var dd=tr.querySelector(".dd");
       if(dd)dd.textContent=b2>0?diasDe(f):"";
@@ -583,6 +628,7 @@ function guardar(){
     if(!r2.ok)throw new Error("HTTP "+r2.status);
     m.className="msg ok";
     m.textContent="Guardado: "+$("tt").textContent+" bultos del "+txtFecha(ST.fInv);
+    avisaPendientes();
     b.disabled=false;b.textContent="GUARDAR INVENTARIO";
   }).catch(function(e){
     m.className="msg er";
@@ -718,6 +764,43 @@ function leeCatalogo(cb){
       return fetch(FB_CAT2+"?t="+Date.now()).then(function(r2){return r2.json();})
         .then(usa);
     }).catch(function(){cb();});
+}
+/* ---------- Lo que no se pudo leer ---------- */
+function listaNoRec(){
+  var l=[];
+  PRODS.forEach(function(P){
+    ST.filas[P.id].forEach(function(f){
+      if(f.tpres&&f.pres<0)l.push({prod:P.lbl,campo:"envase",txt:f.tpres});
+      if(f.tcal&&f.cal<0)l.push({prod:P.lbl,campo:"calidad",txt:f.tcal});
+    });
+  });
+  return l;
+}
+function noReconocidos(){
+  var e=$("nore");if(!e)return;
+  var l=listaNoRec();
+  if(!l.length){e.className="";e.innerHTML="";return;}
+  var h='<b>No pude leer esto:</b><br>';
+  l.forEach(function(x){
+    h+='&bull; '+x.prod+' &mdash; '+x.campo+': <u>'+x.txt+'</u><br>';
+  });
+  h+='<span style="font-weight:700">Escribelo de otra forma, o agregalo en '+
+     'EDITAR LISTAS. Se le avisa al gerente al guardar.</span>';
+  e.className="nore";e.innerHTML=h;
+}
+function avisaPendientes(){
+  var l=listaNoRec();if(!l.length)return;
+  var u=FB+"/inventario-pendientes-v1.json";
+  fetch(u+"?t="+Date.now()).then(function(r){return r.json();}).then(function(d){
+    var base=Array.isArray(d)?d.filter(Boolean):[];
+    l.forEach(function(x){
+      base.push({fecha:ST.fInv,prod:x.prod,campo:x.campo,texto:x.txt,
+                 cuando:new Date().toISOString()});
+    });
+    if(base.length>200)base=base.slice(base.length-200);
+    return fetch(u,{method:"PUT",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(base)});
+  }).catch(function(){});
 }
 function guardaLocal(){
   try{localStorage.setItem("pv-inv-hoja",JSON.stringify({d:ST.fInv,f:ST.filas}));}catch(e){}
