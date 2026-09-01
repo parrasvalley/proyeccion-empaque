@@ -10,18 +10,18 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:#F2F1EC;color:#111;font-family:-apple-system,
-  BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;padding-bottom:150px}
-.hd{background:#fff;border-bottom:2px solid var(--tinta);padding:10px 12px;
+  BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;padding-bottom:250px}
+.hd{background:#fff;border-bottom:2px solid var(--tinta);padding:6px 12px;
   position:sticky;top:0;z-index:60;display:flex;justify-content:space-between;
   align-items:center;gap:10px;flex-wrap:wrap}
-.hd h1{margin:0;font-size:17px;font-weight:900;letter-spacing:1px}
+.hd h1{margin:0;font-size:15px;font-weight:900;letter-spacing:1px}
 .hd .s{font-size:11px;color:var(--gris);font-weight:700}
-.hd b{font-size:20px;font-weight:900;color:var(--verde)}
-.wrap{max-width:1000px;margin:0 auto;padding:10px 8px}
+.hd b{font-size:18px;font-weight:900;color:var(--verde)}
+.wrap{max-width:1180px;margin:0 auto;padding:6px 8px}
 
-.blq{margin-bottom:18px;background:#fff;border:2px solid var(--tinta);border-radius:3px;
+.blq{margin-bottom:8px;background:#fff;border:1.5px solid var(--tinta);border-radius:3px;
   overflow:hidden}
-.blq .tt{padding:7px 11px;font-size:14px;font-weight:900;letter-spacing:2px;
+.blq .tt{padding:4px 9px;font-size:12.5px;font-weight:900;letter-spacing:1.5px;
   text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
 .b-persa .tt{background:#8BC34A}
 .b-slicer .tt{background:#689F38;color:#fff}
@@ -31,18 +31,19 @@ body{margin:0;background:#F2F1EC;color:#111;font-family:-apple-system,
 .blq .tt span{font-size:12px;font-weight:800;opacity:.75;letter-spacing:0}
 
 table{width:100%;border-collapse:collapse}
-th{background:#DCE8D5;font-size:10px;font-weight:900;letter-spacing:.5px;
-  text-transform:uppercase;padding:5px 4px;border:1px solid var(--rej);
+th{background:#DCE8D5;font-size:9px;font-weight:900;letter-spacing:.3px;
+  text-transform:uppercase;padding:3px 3px;border:1px solid var(--rej);
   text-align:center;color:#2A3A2C;white-space:nowrap}
-td{border:1px solid var(--rej);padding:0;vertical-align:middle}
+td{border:1px solid var(--rej);padding:0;vertical-align:middle;line-height:1.1}
 td.cj{background:#F7F7F2;padding:0;font-weight:900}
-input.tot{text-align:right;font-weight:900;font-size:15px;padding:6px 7px;
+input.tot{padding:3px 5px}
+input.tot{text-align:right;font-weight:900;font-size:13.5px;padding:3px 5px;
   font-variant-numeric:tabular-nums;background:transparent}
 input.tot.man{color:#1B5E20;background:#E4F2E0}
 input.tot::placeholder{color:#C8CCC4}
 td.x{width:32px;text-align:center;background:#F7F7F2}
-input,select{width:100%;border:0;background:transparent;padding:8px 6px;
-  font-size:14px;font-family:inherit;color:#111;font-weight:700}
+input,select{width:100%;border:0;background:transparent;padding:3px 4px;
+  font-size:13px;font-family:inherit;color:#111;font-weight:700;line-height:1.15}
 input{text-align:center}
 select{font-weight:700;-webkit-appearance:none;appearance:none;text-align:left;
   padding-left:8px;background:transparent}
@@ -61,8 +62,45 @@ tr.d-rj td{background:#F5B7B1}
 tr.d-rj td.cj{background:#EE9A92;color:#7B1B14}
 tr.d-am input,tr.d-am select{color:#3A2E00}
 tr.d-rj input,tr.d-rj select{color:#7B1B14;font-weight:900}
-td.dd{width:44px;text-align:center;font-weight:900;font-size:13px;
+td.dd{width:38px;text-align:center;font-weight:900;font-size:12px;
   font-variant-numeric:tabular-nums}
+/* Se aprieta solo conforme crecen los renglones, para que el inventario
+   completo quepa en una sola pantalla de computadora y salga en una foto. */
+body.c1 td{font-size:12px}
+body.c1 input,body.c1 select{padding:2px 3px;font-size:11.5px}
+body.c1 input.num,body.c1 input.tot{font-size:12px}
+body.c1 .blq{margin-bottom:6px}
+body.c1 .blq .tt{padding:3px 8px;font-size:11.5px}
+body.c1 th{padding:2px 3px;font-size:8.5px}
+body.c1 .mas{padding:3px;font-size:10px}
+
+body.c2 td{font-size:11px}
+body.c2 input,body.c2 select{padding:1px 3px;font-size:10.5px}
+body.c2 input.num,body.c2 input.tot{font-size:11px}
+body.c2 .blq{margin-bottom:5px}
+body.c2 .blq .tt{padding:2px 7px;font-size:10.5px}
+body.c2 th{padding:1px 3px;font-size:8px}
+body.c2 .mas{padding:2px;font-size:9.5px}
+body.c2 .hd{padding:4px 10px}
+body.c2 .hd h1{font-size:13px}
+body.c2 .hd .s{font-size:9.5px}
+body.c2 .wrap{padding:4px 6px}
+
+body.c3 td{font-size:10px}
+body.c3 input,body.c3 select{padding:0px 2px;font-size:9.5px}
+body.c3 input.num,body.c3 input.tot{font-size:10px}
+body.c3 .blq{margin-bottom:4px}
+body.c3 .blq .tt{padding:2px 6px;font-size:9.5px}
+body.c3 th{padding:1px 2px;font-size:7.5px}
+body.c3 .mas{padding:2px;font-size:9px}
+body.c3 .hd{padding:3px 9px}
+body.c3 .hd h1{font-size:12px}
+body.c3 .hd .s{font-size:9px}
+body.c3 .hd b{font-size:15px}
+body.c3 .wrap{padding:3px 5px}
+body.c3 td.dd{width:30px}
+body.c3 td.t{width:34px}
+
 .ley{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
   font-size:11px;font-weight:800;color:var(--gris);margin:8px 0 2px}
 .ley i{display:inline-block;width:11px;height:11px;border-radius:2px;
@@ -119,8 +157,8 @@ td.mal input{color:#A82C22}
 .lst .nada{color:#A82C22;font-weight:800;cursor:default}
 .del{background:transparent;border:0;color:#C0221A;font-size:19px;font-weight:900;
   cursor:pointer;padding:4px 2px;font-family:inherit;line-height:1}
-.mas{width:100%;padding:9px;border:0;border-top:1px solid var(--rej);
-  background:#EDF3E9;color:var(--verde);font-size:13px;font-weight:900;
+.mas{width:100%;padding:4px;border:0;border-top:1px solid var(--rej);
+  background:#EDF3E9;color:var(--verde);font-size:11px;font-weight:900;
   letter-spacing:1px;cursor:pointer;font-family:inherit}
 .mas:active{background:#DCE8D5}
 
@@ -139,6 +177,31 @@ td.mal input{color:#A82C22}
   border-radius:6px;max-width:1000px;margin-left:auto;margin-right:auto}
 .msg.ok{background:#DFF3E0;color:#1B5E20}
 .msg.er{background:#FBE3E1;color:#A82C22}
+/* En modo foto se quita el pie y los botones, para que la foto salga limpia */
+body.foto .pie,body.foto .ver,body.foto .mas{display:none!important}
+body.foto td{font-size:10.5px}
+body.foto input,body.foto select{padding:0px 2px;font-size:10px}
+body.foto input.num,body.foto input.tot{font-size:10.5px}
+body.foto .blq{margin-bottom:4px}
+body.foto .blq .tt{padding:2px 7px;font-size:10px}
+body.foto th{padding:1px 2px;font-size:7.5px}
+body.foto .hd{padding:4px 10px}
+body.foto .hd h1{font-size:13px}
+body.foto .wrap{padding:3px 5px;max-width:1180px}
+body.foto input{border:0}
+body.foto td{border-color:#CFD3C8}
+body.foto{padding-bottom:10px}
+body.foto .totfoto{display:block}
+.totfoto{display:none;max-width:1000px;margin:6px auto 0;padding:8px 12px;
+  background:var(--tinta);color:#fff;border-radius:6px;
+  display:none;justify-content:space-between;align-items:center}
+body.foto .totfoto{display:flex}
+.totfoto b{font-size:20px;font-weight:900}
+.totfoto span{font-size:11px;font-weight:800;letter-spacing:1px}
+.salir{position:fixed;right:8px;bottom:8px;z-index:90;padding:9px 14px;
+  border:0;border-radius:7px;background:var(--jito);color:#fff;font-size:12px;
+  font-weight:900;cursor:pointer;font-family:inherit;display:none}
+body.foto .salir{display:block}
 .ver{position:fixed;bottom:128px;right:8px;font-size:10px;color:#B9BCAF;
   font-family:monospace;z-index:80}
 
@@ -169,7 +232,10 @@ td.mal input{color:#A82C22}
 <div class="wrap" id="wrap"></div>
 
 <div class="pie">
-  <button class="ed" id="edit">EDITAR LISTAS</button>
+  <div style="display:flex;gap:6px;max-width:1000px;margin:0 auto 6px">
+    <button class="ed" id="edit" style="margin:0">EDITAR LISTAS</button>
+    <button class="ed" id="foto" style="margin:0">MODO FOTO</button>
+  </div>
   <div id="nore"></div>
   <div style="text-align:center;font-size:10.5px;color:#6B7A6E;margin-bottom:5px">
     El total se calcula solo. Si la tarima trae otra cantidad, escribela encima.
@@ -184,7 +250,9 @@ td.mal input{color:#A82C22}
   <button class="gu" id="gu">GUARDAR INVENTARIO</button>
   <div id="msg"></div>
 </div>
-<div class="ver">v1.1</div>
+<div class="totfoto"><span>TOTAL DEL INVENTARIO</span><b id="tt3">0</b></div>
+<button class="salir" id="salir">SALIR DEL MODO FOTO</button>
+<div class="ver">v1.2</div>
 
 <script>
 var FB="https://parrasvalley-default-rtdb.firebaseio.com";
@@ -530,8 +598,10 @@ function pinta(){
   $("tt").textContent=fmt(total);
   $("tt2").textContent=fmt(total);
   $("gu").disabled=total<=0;
+  var t4=$("tt3");if(t4)t4.textContent=fmt(total);
   urgente();
   noReconocidos();
+  compacta();
   liga();
 }
 function liga(){
@@ -583,6 +653,17 @@ function liga(){
     };
   });
 }
+function compacta(){
+  var n=0;
+  PRODS.forEach(function(P){
+    ST.filas[P.id].forEach(function(f){if(nv(f.pal)||nv(f.suel)||f.man)n++;});
+  });
+  var b=document.body;
+  b.classList.remove("c1","c2","c3");
+  if(n>34)b.classList.add("c3");
+  else if(n>24)b.classList.add("c2");
+  else if(n>16)b.classList.add("c1");
+}
 function recalc(){
   var t=0;
   PRODS.forEach(function(P){
@@ -595,7 +676,9 @@ function recalc(){
   $("tt").textContent=fmt(t);
   $("tt2").textContent=fmt(t);
   $("gu").disabled=t<=0;
+  var t3=$("tt3");if(t3)t3.textContent=fmt(t);
   urgente();
+  compacta();
 }
 function urgente(){
   var n=0,c=0;
@@ -873,6 +956,13 @@ pinta();
 leeCatalogo(function(){pinta();});
 $("gu").addEventListener("click",guardar);
 $("edit").addEventListener("click",abreEditor);
+$("foto").addEventListener("click",function(){
+  document.body.classList.add("foto");
+  window.scrollTo(0,0);
+});
+$("salir").addEventListener("click",function(){
+  document.body.classList.remove("foto");
+});
 $("fInv").addEventListener("change",function(){
   ST.fInv=$("fInv").value||hoyISOin();
   ST.sem=semViernes(ST.fInv);
