@@ -10,13 +10,17 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:#F2F1EC;color:#111;font-family:-apple-system,
-  BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;padding-bottom:250px}
-.hd{background:#fff;border-bottom:2px solid var(--tinta);padding:6px 12px;
-  position:sticky;top:0;z-index:60;display:flex;justify-content:space-between;
-  align-items:center;gap:10px;flex-wrap:wrap}
-.hd h1{margin:0;font-size:15px;font-weight:900;letter-spacing:1px}
-.hd .s{font-size:11px;color:var(--gris);font-weight:700}
-.hd b{font-size:18px;font-weight:900;color:var(--verde)}
+  BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;padding-bottom:120px}
+.hd{background:#fff;border-bottom:2px solid var(--tinta);padding:5px 12px;
+  position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:9px;
+  flex-wrap:wrap}
+.hd .tit{font-size:14px;font-weight:900;letter-spacing:1px;white-space:nowrap}
+.hd .fch{width:auto;border:1.5px solid var(--rej);border-radius:4px;
+  padding:2px 5px;font-size:12px;font-weight:800;background:#fff;text-align:left}
+.hd .s{font-size:11px;color:var(--gris);font-weight:700;white-space:nowrap}
+.hd .gran{font-size:18px;font-weight:900;color:var(--verde);
+  font-variant-numeric:tabular-nums}
+.esp{flex:1}
 .wrap{max-width:1180px;margin:0 auto;padding:6px 8px}
 
 .blq{margin-bottom:8px;background:#fff;border:1.5px solid var(--tinta);border-radius:3px;
@@ -105,9 +109,7 @@ body.c3 td.t{width:34px}
   font-size:11px;font-weight:800;color:var(--gris);margin:8px 0 2px}
 .ley i{display:inline-block;width:11px;height:11px;border-radius:2px;
   margin-right:4px;vertical-align:-1px}
-.ed{display:block;width:100%;max-width:1000px;margin:0 auto 7px;padding:9px;
-  border-radius:8px;border:2px solid var(--gris);background:#fff;color:var(--gris);
-  font-size:12px;font-weight:900;letter-spacing:1.5px;cursor:pointer;font-family:inherit}
+
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;overflow:auto;
   padding:14px 8px}
 .cd{max-width:760px;margin:0 auto;background:#fff;border:2px solid var(--tinta);
@@ -163,45 +165,42 @@ td.mal input{color:#A82C22}
 .mas:active{background:#DCE8D5}
 
 .pie{position:fixed;left:0;right:0;bottom:0;background:#fff;
-  border-top:3px solid var(--tinta);padding:9px 12px 12px;z-index:70}
-.pie .l{display:flex;justify-content:space-between;align-items:center;
-  max-width:1000px;margin:0 auto 7px}
-.pie .l span{font-size:10px;font-weight:900;letter-spacing:1.5px;color:var(--gris)}
-.pie .l b{font-size:24px;font-weight:900;color:var(--verde);
-  font-variant-numeric:tabular-nums}
-.gu{display:block;width:100%;max-width:1000px;margin:0 auto;padding:15px;
-  border-radius:8px;border:0;background:var(--verde);color:#fff;font-size:16px;
-  font-weight:900;letter-spacing:1.5px;cursor:pointer;font-family:inherit}
+  border-top:2px solid var(--tinta);padding:5px 10px 6px;z-index:70}
+.bar{display:flex;align-items:center;gap:7px;max-width:1180px;margin:0 auto;
+  flex-wrap:wrap}
+.ley{font-size:10px;font-weight:800;color:var(--gris);white-space:nowrap}
+.ley i{display:inline-block;width:9px;height:9px;border-radius:2px;
+  margin:0 3px 0 7px;vertical-align:-1px}
+.ley i:first-child{margin-left:0}
+#urge{font-size:10.5px;font-weight:900;color:#7B1B14}
+.mini{padding:6px 11px;border-radius:6px;border:1.5px solid var(--rej);
+  background:#fff;color:var(--gris);font-size:11px;font-weight:900;
+  cursor:pointer;font-family:inherit;white-space:nowrap}
+.mini:active{background:#EDF3E9}
+.gu{padding:8px 22px;border-radius:6px;border:0;background:var(--verde);
+  color:#fff;font-size:12.5px;font-weight:900;letter-spacing:1px;
+  cursor:pointer;font-family:inherit;white-space:nowrap}
 .gu:disabled{background:#B0BEB2}
-.msg{text-align:center;font-size:12px;font-weight:800;padding:7px;margin-top:6px;
-  border-radius:6px;max-width:1000px;margin-left:auto;margin-right:auto}
+.msg{text-align:center;font-size:11px;font-weight:800;padding:4px;margin-top:4px;
+  border-radius:5px;max-width:1180px;margin-left:auto;margin-right:auto}
 .msg.ok{background:#DFF3E0;color:#1B5E20}
 .msg.er{background:#FBE3E1;color:#A82C22}
-/* En modo foto se quita el pie y los botones, para que la foto salga limpia */
-body.foto .pie,body.foto .ver,body.foto .mas{display:none!important}
-body.foto td{font-size:10.5px}
-body.foto input,body.foto select{padding:0px 2px;font-size:10px}
-body.foto input.num,body.foto input.tot{font-size:10.5px}
-body.foto .blq{margin-bottom:4px}
-body.foto .blq .tt{padding:2px 7px;font-size:10px}
-body.foto th{padding:1px 2px;font-size:7.5px}
-body.foto .hd{padding:4px 10px}
-body.foto .hd h1{font-size:13px}
-body.foto .wrap{padding:3px 5px;max-width:1180px}
-body.foto input{border:0}
-body.foto td{border-color:#CFD3C8}
-body.foto{padding-bottom:10px}
-body.foto .totfoto{display:block}
-.totfoto{display:none;max-width:1000px;margin:6px auto 0;padding:8px 12px;
-  background:var(--tinta);color:#fff;border-radius:6px;
-  display:none;justify-content:space-between;align-items:center}
-body.foto .totfoto{display:flex}
-.totfoto b{font-size:20px;font-weight:900}
-.totfoto span{font-size:11px;font-weight:800;letter-spacing:1px}
-.salir{position:fixed;right:8px;bottom:8px;z-index:90;padding:9px 14px;
-  border:0;border-radius:7px;background:var(--jito);color:#fff;font-size:12px;
-  font-weight:900;cursor:pointer;font-family:inherit;display:none}
+.nore{background:#FFF3CD;border:1.5px solid #E0A800;color:#7A5200;
+  border-radius:5px;padding:5px 9px;font-size:10.5px;font-weight:700;
+  line-height:1.5;margin:0 auto 5px;max-width:1180px}
+.nore u{font-weight:900;color:#A82C22}
+/* Salir del modo foto: grande y hasta arriba, imposible de perder */
+.salir{position:fixed;top:8px;right:8px;z-index:200;padding:11px 18px;
+  border:0;border-radius:8px;background:var(--jito);color:#fff;font-size:13px;
+  font-weight:900;cursor:pointer;font-family:inherit;display:none;
+  box-shadow:0 3px 10px rgba(0,0,0,.3)}
 body.foto .salir{display:block}
+.totfoto{display:none;max-width:1180px;margin:6px auto 0;padding:7px 12px;
+  background:var(--tinta);color:#fff;border-radius:5px;
+  justify-content:space-between;align-items:center}
+body.foto .totfoto{display:flex}
+.totfoto b{font-size:19px;font-weight:900}
+.totfoto span{font-size:10.5px;font-weight:800;letter-spacing:1px}
 .ver{position:fixed;bottom:128px;right:8px;font-size:10px;color:#B9BCAF;
   font-family:monospace;z-index:80}
 
@@ -217,39 +216,32 @@ body.foto .salir{display:block}
 </style></head><body>
 
 <div class="hd">
-  <div><h1>INVENTARIO FINAL</h1>
-    <div class="s" style="margin-top:4px">
-      <span style="font-weight:900;letter-spacing:1px">DIA DEL INVENTARIO</span>
-      <input type="date" id="fInv" style="width:auto;display:inline-block;
-        border:2px solid #B9BCAF;border-radius:5px;padding:4px 7px;font-size:13px;
-        font-weight:800;margin-left:6px;background:#fff;text-align:left">
-    </div>
-    <div class="s" id="fec" style="margin-top:3px"></div></div>
-  <div style="text-align:right"><b id="tt">0</b>
-    <div class="s">bultos</div></div>
+  <b class="tit">INVENTARIO FINAL</b>
+  <input type="date" id="fInv" class="fch">
+  <span class="s" id="fec"></span>
+  <span class="esp"></span>
+  <b class="gran" id="tt">0</b><span class="s">bultos</span>
 </div>
 
 <div class="wrap" id="wrap"></div>
 
 <div class="pie">
-  <div style="display:flex;gap:6px;max-width:1000px;margin:0 auto 6px">
-    <button class="ed" id="edit" style="margin:0">EDITAR LISTAS</button>
-    <button class="ed" id="foto" style="margin:0">MODO FOTO</button>
-  </div>
   <div id="nore"></div>
-  <div style="text-align:center;font-size:10.5px;color:#6B7A6E;margin-bottom:5px">
-    El total se calcula solo. Si la tarima trae otra cantidad, escribela encima.
+  <div class="bar">
+    <span class="ley">
+      <i style="background:#EAF6E4;border:1px solid #B9BCAF"></i>Bien
+      <i style="background:#FFE97A"></i>Ojo
+      <i style="background:#F5B7B1"></i>Urge
+    </span>
+    <span id="urge"></span>
+    <span class="esp"></span>
+    <button class="mini" id="edit">Listas</button>
+    <button class="mini" id="foto">Foto</button>
+    <button class="gu" id="gu">GUARDAR</button>
   </div>
-  <div class="ley">
-    <span><i style="background:#EAF6E4;border:1px solid #B9BCAF"></i>Bien</span>
-    <span><i style="background:#FFE97A"></i>Ojo con esta</span>
-    <span><i style="background:#F5B7B1"></i>Urge sacarla</span>
-  </div>
-  <div id="urge"></div>
-  <div class="l"><span>TOTAL DEL INVENTARIO EN BULTOS</span><b id="tt2">0</b></div>
-  <button class="gu" id="gu">GUARDAR INVENTARIO</button>
   <div id="msg"></div>
 </div>
+
 <div class="totfoto"><span>TOTAL DEL INVENTARIO</span><b id="tt3">0</b></div>
 <button class="salir" id="salir">SALIR DEL MODO FOTO</button>
 <div class="ver">v1.2</div>
@@ -596,7 +588,7 @@ function pinta(){
     w.appendChild(d);
   });
   $("tt").textContent=fmt(total);
-  $("tt2").textContent=fmt(total);
+  var t2=$("tt2");if(t2)t2.textContent=fmt(total);
   $("gu").disabled=total<=0;
   var t4=$("tt3");if(t4)t4.textContent=fmt(total);
   urgente();
@@ -674,7 +666,7 @@ function recalc(){
     if(b)b.textContent=fmt(s)+" bultos";
   });
   $("tt").textContent=fmt(t);
-  $("tt2").textContent=fmt(t);
+  var t2b=$("tt2");if(t2b)t2b.textContent=fmt(t);
   $("gu").disabled=t<=0;
   var t3=$("tt3");if(t3)t3.textContent=fmt(t);
   urgente();
